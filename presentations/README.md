@@ -1,0 +1,1 @@
+Compile markdown slides to pdf with `pandoc -t beamer slides.md -o output.pdf`.
