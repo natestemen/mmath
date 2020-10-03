@@ -25,6 +25,12 @@ In short, near term applications can be thought of as "applying a short-depth qu
 
 :::
 
+# Error Mitigation Techniques
+
+## Extrapolation to the zero noise limit
+
+## Probabilistic error cancellation
+
 
 # Extrapolation to the zero noise limit
 
@@ -85,6 +91,10 @@ curly O's must be a TPCP (Trace Preserving Completely Positive) collection of ma
 # Probabilistic error cancellation
 
 ![left circuit is the ideal, right circuit is approximated](circuit.png)
+
+$$
+E_\text{ideal}(\beta) = \gamma_\beta\sum_{\alpha\in\Omega_L} P_\beta(\alpha)\sigma_\beta(\alpha)E_A(\alpha)
+$$
 
 ::: notes
 
