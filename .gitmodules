@@ -1,3 +1,4 @@
 [submodule "courses"]
 	path = courses
 	url = git@github.com:natestemen/courses.git
+	branch = master
