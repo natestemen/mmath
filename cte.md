@@ -13,7 +13,7 @@ Information for this found here: https://uwaterloo.ca/centre-for-teaching-excell
 - [x] Supporting Student Mental Health (CTE2259)
 - [x] Inclusive Teaching (CTE2409)
 - [x] Effective Lesson Plans (CTE1202)
-- [ ] Academic Integrity for TAs (CTE1263)
+- [x] Academic Integrity for TAs (CTE1263)
 - [ ] Assessing and Improving your Teaching (CTE2160)
 - [ ] Workshop 6
 
