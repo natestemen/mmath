@@ -9,6 +9,9 @@
 \usepackage[most]{tcolorbox}
 \usepackage{cleveref}
 
+\setlength{\marginparwidth}{2cm}
+\usepackage{todonotes}
+
 
 
 \newcommand{\U}[1]{\mathsf{U} (#1)}
@@ -27,8 +30,9 @@
 \DeclareMathOperator{\vspan}{span}
 
 \theoremstyle{plain}
-\newtheorem{theorem}{Theorem}[section]
+\newtheorem{theorem}{Theorem}
 \newtheorem{lem}[theorem]{Lemma}
+\newtheorem{fact}[theorem]{Fact}
 \renewcommand{\qedsymbol}{$\blacksquare$}
 
 \tcolorboxenvironment{theorem}{
@@ -36,6 +40,9 @@
     breakable,before skip=10pt,after skip=10pt }
 \tcolorboxenvironment{lem}{
     enhanced jigsaw,colframe=WildStrawberry!30,interior hidden,
+    breakable,before skip=10pt,after skip=10pt }
+\tcolorboxenvironment{fact}{
+    enhanced jigsaw,colframe=PineGreen!30,interior hidden,
     breakable,before skip=10pt,after skip=10pt }
 \tcolorboxenvironment{proof}{
     blanker,breakable,left=5mm,before skip=10pt,
@@ -71,7 +78,17 @@ Expanding the determinant condition on $\SU{2}$ where $\alpha = a + \iu b$ and $
 
 Another important isomorphism is from $\SU{2}$ to the unit quaternions by the map $\smqty(a + \iu b & c + \iu d \\ -c + \iu d & a - \iu b)\mapsto a + b\iu + c\ju + d\ku$. This (unproven) isomorphism turns out to be a very useful one because of the association of quaternions with rotations in 3-dimensional space. In particular we can associate any point $\vb{x}\in\R^3$ to the purely imaginary quaternion $r = x_1\iu + x_2\ju + x_3\ku$, and further the map $r\mapsto qr\overline{q}$ is an isometry, and orientation preserving for any unit length quaternion $q$. Isometry and orientation preserving of $\R^3$ is exactly the definition of $\SO{3}$! The last important fact to note about the map $r\mapsto qr\overline{q}$ is that $qr\overline{q} = (-q)r\overline{(-q)}$, and hence this map is a double cover. All this implies there is a two-to-one mapping from $\SU{2}$ to $\SO{3}$ whose kernel is $\{\pm \1 \}$, and it turns out to be a homomorphism.
 
-\subsection{$\SU{2}$ by 5 rotations}
+\subsection{$\SU{2}$ by rotations}
+
+\begin{fact}
+    Any element $A\in\SO{3}$ can be decomposed as
+    \begin{equation}
+        A = R_Z(\alpha)R_Y(\beta)R_Z(\gamma).
+    \end{equation}
+    In fact one is free to choose the ``directions'' they decompose by as long as they are either all distinct, or in the pattern \texttt{ABA}.
+\end{fact}\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue]{how do we prove the above fact?}
+
+What's great about this fact is that it transfers (up to phase) to $\SU{2}$.\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red]{again, how to prove?}
 
 The goal of this section is to show we can always decompose any element of $\SU{2}$ in the following manner.
 \begin{theorem}
@@ -148,10 +165,38 @@ Now if we suppose we are trying to implement some $V\in\SU{2}$, we'll map it int
 The fundamental question we're asking is then \emph{when can we find $\theta_i$'s so that \cref{eq:finalform} is equal to \cref{eq:euler}}.
 
 Right off the bat we can choose $\theta_1 = v_1$ and $\theta_m = v_3$ and we are left with trying to solve
-\begin{equation}
+\begin{equation}\label{eq:solve}
     R_Y(u_2)R_Z(\theta_2)R_Y(u_2)\cdots R_Z(\theta_{m - 1})R_Y(u_2) = R_Y(v_2)
 \end{equation}
 
+In what follows we'll take $u_2 = \alpha$ and $v_2 = \beta$ as \emph{fixed} parameters.
+
+
+\subsubsection{The $m = 1$ case}
+In this case \cref{eq:solve} simplifies to $R_Y(\alpha) = R_Y(\beta)$ which only holds when $\alpha = \beta$.\footnote{Where we're woking on the domain $[0, 2\pi)$, so no modular arithmetic needed.} Hence we conclude $S_1\neq \SU{2}$, and the situation fails quite ``badly''.
+
+
+\subsubsection{The $m = 2$ case}
+In this case \cref{eq:solve} simplifies to solving
+\begin{equation}
+    R_Y(\alpha)R_Z(\theta)R_Y(\alpha) = R_Y(\beta)
+\end{equation}
+for $\theta$ where $\alpha$ and $\beta$ are fixed. We can rewrite this as
+\begin{equation}
+    R_Z(\theta) = R_Y(\beta - 2\alpha)
+\end{equation}
+which in general we cannot solve unless $\beta = 2\alpha$ where we can then take $\theta = 0$. We can verify this result numerically, doing a search for valid $\theta$ while varying $\alpha$ and $\beta$.
+\missingfigure{Plot of allowed $\alpha$ and $\beta$}
+
+Again we have $S_2\neq \SU{2}$, and it still fails quite badly.
+
+\subsubsection{The $m = 3$ case}
+The complexity is growing slowly:
+\begin{align*}
+    R_Y(\alpha)R_Z(\theta_1)R_Y(\alpha)R_Z(\theta_2)R_Y(\alpha) & = R_Y(\beta)           \\
+    R_Z(\theta_1)R_Y(\alpha)R_Z(\theta_2)                       & = R_Y(\beta - 2\alpha)
+\end{align*}
+\missingfigure{Plot of allowed $\alpha$ and $\beta$}
 
 
 \end{document}
