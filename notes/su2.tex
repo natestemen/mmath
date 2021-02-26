@@ -27,7 +27,7 @@
 \newcommand{\e}{\mathrm{e}}
 \newcommand{\defeq}{\coloneqq}
 
-\DeclareMathOperator{\vspan}{span}
+\DeclareMathOperator{\range}{range}
 
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}
@@ -90,31 +90,36 @@ Another important isomorphism is from $\SU{2}$ to the unit quaternions by the ma
 
 What's great about this fact is that it transfers (up to phase) to $\SU{2}$.\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red]{again, how to prove?}
 
-The goal of this section is to show we can always decompose any element of $\SU{2}$ in the following manner.
-\begin{theorem}
-    Given any $U\in\SU{2}$ we have the following decomposition up to a phase
-    \begin{equation*}
-        U = R_Z(\theta_0)R_X\qty(\tfrac{\pi}{4})R_Z(\theta_1)R_X\qty(\tfrac{\pi}{4})R_Z(\theta_2)
-    \end{equation*}
-    where $R_P(\theta) \defeq \exp(\iu \theta P)$ and $\theta_0, \theta_1, \theta_2\in[0, 2\pi)$.
-\end{theorem}
-While non-obvious this decomposition might exist, we at least see this decomposition contains 3 free parameters (the $\theta_i$'s), and the space we're decomposing $\SU{2}$ is indeed 3-dimensional.
-Before we prove this, we'll prove a very useful extension of Euler's formula\footnote{$\e^{\iu x} = \cos{x} + \iu\sin{x}$ for $x\in\R$} for matrices.
-\begin{lem}
-    For $P\in \qty{\1, X, Y, Z}$ we have
-    \begin{equation*}
-        R_P(\theta) \defeq \exp(\iu\theta P) = \cos(\theta) \1 + \iu\sin(\theta) P
-    \end{equation*}
-\end{lem}
-\begin{proof}
-    Just as in the proof of Euler's formula, we will expand the exponential's power series and use the convenient fact that $P^2 = \1$ for any $P\in\qty{\1, X, Y, Z}$.
-    \begin{align*}
-        R_P(\theta) & = \exp(\iu\theta P) = \sum_{n = 0}^\infty\frac{(\iu \theta)^n}{n!}P^n                                                     \\
-                    & = \sum_{n = 0}^\infty\frac{(\iu \theta)^{2n}}{2n!}P^{2n} + \sum_{n = 0}^\infty\frac{(\iu \theta)^{2n+1}}{(2n+1)!}P^{2n+1} \\
-                    & = \1\sum_{n = 0}^\infty (-1)^n\frac{\theta^{2n}}{2n!} + \iu P\sum_{n = 0}^\infty (-1)^n\frac{\theta^{2n+1}}{(2n+1)!}      \\
-                    & = \cos(\theta)\1 + \iu\sin(\theta)P
-    \end{align*}
-\end{proof}
+In these notes we will often use the \texttt{YZY} decomposition
+\begin{equation}
+    A = R_Y(a_1)R_Z(a_2)R_Y(a_3).
+\end{equation}
+
+% The goal of this section is to show we can always decompose any element of $\SU{2}$ in the following manner.
+% \begin{theorem}
+%     Given any $U\in\SU{2}$ we have the following decomposition up to a phase
+%     \begin{equation*}
+%         U = R_Z(\theta_0)R_X\qty(\tfrac{\pi}{4})R_Z(\theta_1)R_X\qty(\tfrac{\pi}{4})R_Z(\theta_2)
+%     \end{equation*}
+%     where $R_P(\theta) \defeq \exp(\iu \theta P)$ and $\theta_0, \theta_1, \theta_2\in[0, 2\pi)$. % chktex 9
+% \end{theorem}
+% While non-obvious this decomposition might exist, we at least see this decomposition contains 3 free parameters (the $\theta_i$'s), and the space we're decomposing $\SU{2}$ is indeed 3-dimensional.
+% Before we prove this, we'll prove a very useful extension of Euler's formula\footnote{$\e^{\iu x} = \cos{x} + \iu\sin{x}$ for $x\in\R$} for matrices.
+% \begin{lem}
+%     For $P\in \qty{\1, X, Y, Z}$ we have
+%     \begin{equation*}
+%         R_P(\theta) \defeq \exp(\iu\theta P) = \cos(\theta) \1 + \iu\sin(\theta) P
+%     \end{equation*}
+% \end{lem}
+% \begin{proof}
+%     Just as in the proof of Euler's formula, we will expand the exponential's power series and use the convenient fact that $P^2 = \1$ for any $P\in\qty{\1, X, Y, Z}$.
+%     \begin{align*}
+%         R_P(\theta) & = \exp(\iu\theta P) = \sum_{n = 0}^\infty\frac{(\iu \theta)^n}{n!}P^n                                                     \\
+%                     & = \sum_{n = 0}^\infty\frac{(\iu \theta)^{2n}}{2n!}P^{2n} + \sum_{n = 0}^\infty\frac{(\iu \theta)^{2n+1}}{(2n+1)!}P^{2n+1} \\
+%                     & = \1\sum_{n = 0}^\infty (-1)^n\frac{\theta^{2n}}{2n!} + \iu P\sum_{n = 0}^\infty (-1)^n\frac{\theta^{2n+1}}{(2n+1)!}      \\
+%                     & = \cos(\theta)\1 + \iu\sin(\theta)P
+%     \end{align*}
+% \end{proof}
 
 
 
@@ -137,7 +142,7 @@ and fix our number of riffles as $m$. Then, with $W:[0, 2\pi]^n\to\SU{2}$ define
 \begin{equation}\label{eq:wfunc}
     W_m(\vb*{\theta}) \coloneqq f_V(\theta_1)Uf_V(\theta_2)U\cdots U f_V(\theta_m)
 \end{equation}
-we take $S_m = \vspan W_m$ and our question becomes ``when does $S_{m} = \SU{2}$?'' Note $S_m$ has an implicit dependence on $U$ and $V$.
+we take $S_m = \range(W_m)$ and our question becomes ``when does $S_{m} = \SU{2}$?'' Note $S_m$ has an implicit dependence on $U$ and $V$.
 
 \subsection{Simplifications}
 
@@ -166,37 +171,77 @@ The fundamental question we're asking is then \emph{when can we find $\theta_i$'
 
 Right off the bat we can choose $\theta_1 = v_1$ and $\theta_m = v_3$ and we are left with trying to solve
 \begin{equation}\label{eq:solve}
-    R_Y(u_2)R_Z(\theta_2)R_Y(u_2)\cdots R_Z(\theta_{m - 1})R_Y(u_2) = R_Y(v_2)
+    R_Y(u_2)R_Z(\theta_2)R_Y(u_2)\cdots R_Z(\theta_{m - 1})R_Y(u_2) = R_Y(v_2).
 \end{equation}
 
-In what follows we'll take $u_2 = \alpha$ and $v_2 = \beta$ as \emph{fixed} parameters.
+In what follows we'll take $u_2 = \alpha$ and $v_2 = \beta$ as \emph{fixed} parameters. We're also going to relabel $m\to m - 2$ since we got rid of two parameters by always choosing $\theta_1 = v_1$ and $\theta_m = v_3$.
 
 
 \subsubsection{The $m = 1$ case}
-In this case \cref{eq:solve} simplifies to $R_Y(\alpha) = R_Y(\beta)$ which only holds when $\alpha = \beta$.\footnote{Where we're woking on the domain $[0, 2\pi)$, so no modular arithmetic needed.} Hence we conclude $S_1\neq \SU{2}$, and the situation fails quite ``badly''.
+In this case \cref{eq:solve} simplifies to $R_Y(\alpha) = R_Y(\beta)$ which only holds when $\alpha = \beta$.\footnote{Where we're woking on the domain $[0, 2\pi)$, so no modular arithmetic needed.} Hence we conclude $S_1\neq \SU{2}$, and the situation fails quite ``badly''. % chktex 9
 
+While this is quite simple to see, we can use it as a starting point for our numerical search to ensure our code is doing exactly what we think it is. Since $\alpha$ and $\beta$ are fixed we can ask for given $\alpha, \beta\in[0, 2\pi)$, are there $\theta_i$'s that satisfy \cref{eq:solve}? Below we plot for which values $\alpha$ abd $\beta$ there exists $\theta_i$'s such that $S_1 = \SU{2}$.
+\begin{figure}[h]
+    \begin{minipage}[c]{0.7\textwidth}
+        \includegraphics[width=\textwidth]{../su2/s0.pdf}
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.3\textwidth}
+        \caption{Allowed parameters for $m = 1$}\label{fig:m=1}
+    \end{minipage}
+\end{figure}
+\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red]{figure titles are wrong /misleading}
 
 \subsubsection{The $m = 2$ case}
-In this case \cref{eq:solve} simplifies to solving
+In this case \cref{eq:solve} we have a free parameter $\theta$ to try and solve
 \begin{equation}
     R_Y(\alpha)R_Z(\theta)R_Y(\alpha) = R_Y(\beta)
 \end{equation}
-for $\theta$ where $\alpha$ and $\beta$ are fixed. We can rewrite this as
+which we can rewrite as
 \begin{equation}
     R_Z(\theta) = R_Y(\beta - 2\alpha)
 \end{equation}
-which in general we cannot solve unless $\beta = 2\alpha$ where we can then take $\theta = 0$. We can verify this result numerically, doing a search for valid $\theta$ while varying $\alpha$ and $\beta$.
-\missingfigure{Plot of allowed $\alpha$ and $\beta$}
+which in general we cannot solve unless $\beta = 2\alpha$ where we can then take $\theta = 0$. We can again verify this (rather trivial) result numerically, doing a search for valid $\theta$ while varying $\alpha$ and $\beta$.
+\begin{figure}[h]
+    \begin{minipage}[c]{0.7\textwidth}
+        \includegraphics[width=\textwidth]{../su2/s1.pdf}
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.3\textwidth}
+        \caption{Allowed parameters for $m = 2$}\label{fig:m=2}
+    \end{minipage}
+\end{figure}
 
 Again we have $S_2\neq \SU{2}$, and it still fails quite badly.
 
 \subsubsection{The $m = 3$ case}
-The complexity is growing slowly:
+The complexity is growing slowly where we now have two free parameters $\theta_1$ and $\theta_2$. Again moving the outer-most $Y$ rotations to the right hand side we have
 \begin{align*}
-    R_Y(\alpha)R_Z(\theta_1)R_Y(\alpha)R_Z(\theta_2)R_Y(\alpha) & = R_Y(\beta)           \\
-    R_Z(\theta_1)R_Y(\alpha)R_Z(\theta_2)                       & = R_Y(\beta - 2\alpha)
+    R_Y(\alpha)R_Z(\theta_1)R_Y(\alpha)R_Z(\theta_2)R_Y(\alpha) & = R_Y(\beta)            \\
+    R_Z(\theta_1)R_Y(\alpha)R_Z(\theta_2)                       & = R_Y(\beta - 2\alpha).
 \end{align*}
-\missingfigure{Plot of allowed $\alpha$ and $\beta$}
+\begin{figure}[h]
+    \begin{minipage}[c]{0.7\textwidth}
+        \includegraphics[width=\textwidth]{../su2/s2.pdf}
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.3\textwidth}
+        \caption{Allowed parameters for $m = 3$}\label{fig:m=3}
+    \end{minipage}
+\end{figure}
 
+\subsubsection{The $m = 4$ case}
+Let's look at one more example before we say anything else. Unfortunately the number of points is lower than I'd like it to be, which is a result of not highly optimized code and impatience.
+\begin{figure}[h]
+    \begin{minipage}[c]{0.7\textwidth}
+        \includegraphics[width=\textwidth]{../su2/s3.pdf}
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.3\textwidth}
+        \caption{Allowed parameters for $m = 4$}\label{fig:m=4}
+    \end{minipage}
+\end{figure}
+
+The pattern I'm gleaning from these is that the allowed parameters all fall along the function
+\begin{equation}
+    h_m(x) = mx \mod 2\pi.
+\end{equation}
+By that I mean all the allowed pairs $(\alpha, \beta)\in[0, 2\pi]^2$ we've seen are all points in the graph of $h_m$.
 
 \end{document}
