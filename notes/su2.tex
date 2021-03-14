@@ -95,31 +95,31 @@ In these notes we will often use the \texttt{YZY} decomposition
     A = R_Y(a_1)R_Z(a_2)R_Y(a_3).
 \end{equation}
 
-% The goal of this section is to show we can always decompose any element of $\SU{2}$ in the following manner.
-% \begin{theorem}
-%     Given any $U\in\SU{2}$ we have the following decomposition up to a phase
-%     \begin{equation*}
-%         U = R_Z(\theta_0)R_X\qty(\tfrac{\pi}{4})R_Z(\theta_1)R_X\qty(\tfrac{\pi}{4})R_Z(\theta_2)
-%     \end{equation*}
-%     where $R_P(\theta) \defeq \exp(\iu \theta P)$ and $\theta_0, \theta_1, \theta_2\in[0, 2\pi)$. % chktex 9
-% \end{theorem}
-% While non-obvious this decomposition might exist, we at least see this decomposition contains 3 free parameters (the $\theta_i$'s), and the space we're decomposing $\SU{2}$ is indeed 3-dimensional.
-% Before we prove this, we'll prove a very useful extension of Euler's formula\footnote{$\e^{\iu x} = \cos{x} + \iu\sin{x}$ for $x\in\R$} for matrices.
-% \begin{lem}
-%     For $P\in \qty{\1, X, Y, Z}$ we have
-%     \begin{equation*}
-%         R_P(\theta) \defeq \exp(\iu\theta P) = \cos(\theta) \1 + \iu\sin(\theta) P
-%     \end{equation*}
-% \end{lem}
-% \begin{proof}
-%     Just as in the proof of Euler's formula, we will expand the exponential's power series and use the convenient fact that $P^2 = \1$ for any $P\in\qty{\1, X, Y, Z}$.
-%     \begin{align*}
-%         R_P(\theta) & = \exp(\iu\theta P) = \sum_{n = 0}^\infty\frac{(\iu \theta)^n}{n!}P^n                                                     \\
-%                     & = \sum_{n = 0}^\infty\frac{(\iu \theta)^{2n}}{2n!}P^{2n} + \sum_{n = 0}^\infty\frac{(\iu \theta)^{2n+1}}{(2n+1)!}P^{2n+1} \\
-%                     & = \1\sum_{n = 0}^\infty (-1)^n\frac{\theta^{2n}}{2n!} + \iu P\sum_{n = 0}^\infty (-1)^n\frac{\theta^{2n+1}}{(2n+1)!}      \\
-%                     & = \cos(\theta)\1 + \iu\sin(\theta)P
-%     \end{align*}
-% \end{proof}
+The goal of this section is to show we can always decompose any element of $\SU{2}$ in the following manner.
+\begin{theorem}
+    Given any $U\in\SU{2}$ we have the following decomposition up to a phase
+    \begin{equation*}
+        U = R_Z(\theta_0)R_X\qty(\tfrac{\pi}{4})R_Z(\theta_1)R_X\qty(\tfrac{\pi}{4})R_Z(\theta_2)
+    \end{equation*}
+    where $R_P(\theta) \defeq \exp(\iu \theta P)$ and $\theta_0, \theta_1, \theta_2\in[0, 2\pi)$. % chktex 9
+\end{theorem}
+While non-obvious this decomposition might exist, we at least see this decomposition contains 3 free parameters (the $\theta_i$'s), and the space we're decomposing $\SU{2}$ is indeed 3-dimensional.
+Before we prove this, we'll prove a very useful extension of Euler's formula\footnote{$\e^{\iu x} = \cos{x} + \iu\sin{x}$ for $x\in\R$} for matrices.
+\begin{lem}
+    For $P\in \qty{\1, X, Y, Z}$ we have
+    \begin{equation*}
+        R_P(\theta) \defeq \exp(\iu\theta P) = \cos(\theta) \1 + \iu\sin(\theta) P
+    \end{equation*}
+\end{lem}
+\begin{proof}
+    Just as in the proof of Euler's formula, we will expand the exponential's power series and use the convenient fact that $P^2 = \1$ for any $P\in\qty{\1, X, Y, Z}$.
+    \begin{align*}
+        R_P(\theta) & = \exp(\iu\theta P) = \sum_{n = 0}^\infty\frac{(\iu \theta)^n}{n!}P^n                                                     \\
+                    & = \sum_{n = 0}^\infty\frac{(\iu \theta)^{2n}}{2n!}P^{2n} + \sum_{n = 0}^\infty\frac{(\iu \theta)^{2n+1}}{(2n+1)!}P^{2n+1} \\
+                    & = \1\sum_{n = 0}^\infty (-1)^n\frac{\theta^{2n}}{2n!} + \iu P\sum_{n = 0}^\infty (-1)^n\frac{\theta^{2n+1}}{(2n+1)!}      \\
+                    & = \cos(\theta)\1 + \iu\sin(\theta)P
+    \end{align*}
+\end{proof}
 
 
 
@@ -180,7 +180,7 @@ In what follows we'll take $u_2 = \alpha$ and $v_2 = \beta$ as \emph{fixed} para
 \subsubsection{The $m = 1$ case}
 In this case \cref{eq:solve} simplifies to $R_Y(\alpha) = R_Y(\beta)$ which only holds when $\alpha = \beta$.\footnote{Where we're woking on the domain $[0, 2\pi)$, so no modular arithmetic needed.} Hence we conclude $S_1\neq \SU{2}$, and the situation fails quite ``badly''. % chktex 9
 
-While this is quite simple to see, we can use it as a starting point for our numerical search to ensure our code is doing exactly what we think it is. Since $\alpha$ and $\beta$ are fixed we can ask for given $\alpha, \beta\in[0, 2\pi)$, are there $\theta_i$'s that satisfy \cref{eq:solve}? Below we plot for which values $\alpha$ abd $\beta$ there exists $\theta_i$'s such that $S_1 = \SU{2}$.
+While this is quite simple to see, we can use it as a starting point for our numerical search to ensure our code is doing exactly what we think it is. Since $\alpha$ and $\beta$ are fixed we can ask for given $\alpha, \beta\in[0, 2\pi)$, are there $\theta_i$'s that satisfy \cref{eq:solve}? Below we plot for which values $\alpha$ abd $\beta$ there exists $\theta_i$'s such that $S_1 = \SU{2}$. % chktex 9
 \begin{figure}[h]
     \begin{minipage}[c]{0.7\textwidth}
         \includegraphics[width=\textwidth]{../su2/s0.pdf}
