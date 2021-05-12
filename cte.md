@@ -19,6 +19,6 @@ Information for this found here: https://uwaterloo.ca/centre-for-teaching-excell
 
 3 micro-teaching sessions:
 
-- [ ] Session 1 ([The Life and Death of Evariste Galois](./presentations/galois.pdf))
+- [ ] Session 1 ([The Life and Death of Evariste Galois](./presentations/microteaching/galois.pdf))
 - [ ] Session 2
 - [ ] Session 3
