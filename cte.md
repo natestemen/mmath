@@ -22,5 +22,3 @@ Information for this found here: https://uwaterloo.ca/centre-for-teaching-excell
 - [ ] Session 1
 - [ ] Session 2
 - [ ] Session 3
-
-Once this is complete I can apply for the Certificate in University Teaching: https://uwaterloo.ca/centre-for-teaching-excellence/support-graduate-students/certificate-university-teaching. In order to get into that I should have at least 4 terms left in my PhD. That means I need to complete the fundamentals program by the end of my third year, but I think I should aim to have it done in 2 years.
