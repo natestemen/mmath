@@ -133,7 +133,7 @@ the following:
     Great tool and it's free!
     \item\texttt{ClassicThesis.tex}: the main file of your thesis
     where all gets bundled together.
-    \item\texttt{classicthesis-config.tex}: a central place to load all
+    \item\texttt{config.tex}: a central place to load all
     nifty packages that are used. % In there, you can also activate
     % backrefs in order to have information in the bibliography about
     % where a source was cited in the text (\ie, the page number).
@@ -183,7 +183,7 @@ allow for a bit of freedom concerning the layout:
 
             As a new feature, Lorenzo Pantieri's \texttt{arsclassica} is available as well. As Lorenzo's package is discontinued and with his permission, \texttt{classicthesis-arsclassica.sty} is now part of \texttt{classicthesis} and will be maintained here.
 
-            \item\texttt{palatino}: Hermann Zapf's classic font is the free standard font for this style. Robert Bringhurst's book uses Adobe's commercial font Minion Pro. However, there are other free alternatives also available. Deactivate this option for loading such alternatives and see \texttt{classicthesis-config.tex} for some suggestions.
+            \item\texttt{palatino}: Hermann Zapf's classic font is the free standard font for this style. Robert Bringhurst's book uses Adobe's commercial font Minion Pro. However, there are other free alternatives also available. Deactivate this option for loading such alternatives and see \texttt{config.tex} for some suggestions.
 
             \item\texttt{eulerchapternumbers}: use figures from Hermann Zapf's
             Euler math font for the chapter numbers. By default, old style
@@ -242,7 +242,7 @@ Furthermore, pre-defined margins for different paper sizes are available, \eg, \
 The best way to figure these options out is to try the different
 possibilities and see what you and your supervisor like best.
 
-In order to make things easier, \texttt{classicthesis-config.tex}
+In order to make things easier, \texttt{config.tex}
 contains some useful commands that might help you.
 
 
@@ -259,7 +259,7 @@ is used for some common user customizations.
 
 The first customization you are about to make is to alter the document
 title, author name, and other thesis details. In order to do this, replace
-the data in the following lines of \texttt{classicthesis-config.tex:}%
+the data in the following lines of \texttt{config.tex:}%
 \marginpar{Modifications in \texttt{classic\-thesis-config.tex}%
 }
 
@@ -271,7 +271,7 @@ the data in the following lines of \texttt{classicthesis-config.tex:}%
     \newcommand{\mySubtitle}{An Homage to...}
 \end{lstlisting}
 
-Further customization can be made in \texttt{classicthesis-config.tex}
+Further customization can be made in \texttt{config.tex}
 by choosing the options to \texttt{classicthesis.sty}
 (see~\autoref{sec:options}) in a line that looks like this:
 
@@ -290,7 +290,7 @@ by choosing the options to \texttt{classicthesis.sty}
 }{classicthesis}
 \end{lstlisting}
 
-Many other customizations in \texttt{classicthesis-config.tex} are
+Many other customizations in \texttt{config.tex} are
 possible, but you should be careful making changes there, since some
 changes could cause errors.
 
