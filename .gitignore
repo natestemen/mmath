@@ -9,6 +9,7 @@ thesis/*.pdf
 *.bbl
 *.bcf
 *.blg
+*-blx.bib
 *.run.xml
 *.toc
 *.lof
