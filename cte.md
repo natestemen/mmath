@@ -15,7 +15,7 @@ Information for this found here: https://uwaterloo.ca/centre-for-teaching-excell
 - [x] Effective Lesson Plans (CTE1202)
 - [x] Academic Integrity for TAs (CTE1263)
 - [x] Assessing and Improving your Teaching (CTE2160)
-- [ ] Workshop 6
+- [x] Special Topics in Teaching (Applying Game-based Learning Techniques to Encourage Critical Thinking) (CTE0219)
 
 3 micro-teaching sessions:
 
