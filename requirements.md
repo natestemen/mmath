@@ -72,16 +72,20 @@ Requirements for my degree. Coming from the following sources:
 
 ## Advisory Committee
 
-Need to assemble a committee by end of the first year. Should be my advisors and two others.
+Need to assemble a committee by end of the first year. Should be Joel and two/three? others.
+- Joel Wallman
+- Another on paper co-advisor
+- ???
+- ???
 
-- [ ] committee
+- [ ] committee assembled
 
 ## Pre-Comprehensive Seminar
 
 30 minute seminar covering proposed research area, with an emphasis on background material (should be accessible to students taking courses at 700 level). Should be completed by the end of the third semester.
 
-- [ ] seminar
-- [ ] get background topics for comprehensive seminar
+- [ ] prepar presentation
+- [ ] give seminar
 
 ## Comprehensive Exam
 
@@ -99,7 +103,7 @@ Teach a class with the supervision of a faculty
 ## Quantum Information Seminar
 
 - [ ] Institute for Quantum Computing Seminar (to specialists)
-- [ ] Seminar with Quantum Information topic (to home department, to people without quantum information background)
+- [ ] Seminar with Quantum Information topic (to AMATH department. i.e. to people without quantum information background)
 
 ## Thesis
 
