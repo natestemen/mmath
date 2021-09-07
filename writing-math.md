@@ -26,3 +26,5 @@
 # [How to write mathematics badly - Jean Pierre Serre](https://www.youtube.com/watch?v=ECQyFzzBHlo)
 - TODO
 
+# [Mathematical Writing](https://www.cadmo.ethz.ch/education/thesis/mathwriting.pdf)
+- TODO
