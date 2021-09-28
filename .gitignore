@@ -17,4 +17,8 @@ thesis/*.pdf
 *.lol
 *.tcp
 *.tps
+*.snm
+*.nav
+*.vrb
+.DS_Store
 .ipynb_checkpoints
