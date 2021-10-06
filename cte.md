@@ -20,5 +20,5 @@ Information for this found here: https://uwaterloo.ca/centre-for-teaching-excell
 3 micro-teaching sessions:
 
 - [x] Session 1 ([The Life and Death of Evariste Galois](./presentations/microteaching/galois.pdf))
-- [ ] Session 2 ([The Method of Exhaustion](./presentations/microteaching/exhaustion.pdf))
+- [x] Session 2 ([The Method of Exhaustion](./presentations/microteaching/exhaustion.pdf))
 - [ ] Session 3
