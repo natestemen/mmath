@@ -1,0 +1,75 @@
+\documentclass[12pt]{article}
+\usepackage[top=1.5cm,left=1cm,right=1cm,bottom=1cm]{geometry}
+\usepackage{array,booktabs}
+\usepackage{fix-cm}
+\usepackage{amsmath}
+\usepackage{wasysym}
+\usepackage{graphicx}
+\usepackage{qrcode}
+\usepackage{url}
+
+\newcommand{\googleqrcode}{\qrcode[padding]{docs.google.com/spreadsheets/d/1l5JtTPOVG-3dEXF1HxJ08ogFMlqyDO69cyz-kvx43Ao}}
+\newcommand{\guyqrcode}{\qrcode[padding]{arc-anglerfish-arc2-prod-pmn.s3.amazonaws.com/public/W5QAPBO2TZEG7JUFWKXGTZ7VUY.jpg}}
+\newcommand{\memeqrcode}{\qrcode[padding]{https://images3.memedroid.com/images/UPLOADED90/5c50d79f1d498.jpeg}}
+
+\begin{document}\pagestyle{empty}
+\renewcommand{\arraystretch}{1.2}
+
+\begin{center}
+    \fontsize{93}{0}\selectfont Books For Sale
+\end{center}
+
+\noindent I'm moving and can't bring all my books \frownie{}.
+Most books are in very good condition, but the ones marked with * are less so.
+Pictures can be sent upon request.
+All prices are negotiable.
+I can deliver to the NYU area, and most places north of Park Slope.
+
+\begin{center}
+    \begin{tabular}{l c >{\$}l}
+        Book                                                   & Author                      & \multicolumn{1}{c}{Price} \\ \toprule
+        An Introduction to Mechanics                           & Kleppner \& Kolenkow        & 30                        \\
+        Classical Mechanics                                    & Goldstein \& Poole \& Safko & 30                        \\
+        The Classical Theory of Fields                         & Landau \& Lifshitz          & 40                        \\
+        Introduction to Quantum Mechanics*                     & Griffiths                   & 20                        \\
+        Principles of Quantum Mechanics                        & Shankar                     & 40                        \\
+        Electricity and Magnetism                              & Purcell \& Morin            & 40                        \\
+        Introduction to Electrodynamics*                       & Griffiths                   & 30                        \\
+        Symbolic Logic (4e)*                                   & Copi                        & 10                        \\
+        Calculus (4e)                                          & Spivak                      & 60                        \\
+        Combined answer book for Calculus                      & Spivak                      & 30                        \\
+        Foundations of Differentiable Manifolds and Lie Groups & Warner                      & 30                        \\
+        Differentiable Manifolds                               & Conlon                      & 35                        \\
+        An Introduction to Nonlinear Analysis                  & Schechter                   & 45                        \\
+        Calculus and Analytic Geometry*                        & Thomas                      & 10                        \\
+        Standard Mathematical Tables (12e)*                    &                             & 10                        \\
+        Algorithms and Complexity                              & Wilf                        & 25
+    \end{tabular}
+\end{center}
+
+\noindent At \url{https://docs.google.com/spreadsheets/d/1l5JtTPOVG-3dEXF1HxJ08ogFMlqyDO69cyz-kvx43Ao} you can find the updated status of the books.
+Scan the QR code to go directly there.
+Send me an email at \url{books@stemen.email} if you're interested in something.
+
+\begin{center}
+    \googleqrcode
+    \hfill
+    \guyqrcode
+    \hfill
+    \googleqrcode
+    \hfill
+    \memeqrcode
+    \hfill
+    \googleqrcode
+\end{center}
+
+\begin{center}
+    \includegraphics[width=.3\textwidth]{math.png}
+    \hfill
+    \includegraphics[width=.3\textwidth]{book.png}
+    \hfill
+    \includegraphics[width=.3\textwidth]{calc.png}
+\end{center}
+% \includegraphics{head.png}
+
+\end{document}
