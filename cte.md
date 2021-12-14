@@ -21,4 +21,4 @@ Information for this found here: https://uwaterloo.ca/centre-for-teaching-excell
 
 - [x] Session 1 ([The Life and Death of Evariste Galois](./presentations/microteaching/galois.pdf))
 - [x] Session 2 ([The Method of Exhaustion](./presentations/microteaching/exhaustion.pdf))
-- [ ] Session 3 ([Spaced Repetition in the Classroom](./presentations/microteaching/spaced-repetition.pdf))
+- [x] Session 3 ([Spaced Repetition in the Classroom](./presentations/microteaching/spaced-repetition.pdf))
