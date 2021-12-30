@@ -21,7 +21,6 @@
 | [Senior/Principal Software Engineer](https://jobs.lever.co/atomcomputing/ddbb99a9-73fb-4747-91bf-e9d22d16eee4)                                                                                       | Atom Computing    |        |                                                                                                         |         |
 | [Quantum Algorithms Intern](https://www.qcware.com/careers/quantum-algorithms-intern)                                                                                                                | QC Ware           |        |                                                                                                         | X       |
 | [Researcher - Intern](https://1qbit.com/careers/current-openings/job-description/?gh_jid=2188808)                                                                                                    | 1QBit             |        |                                                                                                         | ref     |
-| [Quantinuum - Software Engineering Intern](https://careers.honeywell.com/us/en/job/req312675/Quantinuum-Software-Engineering-Intern)                                                                 | Honeywell         |        | pay is pretty bad                                                                                       |         |
 
 EOI = Expression of Interest
 
