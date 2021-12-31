@@ -20,8 +20,6 @@
 | [Quantum Applications Engineer](https://bleximo-corp.breezy.hr/p/4f6f19d83611-quantum-applications-engineer)                                                                                         | Bleximo           |        | full time job                                                                                           |         |
 | [Senior/Principal Software Engineer](https://jobs.lever.co/atomcomputing/ddbb99a9-73fb-4747-91bf-e9d22d16eee4)                                                                                       | Atom Computing    |        |                                                                                                         |         |
 | [Quantum Algorithms Intern](https://www.qcware.com/careers/quantum-algorithms-intern)                                                                                                                | QC Ware           |        |                                                                                                         | X       |
-| [Researcher - Intern](https://1qbit.com/careers/current-openings/job-description/?gh_jid=2188808)                                                                                                    | 1QBit             |        |                                                                                                         | ref     |
+| [Researcher - Intern](https://1qbit.com/careers/current-openings/job-description/?gh_jid=2188808)                                                                                                    | 1QBit             |        |                                                                                                         | X       |
 
 EOI = Expression of Interest
-
-ref = need to submit letter of rec
