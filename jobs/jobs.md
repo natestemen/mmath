@@ -18,6 +18,7 @@
 | Email coldquanta@jobs.workablemail.com                                                                                                                                                               | Coldquanta        | X        |
 | [Quantum Algorithms Intern](https://www.qcware.com/careers/quantum-algorithms-intern)                                                                                                                | QC Ware           | X        |
 | [Researcher - Intern](https://1qbit.com/careers/current-openings/job-description/?gh_jid=2188808)                                                                                                    | 1QBit             | X        |
+| [Computing Sciences Student](https://jobs.lbl.gov/jobs/2022-computing-sciences-student-program-4418)                                                                                                 | LBL               | X        |
 
 X = applied
 
