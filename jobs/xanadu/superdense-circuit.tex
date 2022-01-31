@@ -1,0 +1,15 @@
+\documentclass[preview,border=5pt]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{quantikz}
+
+\begin{document}
+\begin{quantikz}[row sep=0.8cm]
+    \lstick{$\ket{\psi}$} & \qw & \qw & \ctrl{1}\gategroup[2,steps=5,style={dashed,rounded corners,fill=blue!20, inner xsep=2pt},background, label style={label position=above,yshift=-1.7cm, xshift=0.4cm}]{Alice}   & \gate{H} & \meter{$M_1$}  & \cw & \cwbend{2}    \\
+    \lstick{$\ket{0}$} & \gate{H} & \ctrl{1} & \targ{}  & \qw & \meter{$M_2$} & \cwbend{1}           \\
+    \lstick{$\ket{0}$} & \qw      & \targ{} & \qw \gategroup[1,steps=5,style={dashed,rounded corners,fill=green!20, inner xsep=2pt},background, label style={label position=below,xshift=-0.3cm}]{Bob}     & \qw & \qw & \gate{X^{M_2}} & \gate{Z^{M_1}} & \qw \rstick{$\ket{\psi}$}
+\end{quantikz}
+\begin{quantikz}[row sep=0.8cm]
+    \lstick{$\ket{0}$} & \gate{H}\gategroup[2, steps=2]{Creat Bell pair} & \ctrl{1} & \gate{X^a}\gategroup[1,steps=2]{Sender encodes message} & \gate{Z^b} & \ctrl{1}\gategroup[2,steps=3]{Recipient decodes message} & \gate{H} & \meter{} & \cw\rstick{$a$} \\
+    \lstick{$\ket{0}$} & \qw      & \targ{}  & \qw        & \qw        & \targ{}  & \qw      & \meter{} & \cw\rstick{$b$}
+\end{quantikz}
+\end{document}
