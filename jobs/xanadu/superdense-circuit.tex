@@ -2,10 +2,14 @@
 \usepackage{tikz}
 \usetikzlibrary{quantikz}
 
+\newcommand{\bell}{\gategroup[2,steps=2,style={draw=none,rounded corners,fill=gray!20},background,label style={xshift=-0.3cm}]{Bell Pair creation}}
+\newcommand{\alice}{\gategroup[1,steps=2,style={draw=none,rounded corners,fill=blue!20, inner xsep=2pt},background]{Alice encodes message ``$ab$''}}
+\newcommand{\bob}{\gategroup[2,steps=3,style={draw=none,rounded corners,fill=green!20},background]{Bob decodes message}}
+
 \begin{document}
 \begin{quantikz}[row sep=0.8cm]
-    &          &          & \vqw{1} & \gate{X^a}\gategroup[1,steps=2,style={draw=none,rounded corners,fill=blue!20, inner xsep=2pt},background]{Alice encodes message ``$ab$''} & \gate{Z^b} & \qw\vqw{1} &            &            &          & \\
-    \lstick{$\ket{0}$} & \gate{H}\gategroup[2,steps=2,style={draw=none,rounded corners,fill=gray!20},background,label style={xshift=-0.3cm}]{Bell Pair creation} & \ctrl{1} & \qw     &            &            &            & \ctrl{1}\gategroup[2,steps=3,style={draw=none,rounded corners,fill=green!20},background]{Bob decodes message}   & \gate{H}   & \meter{} & \cw\rstick{$a$} \\
-    \lstick{$\ket{0}$} & \qw      & \targ{}  & \qw     & \qw        & \qw        & \qw        & \targ{}    & \qw        & \meter{} & \cw\rstick{$b$}
+                       &               &          & \vqw{1} & \gate{X^b}\alice & \gate{Z^a}       & \qw\vqw{1} &              &            &          & \\
+    \lstick{$\ket{0}$} & \gate{H}\bell & \ctrl{1} & \qw     &                  &                  &            & \ctrl{1}\bob & \gate{H}   & \meter{} & \cw\rstick{$a$} \\
+    \lstick{$\ket{0}$} & \qw           & \targ{}  & \qw     & \qw              & \qw              & \qw        & \targ{}      & \qw        & \meter{} & \cw\rstick{$b$}
 \end{quantikz}
 \end{document}
