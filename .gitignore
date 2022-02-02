@@ -25,3 +25,4 @@ random/books.pdf
 .DS_Store
 .ipynb_checkpoints
 .vscode
+jobs/xanadu/*.pdf
