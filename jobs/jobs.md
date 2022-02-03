@@ -20,7 +20,6 @@
 | [Researcher - Intern](https://1qbit.com/careers/current-openings/job-description/?gh_jid=2188808)                                                                                                    | 1QBit             | X        |
 | [Computing Sciences Student](https://jobs.lbl.gov/jobs/2022-computing-sciences-student-program-4418)                                                                                                 | LBL               | X        |
 | [EOI](https://www.super.tech/careers/)                                                                                                                                                               | super.tech        | todo     |
-| [CERN](https://www.smartrecruiters.com/CERN/743999788187918-cern-openlab-summer-student-programme-2022)                                                                                              | CERN              | todo     |
 
 X = applied
 
@@ -34,4 +33,4 @@ EOI = Expression of Interest
 | -------------------------------------------------------------------------------------------------------------- | -------------- | ------- | ------ |
 | [Quantum Applications Engineer](https://bleximo-corp.breezy.hr/p/4f6f19d83611-quantum-applications-engineer)   | Bleximo        |         |        |
 | [Senior/Principal Software Engineer](https://jobs.lever.co/atomcomputing/ddbb99a9-73fb-4747-91bf-e9d22d16eee4) | Atom Computing |         |        |
-| [Jr. Quantum Application Scientist](https://zapata.bamboohr.com/jobs/view.php?id=134)                          | Zapata         |         |        |
+| [Member of Technical Staff](https://unitary.fund/jobs/mts.html)                                                | Unitary Fund   |         |        |
