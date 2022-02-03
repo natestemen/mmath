@@ -20,6 +20,7 @@
 | [Researcher - Intern](https://1qbit.com/careers/current-openings/job-description/?gh_jid=2188808)                                                                                                    | 1QBit             | X        |
 | [Computing Sciences Student](https://jobs.lbl.gov/jobs/2022-computing-sciences-student-program-4418)                                                                                                 | LBL               | X        |
 | [EOI](https://www.super.tech/careers/)                                                                                                                                                               | super.tech        | todo     |
+| EOI (hiring@multiversecomputing.com)                                                                                                                                                                 | Multiverse        | todo     |
 
 X = applied
 
