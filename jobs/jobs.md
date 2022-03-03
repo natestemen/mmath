@@ -13,7 +13,6 @@
 | [Intern](https://jobs.lever.co/dwavesys/49f35aa2-edc5-4f55-ba08-04726788e25a)                                                                                                                        | D Wave            | X        |
 | [Summer Research Assistant/Associate](https://simonsfoundation.wd1.myworkdayjobs.com/en-US/simonsfoundationcareers/job/162-Fifth-Avenue/Research-Assistant-Associate--Numerical-Algorithms_R0000107) | Simons Foundation | X        |
 | [Research Intern](https://zapata.bamboohr.com/jobs/view.php?id=140&source=bamboohr)                                                                                                                  | Zapata            | X        |
-| [EOI](https://jobs.lever.co/rigetti/2ba95ee4-cb4f-4c9f-85a1-edbfdcf0bbb7)                                                                                                                            | Rigetti           | *        |
 | [EOI](https://strangeworks.com/#resume)                                                                                                                                                              | Strangeworks      | X        |
 | Email coldquanta@jobs.workablemail.com                                                                                                                                                               | Coldquanta        | X        |
 | [Quantum Algorithms Intern](https://www.qcware.com/careers/quantum-algorithms-intern)                                                                                                                | QC Ware           | X        |
@@ -23,8 +22,6 @@
 | EOI (hiring@multiversecomputing.com)                                                                                                                                                                 | Multiverse        | todo     |
 
 X = applied
-
-\* = application not posted yet
 
 EOI = Expression of Interest
 
