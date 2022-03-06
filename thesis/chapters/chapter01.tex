@@ -93,15 +93,17 @@ At the very basic level, a \ac{CPU} has a finite number of possible operations i
 How then does the computer take a script and run it on it's CPU?
 
 
-As Chris Lattner (the founder of LLVM) has said
+Chris Lattner (the founder of one of the largest compiler projects; LLVM) has characterized compilers succinctly in~\cite{lattnerquote} as
 \begin{quote}
-    compilers are the art of allowing humans to think at a level of abstraction that they want to think about.
+    the art of allowing humans to think at a level of abstraction that they want to think about.
 \end{quote}
 
-\section{Abstraction}
+\paragraph{Abstraction} With Lattner's quote in mind we can think of compilers as the tool that allows us to work with languages that are very abstract when compared to the instructions our \ac{CPU} can perform.
+There also exist tools known as decompilers which take executables and turn them back into source code.
+This operation is almost never the inverse of compiler because most languages allow for many ways of writing code that performs the same task.
+With these tools we can raise and lower our levels of abstraction as desired and further push the details of the ``metal'' or hardware implementation away.
 
-\subsection{Compactness}
 
 \section{LLVM}
 
-\subsection{MLIR}
+\subsection{\acf{MLIR}}
