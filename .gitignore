@@ -2,6 +2,7 @@ notes/*.pdf
 jobs/*.pdf
 thesis/*.pdf
 *.aux
+*.acr
 *.fdb_latexmk
 *.fls
 *.log
