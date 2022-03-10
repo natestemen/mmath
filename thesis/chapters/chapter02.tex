@@ -11,15 +11,14 @@ There are three main models used for quantum computation:
 \end{itemize}
 Because of the ease in implementing universal quantum computation, the circuital model has become the most popular. % TODO
 In this model we represent programs diagrammatically.
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \begin{quantikz}
         & \gate{U_0} & \ctrl{1} & \gate{U_1} & \ctrl{1}            & \swap{2} & \gate[wires=3]{U_3} & \qw \\
         & \gate{U_0} & \targ{}  & \octrl{-1} & \gate[wires=2]{U_2} & \qw      &                     & \qw \\
         & \gate{U_0} & \qw      & \qw        &                     & \targX{} &                     & \qw
     \end{quantikz}
-    \caption{Example Quantum Circuit}
-    \label{fig:excircuit}
+    \caption{Example Quantum Circuit}\label{fig:excircuit}
 \end{figure}
 The theoretical laws of quantum mechanics tell us that time evolution is governed by unitary operators.
 Hence in theoretical developments of quantum circuits we
@@ -37,7 +36,7 @@ From these gates, we can construct a \textbf{quantum circuit} by applying a sequ
 \end{definition}
 Thus if our gate set $G = \qty{a, b, c}$, then some example circuits may be $aacba$, $cccbbb$, $cbbcbab$.
 Something to note here is that in this abstraction, all of our quantum gates are assumed to act on all qubits.
-Hence if we have hardware with 2 qubits, and we can perform a Pauli $X$ gate on either qubit, then our gate is not simply $\qty{X}$, but rather $\qty{\1\otimes\1, \1\otimes X, X\otimes \1, X\otimes X}$.
+Hence if we have hardware with 2 qubits, and we can perform a Pauli $X$ gate on either qubit, then our gate is not simply $\qty{X}$, but rather $\qty{\1\otimes \1, \1\otimes X, X\otimes \1, X\otimes X}$.
 Sometimes this gate set is denoted $\qty{\1, X_0, X_1, X_0X_1}$, but we will try and be explicit here.
 
 We can now define a map $\mult: G^* \to \U{2^n}$ which takes a quantum circuit, or sequence of gates, and multiplies them together to get a final unitary: $\mult(U_1U_2\cdots U_n) = U_1\cdot U_2\cdots U_n$.
@@ -67,7 +66,7 @@ Some examples of common cost functions are given below, and multiple can be used
 
 As an example take the the topology of IBM's \texttt{ibmq\_jakarta} shown in~\ref{fig:ibm-jakarta}.
 ``3'' being connected to ``1'' means that we can apply a 2-qubit unitary targeting both of those qubits, however the hardware does not support native 2-qubit gates between qubits ``2'' and ``6''.
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \begin{tikzpicture}
         \tikzset{
@@ -96,8 +95,7 @@ As an example take the the topology of IBM's \texttt{ibmq\_jakarta} shown in~\re
         (5) edge node {} (4)
         (5) edge node {} (6);
     \end{tikzpicture}
-    \caption{IBMQ Jakarta Architecture}
-    \label{fig:ibm-jakarta}
+    \caption{IBMQ Jakarta Architecture}\label{fig:ibm-jakarta}
 \end{figure}
 
 We can now define the main problem of quantum circuit compilation: that of the qubit mapping problem.\footnote{This sometimes also goes by the name of the qubit routing problem, or qubit scheduling problem although sometimes these mean slightly different things.}

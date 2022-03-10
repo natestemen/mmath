@@ -40,8 +40,7 @@ Hence we can visualize the action of a compiler as a sort of informal function.
         \draw[-stealth] (pl) -- (compiler);
         \draw[-stealth] (compiler) -- (ml);
     \end{tikzpicture}
-    \caption{Action of Compiler}
-    \label{fig:compiler}
+    \caption{Action of Compiler}\label{fig:compiler}
 \end{figure}
 
 The term compiler was coined by Grace Hopper in the early 1950's while working on a system that could translate symbolic mathematics into a machine language.
@@ -50,7 +49,7 @@ Initially Hopper was met with resistance for her new idea.
     I had a running compiler, and nobody would touch it because, they carefully told me, computers could only do arithmetic; they could not do programs.
     It was a selling job to get people to try it.
     I think with any new idea, because people are allergic to change, you have to get out and sell the idea.
-    \attrib{Grace Hopper 1952 \cite{hopperquote}}
+    \attrib{Grace Hopper 1952~\cite{hopperquote}}
 \end{quotation}
 In the end she succeeded in selling the idea and compilers became a ubiquitous piece of modern computing infrastructure.
 Since Hopper coined the term the job of a compiler has grown enormously and now encompasses line reconstruction, preprocessing, lexical analysis, syntax analysis, semantic analysis, conversion to an \ac{IR}, optimization, target dependent optimizations, and finally code generation.
@@ -93,12 +92,11 @@ In a highly simplified model we can think of a computer as a \ac{CPU} connected 
         \path[line] (cpu) |- (output);
         \draw[stealth-stealth] (cpu) -- (memory);
     \end{tikzpicture}
-    \caption{A Simplified Computer Architecture}
-    \label{fig:comparch}
+    \caption{A Simplified Computer Architecture}\label{fig:comparch}
 \end{figure}
 
 At the very basic level, a \ac{CPU} has a finite number of possible operations it can perform despite there being a much larger input space of ``possible programs'' that we can feed it.
-How then does the computer take a script and run it on it's CPU?
+How then does the computer take a script and run it on it's \ac{CPU}?
 
 
 Chris Lattner (the founder of one of the largest compiler projects; LLVM) has characterized compilers succinctly in~\cite{lattnerquote} as
