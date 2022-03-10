@@ -58,10 +58,10 @@ Thankfully we will not need to understand all of these parts, and the majority o
 
 \subsection{Examples of Compilers}
 \begin{description}
-    \item[\LaTeX{}:] While
-    \item[Mathematica:]
-    \item[Tensorflow:]
-    \item[\texttt{clang}:]
+    \item[Latex] While perhaps not very obvious, \LaTeX{} is indeed a compiler in the sense that it takes in code, and produces a lower level representation of what the user wants to typeset. Usually that comes in the form of postscript which is another programming language that is read by printers (hardware) to produce the requested document.
+        % \item[Mathematica:]
+    \item[Tensorflow:] Tensorflow is a platform for machine learning that embodies the structure of a compiler very nicely. Indeed it has a front-end where the user builds their model, an optimizer that speeds up the model, and once it's ready the model can be brought to multiple backends (in browser, mobile, laptop).
+    \item[clang:] This \emph{is} a compiler in the strictest sense. As input it takes C/C++ and provides executable versions of that code that an be run on hardware.
 \end{description}
 
 \subsection{Computer Architecture}
