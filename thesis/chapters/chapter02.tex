@@ -28,23 +28,100 @@ Hence in theoretical developments of quantum circuits we
 The first important object to define is that of a \textbf{quantum gate set}.
 These are the gates that we will be able to natively perform on our hardware.
 \begin{definition}
-    A \emph{quantum gate set} is a (typically finite) subset $G\subseteq \U{2^n}$.
+    A \emph{quantum gate set} is a (typically finite) subset $G\subseteq \U{2^n}$. An element of $G$ is called a quantum gate.
 \end{definition}
 From these gates, we can construct a \textbf{quantum circuit} by applying a sequence of elements from the gate set.
 \begin{definition}
-    Let $G$ be a quantum gate set.
-    A \emph{quantum circuit} is a an element of the free group $\free{G}$.
+    Let $G$ be a quantum gate set, and let $G^*$ denote\footnote{This operation is known as the Kleene star.} the set of words over $G$.
+    A \emph{quantum circuit} is an element of $G^*$.
 \end{definition}
-Thus if our gate set $G = \qty{a, b, c}$, then a circuit can be any word from the set $\qty{a, a^{-1}, b, b^{-1}, c, c^{-1}}$.
-Here we must include inverses because if you can perform a gate $U$, you can always perform it's inverse as well. % TODO: why???
-Possible words are $abcaac^{-1}$, $bbb^{-1}ca^{-1}$, $c^{-1}b^{-1}a$, and so on.
+Thus if our gate set $G = \qty{a, b, c}$, then some example circuits may be $aacba$, $cccbbb$, $cbbcbab$.
+Something to note here is that in this abstraction, all of our quantum gates are assumed to act on all qubits.
+Hence if we have hardware with 2 qubits, and we can perform a Pauli $X$ gate on either qubit, then our gate is not simply $\qty{X}$, but rather $\qty{\1\otimes\1, \1\otimes X, X\otimes \1, X\otimes X}$.
+Sometimes this gate set is denoted $\qty{\1, X_0, X_1, X_0X_1}$, but we will try and be explicit here.
+
+We can now define a map $\mult: G^* \to \U{2^n}$ which takes a quantum circuit, or sequence of gates, and multiplies them together to get a final unitary: $\mult(U_1U_2\cdots U_n) = U_1\cdot U_2\cdots U_n$.
+This map allows us to frame the following important question.
+
+\begin{question}\label{qu:synthesis}
+    Given a quantum gate set $G$, and unitary $U\in\U{2^n}$, does there exist a circuit $C\in G^*$, such that $\mult(C) = U$?
+\end{question}
+In the case this can we done, we say that a circuit $C$ implements a unitary $U$.
+Further, if the answer to~\ref{qu:synthesis} is positive, there is often a follow on question.
+\begin{question}\label{qu:optimalsynthesis}
+    If $\mult(C) = U$, and $f: G^* \to \R$ is a cost function, can we find
+    \begin{equation*}
+        C_\text{min} = \argmin_{C\in G^*} \qty{f(C) : \mult(C) = U}?
+    \end{equation*}
+\end{question}
+Some examples of common cost functions are given below, and multiple can be used in the case of tie-breaking.
+\begin{itemize}
+    \item $f(C) = \mathtt{length}(C)$ (commonly referred to as the depth of the circuit)
+    \item $f(C) = $ \# of uses of a particular gate in $C$
+    \item $f(C) = \mathtt{duration}(C)$
+\end{itemize}
+
+\begin{definition}
+    A \emph{quantum chip's topology} is a graph $G = (V, E)$ with the vertices representing qubits, and edges representing connections between qubits where quantum gates of the correct arity can be applied.
+\end{definition}
+
+As an example take the the topology of IBM's \texttt{ibmq\_jakarta} shown in~\ref{fig:ibm-jakarta}.
+``3'' being connected to ``1'' means that we can apply a 2-qubit unitary targeting both of those qubits, however the hardware does not support native 2-qubit gates between qubits ``2'' and ``6''.
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}
+        \tikzset{
+            main node/.style={
+                    very thick,
+                    circle,
+                    fill=blue!20,
+                    draw,
+                    minimum size=1cm,
+                    inner sep=0pt
+                }
+        }
+        \node[main node] (0) {$0$};
+        \node[main node] (1) [right = 1cm of 0] {$1$};
+        \node[main node] (2) [right = 1cm of 1] {$2$};
+        \node[main node] (3) [below = 1cm of 1] {$3$};
+        \node[main node] (5) [below = 1cm of 3] {$5$};
+        \node[main node] (4) [left  = 1cm of 5] {$4$};
+        \node[main node] (6) [right = 1cm of 5] {$6$};
+
+        \path[draw, very thick]
+        (0) edge node {} (1)
+        (1) edge node {} (2)
+        (1) edge node {} (3)
+        (3) edge node {} (5)
+        (5) edge node {} (4)
+        (5) edge node {} (6);
+    \end{tikzpicture}
+    \caption{IBMQ Jakarta Architecture}
+    \label{fig:ibm-jakarta}
+\end{figure}
+
+We can now define the main problem of quantum circuit compilation: that of the qubit mapping problem.\footnote{This sometimes also goes by the name of the qubit routing problem, or qubit scheduling problem although sometimes these mean slightly different things.}
+If we have both a quantum circuit $C\in G^*$, and a quantum computer with network topology $G$, can the computer perform our circuit?
+In order to address this question we must first talk about universal gate sets.
+\subsection{Universal Gate Sets}
+In order to harness the full power of a quantum computer, we hope it to be able
+\begin{definition}
+    A gate set $G$ on $n$ qubits is called \emph{universal} if for all $U\in\U{2^n}$ there exists a circuit $C\in G^*$ such that $\mult(C) = U$.
+\end{definition}
+
+The question of which gate sets are universal for quantum computation is important both for our theoretical understanding of quantum computation, but also for building physical devices.
+Examples that have been shown to be universal are
+\begin{itemize}
+    \item \CNOT{} plus $\U{2}$ as shown in~\cite{universal-cnot-u2}
+    \item \CNOT{}, Hadamard, and the $\frac{\pi}{8}$-gate\footnote{The $\frac{\pi}{8}$-gate is also sometimes called $T$ and has matrix representation $\smqty[1 & 0 \\ 0 & \e^{\iu\pi/4}]$.} as shown in~\cite{universal-cnot-had-p8}
+    \item \CCNOT{} (Toffoli), Hadamard, and the $\frac{\pi}{4}$-gate\footnote{The $\frac{\pi}{4}$-gate is also sometimes called $S$ and has matrix representation $\smqty[1 & 0 \\ 0 & \e^{\iu\pi/2}]$.} as shown in~\cite{universal-ccnot-had-p4}
+    \item \CNOT{} plus any single qubit gate that does not preserve the computational basis and is not the Hadamard gate as shown in~\cite{universal-cnot-basis-change}
+\end{itemize}
 
 
-Take $\mult: \free{G} \to U^{2^n}$ to be the map defined by $\mult(C) = \mult(U_1U_2\cdots U_n) = U_1\cdot U_2\cdots U_n$.
-
-With these two definitions we can already formulate a very important question.
-Suppose we have a target unitary $U\in\U{2^n}$.
-Is there a circuit $C\in\free{G}$ such that $\dbrackets{C} = U$?
-hi
-If we'd like our circuit to implement a target unitary $U\in\U{2^n}$,
+% With these two definitions we can already formulate a very important question.
+% Suppose we have a target unitary $U\in\U{2^n}$.
+% Is there a circuit $C\in\free{G}$ such that $\dbrackets{C} = U$?
+% hi
+% If we'd like our circuit to implement a target unitary $U\in\U{2^n}$,
 % In \cite{optimalSyn}
