@@ -70,22 +70,21 @@ As an example take the the topology of IBM's \texttt{ibmq\_jakarta} shown in~\re
     \centering
     \begin{tikzpicture}
         \tikzset{
-            main node/.style={
+            node/.style={
                     very thick,
                     circle,
                     fill=blue!20,
                     draw,
-                    minimum size=1cm,
-                    inner sep=0pt
+                    minimum size=.8cm,
                 }
         }
-        \node[main node] (0) {$0$};
-        \node[main node] (1) [right = 1cm of 0] {$1$};
-        \node[main node] (2) [right = 1cm of 1] {$2$};
-        \node[main node] (3) [below = 1cm of 1] {$3$};
-        \node[main node] (5) [below = 1cm of 3] {$5$};
-        \node[main node] (4) [left  = 1cm of 5] {$4$};
-        \node[main node] (6) [right = 1cm of 5] {$6$};
+        \node[node] (0) {$0$};
+        \node[node] (1) [right = .8cm of 0] {$1$};
+        \node[node] (2) [right = .8cm of 1] {$2$};
+        \node[node] (3) [below = .8cm of 1] {$3$};
+        \node[node] (5) [below = .8cm of 3] {$5$};
+        \node[node] (4) [left  = .8cm of 5] {$4$};
+        \node[node] (6) [right = .8cm of 5] {$6$};
 
         \path[draw, very thick]
         (0) edge node {} (1)
