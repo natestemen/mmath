@@ -31,7 +31,7 @@ Hence in theoretical developments of quantum circuits we
 The first important object to define is that of a \textbf{quantum gate set}.
 These are the gates that we will be able to natively perform on our hardware.
 \begin{definition}
-    A \emph{quantum gate set} is a (typically finite) subset $G\subseteq \U{2^n}$. An element of $G$ is called a quantum gate.
+    A \emph{quantum gate set} is a (typically finite) subset $G\subseteq \gls{un}$. An element of $G$ is called a quantum gate.
 \end{definition}
 From these gates, we can construct a \textbf{quantum circuit} by applying a sequence of elements from the gate set.
 \begin{definition}
@@ -105,6 +105,7 @@ As an example take the the topology of IBM's \texttt{ibmq\_jakarta} shown in~\re
 We can now define the main problem of quantum circuit compilation: that of the qubit mapping problem.\footnote{This sometimes also goes by the name of the qubit routing problem, or qubit scheduling problem although sometimes these mean slightly different things.}
 If we have both a quantum circuit $C\in G^*$, and a quantum computer with network topology $G$, can the computer perform our circuit?
 In order to address this question we must first talk about universal gate sets.
+
 \subsection{Universal Gate Sets}
 In order to harness the full power of a quantum computer, we hope it to be able
 \begin{definition}
@@ -119,6 +120,10 @@ Examples that have been shown to be universal are
     \item \CCNOT{} (Toffoli), Hadamard, and the $\frac{\pi}{4}$-gate\footnote{The $\frac{\pi}{4}$-gate is also sometimes called $S$ and has matrix representation $\smqty[1 & 0 \\ 0 & \e^{\iu\pi/2}]$.} as shown in~\cite{universal-ccnot-had-p4}
     \item \CNOT{} plus any single qubit gate that does not preserve the computational basis and is not the Hadamard gate as shown in~\cite{universal-cnot-basis-change}
 \end{itemize}
+
+The authors in~\cite{universal-cnot-u2} also show
+
+With these universal gate sets
 
 
 % With these two definitions we can already formulate a very important question.
