@@ -34,9 +34,6 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{classicthesis}[2018/06/03 v4.6 Typographic style for a classic-looking thesis]
 \providecommand{\classicthesis}{classicthesis v4.6}
-% Removed due to hint by David Carlisle and Ulrike Fischer
-% \PassOptionsToPackage{latest}{latexrelease} % replacement for fixltx2e,
-%   \RequirePackage{latexrelease} % emulate newer kernel version if older is detected
 
 \RequirePackage{ifthen}
 
@@ -143,7 +140,7 @@
 % Colors
 % ********************************************************************
 \PassOptionsToPackage{dvipsnames}{xcolor}
-    \RequirePackage{xcolor} % [dvipsnames]
+\RequirePackage{xcolor}
 \definecolor{CTsemi}{gray}{0.55} % chapter numbers will be semi transparent .5 .55 .6 .0
 \definecolor{CTcitation}{rgb}{0,0.5,0} % WebGreen
 \definecolor{CTurl}{named}{Maroon} % Maroon
@@ -209,8 +206,7 @@
 
 
 
-\RequirePackage{microtype} % character protruding and other micro-typography stuff
-% [expansion=false]
+\RequirePackage{microtype}
 
 
 % ********************************************************************
@@ -271,15 +267,11 @@
 % Graffiti as in GKP's book "Concrete Mathematics"
 % thanks to Lorenzo Pantieri and Enrico Gregorio
 \def\graffito@setup{%
-%   \slshape\footnotesize% this was due to \slhape in above book
    \itshape\footnotesize\leavevmode\color{Black}%
    \parindent=0pt \lineskip=0pt \lineskiplimit=0pt %
    \tolerance=2000 \hyphenpenalty=300 \exhyphenpenalty=300%
    \doublehyphendemerits=100000%
    \finalhyphendemerits=\doublehyphendemerits}
-%\DeclareRobustCommand{\graffito}[1]{\marginpar%
-% [\graffito@setup\raggedleft\hspace{0pt}{#1}]%
-% {\graffito@setup\raggedright\hspace{0pt}{#1}}}
 
 \RequirePackage{mparhack} % get marginpar right
 
@@ -569,16 +561,6 @@
 \ifthenelse{\boolean{ct@listsseparated}}{%
     \PackageWarningNoLine{classicthesis}{Option "listsseparated" deprecated as of version 2.9.}%
 }{\relax}
-% \ifthenelse{\boolean{ct@listsseparated}}{%
-%     \AtBeginDocument{%
-%         \addtocontents{lof}{\protect\vspace{-\cftbeforechapskip}}%
-%         \addtocontents{lot}{\protect\vspace{-\cftbeforechapskip}}%
-%         \ifthenelse{\boolean{ct@listings}}%
-%                {%
-%            \addtocontents{lol}{\protect\vspace{-\cftbeforechapskip}}%
-%         }{\relax}%
-%     }%
-% }{%
 
 \DeclareRobustCommand*{\deactivateaddvspace}{\let\addvspace\@gobble}%
 \AtBeginDocument{%
