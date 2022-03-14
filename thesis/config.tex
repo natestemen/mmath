@@ -5,11 +5,11 @@
 \usepackage{fontenc}
 
 
-% ****************************************************************************************************
+% ********************************************************************
 % 1. Configure classicthesis for your needs here, e.g., remove "drafting" below
 % in order to deactivate the time-stamp on the pages
 % (see ClassicThesis.pdf for more information):
-% ****************************************************************************************************
+% ********************************************************************
 \PassOptionsToPackage{
     drafting=true,    % print version information on the bottom of the pages
     tocaligned=false, % the left column of the toc will be aligned (no indentation)
@@ -24,9 +24,9 @@
 }{classicthesis}
 
 
-% ****************************************************************************************************
+% ********************************************************************
 % 2. Personal data and user ad-hoc commands (insert your own data here)
-% ****************************************************************************************************
+% ********************************************************************
 \newcommand{\myTitle}{Quantum Circuit Compilation\xspace}
 \newcommand{\mySubtitle}{\xspace}
 \newcommand{\myDegree}{Master of Mathematics (MMath)\xspace}
@@ -48,36 +48,33 @@
 \newcommand{\Ie}{I.\,e.}
 \newcommand{\eg}{e.\,g.}
 \newcommand{\Eg}{E.\,g.}
-% ****************************************************************************************************
 
 
-% ****************************************************************************************************
+% ********************************************************************
 % 3. Loading some handy packages
-% ****************************************************************************************************
+% ********************************************************************
+
 % ********************************************************************
 % Packages with options that might require adjustments
 % ********************************************************************
-\PassOptionsToPackage{ngerman,american}{babel} % change this to your language(s), main language last
-% Spanish languages need extra options in order to work with this template
-%\PassOptionsToPackage{spanish,es-lcroman}{babel}
+\PassOptionsToPackage{american}{babel}
 \usepackage{babel}
 
 \usepackage{csquotes}
 \PassOptionsToPackage{%
     backend=biber,bibencoding=utf8, %instead of bibtex
-    % backend=bibtex8,bibencoding=ascii,%
-    language=auto,%
-    style=numeric-comp,%
+    language=auto,
+    style=numeric-comp,
     %style=authoryear-comp, % Author 1999, 2010
     %bibstyle=authoryear,dashed=false, % dashed: substitute rep. author with ---
     sorting=nyt, % name, year, title
     maxbibnames=10, % default: 3, et al.
-    %backref=true,%
+    backref=true,
     natbib=true % natbib compatibility mode (\citep and \citet still work)
 }{biblatex}
 \usepackage{biblatex}
 
-\PassOptionsToPackage{fleqn}{amsmath}       % math environments and more by the AMS
+\PassOptionsToPackage{fleqn}{amsmath} % float equations towards left side
 \usepackage{amsmath}
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{definition}[theorem]{Definition}
@@ -89,38 +86,26 @@
 % ********************************************************************
 % General useful packages
 % ********************************************************************
-\usepackage{graphicx} %
+\usepackage{graphicx}
 \usepackage{scrhack} % fix warnings when using KOMA with listings package
 \usepackage{xspace} % to get the spacing after macros right
 \PassOptionsToPackage{printonlyused,smaller}{acronym}
 \usepackage{acronym} % TODO change to acro package
-%\renewcommand{\bflabel}[1]{{#1}\hfill} % fix the list of acronyms --> no longer working
-%\renewcommand*{\acsfont}[1]{\textsc{#1}}
-%\renewcommand*{\aclabelfont}[1]{\acsfont{#1}}
-%\def\bflabel#1{{#1\hfill}}
-\def\bflabel#1{{\acsfont{#1}\hfill}}
-\def\aclabelfont#1{\acsfont{#1}}
-% ****************************************************************************************************
-%\usepackage{pgfplots} % External TikZ/PGF support (thanks to Andreas Nautsch)
-%\usetikzlibrary{external}
-%\tikzexternalize[mode=list and make, prefix=ext-tikz/]
-% ****************************************************************************************************
 
 
-% ****************************************************************************************************
+% ********************************************************************
 % 4. Setup floats: tables, (sub)figures, and captions
-% ****************************************************************************************************
-\usepackage{tabularx} % better tables
+% ********************************************************************
+\usepackage{tabularx} % better tables: TODO change to booktabs
 \setlength{\extrarowheight}{3pt} % increase table row height
 \newcommand{\tableheadline}[1]{\multicolumn{1}{l}{\spacedlowsmallcaps{#1}}}
 \newcommand{\myfloatalign}{\centering} % to be used with each float for alignment
 \usepackage{subfig}
-% ****************************************************************************************************
 
 
-% ****************************************************************************************************
+% ********************************************************************
 % 5. Setup code listings
-% ****************************************************************************************************
+% ********************************************************************
 \usepackage{listings}
 %\lstset{emph={trueIndex,root},emphstyle=\color{BlueViolet}}%\underbar} % for special keywords
 \lstset{language=[LaTeX]Tex,%C++,
@@ -141,16 +126,10 @@
     belowcaptionskip=.75\baselineskip
     %frame=L
 }
-% ****************************************************************************************************
 
 
-
-
-% ****************************************************************************************************
-% 6. Last calls before the bar closes
-% ****************************************************************************************************
 % ********************************************************************
-% Her Majesty herself
+% 6. Last calls before the bar closes
 % ********************************************************************
 \usepackage{classicthesis}
 
@@ -160,22 +139,22 @@
 % ********************************************************************
 \hypersetup{%
     %draft, % hyperref's draft mode, for printing see below
-    colorlinks=true, linktocpage=true, pdfstartpage=3, pdfstartview=FitV,%
+    colorlinks=true, linktocpage=true, pdfstartpage=3, pdfstartview=FitV,
     % uncomment the following line if you want to have black links (e.g., for printing)
     %colorlinks=false, linktocpage=false, pdfstartpage=3, pdfstartview=FitV, pdfborder={0 0 0},%
-    breaklinks=true, pageanchor=true,%
-    pdfpagemode=UseNone, %
+    breaklinks=true, pageanchor=true,
+    pdfpagemode=UseNone,
     % pdfpagemode=UseOutlines,%
     plainpages=false, bookmarksnumbered, bookmarksopen=true, bookmarksopenlevel=1,%
     hypertexnames=true, pdfhighlight=/O,%nesting=true,%frenchlinks,%
     urlcolor=CTurl, linkcolor=CTlink, citecolor=CTcitation, %pagecolor=RoyalBlue,%
     %urlcolor=Black, linkcolor=Black, citecolor=Black, %pagecolor=Black,%
-    pdftitle={\myTitle},%
-    pdfauthor={\textcopyright\ \myName, \myUni},%
-    pdfsubject={},%
-    pdfkeywords={},%
-    pdfcreator={pdfLaTeX},%
-    pdfproducer={LaTeX with hyperref and classicthesis}%
+    pdftitle={\myTitle},
+    pdfauthor={\textcopyright\ \myName, \myUni},
+    pdfsubject={},
+    pdfkeywords={},
+    pdfcreator={pdfLaTeX},
+    pdfproducer={LaTeX with hyperref and classicthesis}
 }
 
 
@@ -200,60 +179,7 @@
         \renewcommand*{\subsectionautorefname}{Section}%
         \renewcommand*{\subsubsectionautorefname}{Section}%
     }%
-    \addto\extrasngerman{%
-        \renewcommand*{\paragraphautorefname}{Absatz}%
-        \renewcommand*{\subparagraphautorefname}{Unterabsatz}%
-        \renewcommand*{\footnoteautorefname}{Fu\"snote}%
-        \renewcommand*{\FancyVerbLineautorefname}{Zeile}%
-        \renewcommand*{\theoremautorefname}{Theorem}%
-        \renewcommand*{\appendixautorefname}{Anhang}%
-        \renewcommand*{\equationautorefname}{Gleichung}%
-        \renewcommand*{\itemautorefname}{Punkt}%
-    }%
     % Fix to getting autorefs for subfigures right (thanks to Belinda Vogt for changing the definition)
     \providecommand{\subfigureautorefname}{\figureautorefname}%
 }{\relax}
 \makeatother
-
-
-% ********************************************************************
-% Development Stuff
-% ********************************************************************
-\listfiles
-%\PassOptionsToPackage{l2tabu,orthodox,abort}{nag}
-%  \usepackage{nag}
-%\PassOptionsToPackage{warning, all}{onlyamsmath}
-%  \usepackage{onlyamsmath}
-
-
-% ****************************************************************************************************
-% 7. Further adjustments (experimental)
-% ****************************************************************************************************
-% ********************************************************************
-% Changing the text area
-% ********************************************************************
-%\areaset[current]{312pt}{761pt} % 686 (factor 2.2) + 33 head + 42 head \the\footskip
-%\setlength{\marginparwidth}{7em}%
-%\setlength{\marginparsep}{2em}%
-
-% ********************************************************************
-% Using different fonts
-% ********************************************************************
-%\usepackage[oldstylenums]{kpfonts} % oldstyle notextcomp
-% \usepackage[osf]{libertine}
-%\usepackage[light,condensed,math]{iwona}
-%\renewcommand{\sfdefault}{iwona}
-%\usepackage{lmodern} % <-- no osf support :-(
-%\usepackage{cfr-lm} %
-%\usepackage[urw-garamond]{mathdesign} <-- no osf support :-(
-%\usepackage[default,osfigures]{opensans} % scale=0.95
-%\usepackage[sfdefault]{FiraSans}
-% \usepackage[opticals,mathlf]{MinionPro} % onlytext
-% ********************************************************************
-%\usepackage[largesc,osf]{newpxtext}
-%\linespread{1.05} % a bit more for Palatino
-% Used to fix these:
-% https://bitbucket.org/amiede/classicthesis/issues/139/italics-in-pallatino-capitals-chapter
-% https://bitbucket.org/amiede/classicthesis/issues/45/problema-testatine-su-classicthesis-style
-% ********************************************************************
-% ****************************************************************************************************
