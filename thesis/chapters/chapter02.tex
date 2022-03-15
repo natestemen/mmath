@@ -31,7 +31,43 @@ There have been many major milestones since this, but perhaps most important to 
 Hence it was less than 20 years from when Feynman demonstrated the potential usefulness of a quantum computer to the first experimental realization of the idea.
 
 Since then ambitions have risen and technological progress has allowed for more and more qubits and quantum computers today have even been shown to complete tasks that classical ones cannot in any feasible amount of time.
-In particular a team at Hefei National Laboratory used their 66-qubit computer\footnote{Affectionately named Zuchongzhi after Chinese mathematican Zu Chongzhi whose computation of $\pi$ was more accurate than any other for more than 800 years.} to complete a task in 4 hours that would take the most performant classical computers tens of thousands of years~\cite{zuchongzhi}.
+In particular a team at China's Hefei National Laboratory used their 66-qubit computer\footnote{Affectionately named Zuchongzhi after Chinese mathematican Zu Chongzhi whose computation of $\pi$ was more accurate than any other for more than 800 years.} to complete a task in 4 hours that would take the most performant classical computers tens of thousands of years~\cite{zuchongzhi}.
+
+More recently John Preskill has coined the term \ac{NISQ} as a characterization of the quantum computers that have dominated the past decade, and will likely continue to for the next few years~\cite{nisq}.
+He takes these to be computers with 50-100 qubits for which noise will be a major factor in deciding what quantum circuits we can and cannot run.
+The problem presented in this document is relevant to quantum computers past the \ac{NISQ}-era, but are especially important as we attempt to squeeze every ounce of computation out of them.
+
+% TODO conclusion
+
+\section{Quantum Computation}
+
+In this section we will go over the basics of quantum computation.
+This section is written with a moderate amount of protest since I do not believe I will give a pedagogically proper and sound treatment of the material.
+Before continuing I would like to recommend~\cite{nielsenchuang} as well as \url{https://quantum.country} as great resources to learn the basics of quantum computing.
+
+\subsection{Formalism}
+
+A quantum bit, or \textbf{qubit} for short, is a vector $\ket{\psi}$ in 2-dimensional complex space $\C^2$ such that $\norm{\ket{\psi}} = 1$.
+Often the following canonical basis is chosen and referred to as the computational basis.
+\begin{align}
+    \ket{0} \defeq \mqty[1 \\ 0] & & \ket{1} \defeq \mqty[0 \\ 1]
+\end{align}
+In this basis a qubit is a vector
+\begin{equation}\label{eq:qubit}
+    \ket{\psi} = \alpha\ket{0} + \beta\ket{1} = \mqty[\alpha \\ \beta]
+\end{equation}
+with the normalization condition that $\abs{\alpha}^2 + \abs{\beta}^2 = 1$.
+In the case of \cref{eq:qubit} the state $\ket{\psi}$ is said to be in a \textbf{superposition} of state $\ket{0}$ and $\ket{1}$.
+
+We often need to understand more complicated systems than just simple qubits, and to do so we use the \textbf{tensor product} to build up systems from subsystems.
+\Eg{} if $\ket{\psi}\in\C^2$ and $\ket{\phi}\in\C^2$ represent two distinct physical qubits, we can represent the combined system as a single vector $\ket{\psi}\otimes \ket{\phi}$ in a larger complex Euclidean space $\C^2\otimes \C^2\cong \C^4$.
+In the computational basis we can expand this as
+\begin{align}
+    \ket{\psi}\otimes \ket{\phi} & = \qty(\alpha\ket{0} + \beta\ket{1})\otimes\qty(\gamma\ket{0} + \delta\ket{1})                                                                \\
+                                 & = \alpha\gamma\ket{0}\otimes\ket{0} + \alpha\delta\ket{0}\otimes\ket{1} + \beta\gamma\ket{1}\otimes\ket{0} + \beta\delta\ket{1}\otimes\ket{1}
+\end{align}
+
+\subsection{Quantum Circuits}
 
 
 \section{Quantum Circuits}
