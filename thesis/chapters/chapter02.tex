@@ -6,6 +6,34 @@ In this chapter we will lay the groundwork for the necessary ideas from quantum 
 We will not attempt to introduce quantum computation from the ground up, but instead introduce and emphasize some ideas we will focus on first.
 The notation used here will mostly follow~\cite{watroustqi} and we recommend~\cite{nielsenchuang} for a more thorough introduction to the material.
 
+\section{Historical Development}
+Without a precise definition of quantum computing it's hard to give a precise storyline through the subject.
+However, ideas rarely have clear cut boundaries and we must push forward to understand our messy world regardless.
+
+One of the core tenets of quantum theory is that, at this scale, nature is reversible.
+Hence when physicist Charles H. Bennett began investigating reversible Turing machines in~\cite{reversibleturing} we might say the field of quantum computing was \emph{just} beginning to start.
+Since Turing machines are the mathematical and theoretical foundation for modern computers, it makes sense that a reversible Turing machine might lay the groundwork as the foundation for a computer that operators under quantum mechanical law.
+More than 6 years later, Paul Benioff extended this work to describe a fully quantum mechanical version of a Turing machine in his paper \citetitle{quantumturing}~\cite{quantumturing}.
+
+Once the theoretical foundation had been laid by Bennett and Benioff, Richard Feynman brought the idea mainstream when he proposed using these new computers to simulate quantum mechanics itself.
+This idea was very attractive at the time (1981) since our classical computers were not powerful enough to simulate large quantum systems,\footnote{In fact, they still aren't!} and since Feynman was such a popular figure the idea finally took hold.
+Feynman motivated the need for a new paradigm in computing as such:
+\begin{quote}
+    Nature isn't classical, dammit, and if you want to make a simulation of nature, you'd better make it quantum mechanical, and by golly it's a wonderful problem, because it doesn't look so easy.\attrib{Richard P. Feynman in~\cite{feynmansimulator}}
+\end{quote}
+
+Even with one of the most famous physicists popularizing the idea, it took another 10 years to see the next major development which came in~\cite{deutch-jozsa-algo} where David Deutsch and Richard Jozsa gave an example of a problem that is solved exponentially faster on a quantum computer than a classical one.
+If there was any hesitancy from the academic community at this point about the theoretical usefulness of a quantum computer, this result showed real potential for the emerging technology.
+More applications start rolling in with quantum teleportation~\cite{quantumteleportation} and famously Peter Shor's polynomial time algorithm to factor integers (and hence break many modern cryptosystems)~\cite{shor-encryption}.
+
+The latter caught the eye of the US Government and within the year of Shor's publication the \ac{NIST} organized the first government funded conference on quantum computation.\footnote{It's likely this is when quantum computation was put on the radar of the US government. In 2014 leaked documents showed the National Security Agency had begun a project dubbed ``Owning The Net'' whose purpose was to use a quantum computer to break internet cryptography and to ``gain access to and securely return high value target communications''. The status of the project---which also goes under the moniker ``Penetrating Hard Targets''---is unknown.}
+There have been many major milestones since this, but perhaps most important to note is the first experimental realization of a qubit happened in 1999 by Yasunobu Nakamura and Jaw-Shen Tsai~\cite{firstqubit}.
+Hence it was less than 20 years from when Feynman demonstrated the potential usefulness of a quantum computer to the first experimental realization of the idea.
+
+Since then ambitions have risen and technological progress has allowed for more and more qubits and quantum computers today have even been shown to complete tasks that classical ones cannot in any feasible amount of time.
+In particular a team at Hefei National Laboratory used their 66-qubit computer\footnote{Affectionately named Zuchongzhi after Chinese mathematican Zu Chongzhi whose computation of $\pi$ was more accurate than any other for more than 800 years.} to complete a task in 4 hours that would take the most performant classical computers tens of thousands of years~\cite{zuchongzhi}.
+
+
 \section{Quantum Circuits}
 There are three main models used for quantum computation:
 \begin{itemize}
