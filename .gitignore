@@ -22,9 +22,9 @@ thesis/*.pdf
 *.snm
 *.nav
 *.vrb
-*.glg
-*.glo
-*.gls
+*glg
+*glo
+*gls
 *.glsdefs
 *.ist
 *.sbl
