@@ -18,13 +18,14 @@ Requirements for my degree. Coming from the following sources:
   - [ ] Techniques
   - [x] Applications (AMATH 673 Advanced Quantum Theory)
 
+- [x] 7 courses
 1. AMATH 740 Numerical Analysis
 1. AMATH 673 Advanced Quantum Theory
 1. QIC 710 Intro. to Quantum Info. Processsing
 1. QIC 845 Open Quantum Systems
 1. PMATH 863 Lie Groups and Lie Algebras
 1. CS 747 Software Verification using Proof Assistants
-1. TBD
+1. QIC 820 Theory of Quantum Information
 
 ## Advisory Committee
 
@@ -34,78 +35,7 @@ Need to assemble a committee by end of the first year. Should be my advisors and
 
 ## Research Paper
 
-- [ ] Write outline and get it approved
+- [x] Write outline and get it approved
 - [ ] Write document
 - [ ] Submit it
 - [ ] It's approved
-
----
-
-# PhD Requirements
-
-Requirements for my degree. Coming from the following sources:
-
-- https://uwaterloo.ca/applied-mathematics/graduate-students/programs-and-courses/phd-program
-- https://uwaterloo.ca/applied-mathematics/graduate-students/programs-and-courses/graduate-breadth-requirements
-- https://uwaterloo.ca/graduate-studies-academic-calendar/mathematics/department-applied-mathematics/doctor-philosophy-phd-applied-mathematics-quantum-information#degree_requirements
-
-## Graduate AIM
-
-- [x] Graduate Academic Integrity Module
-
-## Courses
-
-8 total courses, 3 for breadth requirement, 2 for quantum info core, and 2 for quantum info electives. That leaves 1 for anything you'd like. Must maintain a >70% in coursework.
-
-- [ ] Breadth Requirements (must satisfy three of the following four categories)
-  - [x] Computation (AMATH 740 Numerical Analysis)
-  - [ ] Differential Equations
-  - [ ] Techniques
-  - [x] Applications (AMATH 673 Advanced Quantum Theory)
-- [ ] Quantum Information Core
-  - [x] QI Processing (QIC 710)
-  - [ ] QI Processing Devices (QIC 750)
-- [ ] Quantum Information Alternative
-  - [x] QI elective (QIC 845 Open Quantum Systems)
-  - [ ] QI elective
-- [x] Free Choice (PMATH 863 Lie Groups and Lie Algebras)
-
-## Advisory Committee
-
-Need to assemble a committee by end of the first year. Should be Joel and two/three? others.
-- Joel Wallman
-- Another on paper co-advisor
-- ???
-- ???
-
-- [ ] committee assembled
-
-## Pre-Comprehensive Seminar
-
-30 minute seminar covering proposed research area, with an emphasis on background material (should be accessible to students taking courses at 700 level). Should be completed by the end of the third semester.
-
-- [ ] prepar presentation
-- [ ] give seminar
-
-## Comprehensive Exam
-
-A roughly 25 page papers detailing what I would like to research. That includes describing the "research program", background material, a lit review, an indication of methodology, any progress made, and a research timeline. To be completed by the end of the 5th term (end of winter term 2021).
-
-- [ ] paper written
-- [ ] questioning done
-
-## Lecturing Requirement
-
-Teach a class with the supervision of a faculty
-
-- [ ] teach
-
-## Quantum Information Seminar
-
-- [ ] Institute for Quantum Computing Seminar (to specialists)
-- [ ] Seminar with Quantum Information topic (to AMATH department. i.e. to people without quantum information background)
-
-## Thesis
-
-- [ ] Thesis written
-- [ ] defended
