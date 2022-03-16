@@ -45,6 +45,15 @@ In this section we will go over the basics of quantum computation.
 This section is written with a moderate amount of protest since I do not believe I will give a pedagogically proper and sound treatment of the material.
 Before continuing I would like to recommend~\cite{nielsenchuang} as well as \url{https://quantum.country} as great resources to learn the basics of quantum computing.
 
+% TODO: talk about these
+% There are three main models used for quantum computation:
+% \begin{itemize}
+%     \item circuital quantum computing
+%     \item adiabatic quantum computing
+%     \item measurement based quantum computing
+% \end{itemize}
+% Because of the ease in implementing universal quantum computation, the circuital model has become the most popular. % TODO
+
 \subsection{Formalism}
 
 A quantum bit, or \textbf{qubit} for short, is a vector $\ket{\psi}$ in 2-dimensional complex space $\C^2$ such that $\norm{\ket{\psi}} = 1$.
@@ -149,72 +158,87 @@ These are the gates that we will be able to natively perform on our hardware.
 \end{definition}
 From these gates, we can construct a \textbf{quantum circuit} by applying a sequence of elements from the gate set.
 \begin{definition}
-    Let $G$ be a quantum gate set, and let \gls{kleene} denote\footnote{This operation is known as the Kleene star.} the set of finite length words over $G$.
+    Let $G$ be a quantum gate set, and let \gls{kleene} denote\footnote{This $^*$ operation is known as the Kleene star.} the set of finite length words over $G$.
     A \emph{quantum circuit} is an element of $G^*$.
 \end{definition}
-Thus if our gate set $G = \qty{a, b, c}$, then some example circuits may be $aacba$, $cccbbb$, $cbbbab$, $ab$.
-ugh
+Thus if our gate set $G = \qty{a, b, c}$, then some example circuits may be $aacba$, $cccbbb$, $cbbbab$, and $ab$.
 
+Something to note here is that in this abstraction, all of our quantum gates are assumed to act on all qubits.
+Hence, with a 2 qubit quantum chip and the ability to perform a Pauli $X$ gate on either qubit, then our gate is $\qty{\1\otimes \1, \1\otimes X, X\otimes \1, X\otimes X}$.\footnote{We don't always think of the identity gate $\1$ as a gate that needs to be included, but doing nothing to a qubit is no easy task, so it's important to remember to treat it just like any other gate and understand it's error rates as well.}
+Sometimes this gate set is denoted $\qty{\1, X_0, X_1, X_0X_1}$, but we will try to use more explicit notation here.
 
-\section{Quantum Circuits}
-There are three main models used for quantum computation:
-\begin{itemize}
-    \item circuital quantum computing
-    \item adiabatic quantum computing
-    \item measurement based quantum computing
-\end{itemize}
-Because of the ease in implementing universal quantum computation, the circuital model has become the most popular. % TODO
-In this model we represent programs diagrammatically.
+Circuits are often drawn using diagram as in~\cref{fig:excircuit} where each horizontal ``wire'' represents a qubit, and boxes and other gadgets represent quantum gates.
 \begin{figure}[ht]
     \centering
     \begin{quantikz}
-        & \gate{U_0} & \ctrl{1} & \gate{U_1} & \ctrl{1}            & \swap{2} & \gate[wires=3]{U_3} & \qw \\
-        & \gate{U_0} & \targ{}  & \octrl{-1} & \gate[wires=2]{U_2} & \qw      &                     & \qw \\
-        & \gate{U_0} & \qw      & \qw        &                     & \targX{} &                     & \qw
+        & \gate{U_0} & \ctrl{1} & \gate{U_1} & \ctrl{1}            & \qw           & \gate[wires=3]{U_3} & \qw \\
+        & \gate{U_0} & \targ{}  & \qw        & \gate[wires=2]{U_2} & \gate[swap]{} &                     & \qw \\
+        & \gate{U_0} & \qw      & \qw        &                     &               &                     & \qw
     \end{quantikz}
     \caption{Example Quantum Circuit}\label{fig:excircuit}
 \end{figure}
-The theoretical laws of quantum mechanics tell us that time evolution is governed by unitary operators.
-Hence in theoretical developments of quantum circuits we
+That said, the way our theoretical model sees this circuit is more like that of~\cref{fig:abstractcircuit} where each gate acts on the entirety of the qubits.
+\begin{figure}[ht]
+    \centering
+    \begin{quantikz}
+        & \gate[wires=3][0.8cm]{A} & \gate[wires=3][0.8cm]{B} & \gate[wires=3][0.8cm]{C} & \gate[wires=3][0.8cm]{D} & \gate[wires=3][0.8cm]{E} & \gate[wires=3][0.8cm]{F} & \qw \\
+        &                   &                   &                   &                   &                   &                   & \qw \\
+        &                   &                   &                   &                   &                   &                   & \qw
+    \end{quantikz}
+    \caption{Abstract Quantum Circuit}\label{fig:abstractcircuit}
+\end{figure}
+In~\cref{tab:gates2circuit} we see what each one of these circuits are under the hood, and we can know that all of them are in the gate set for the above circuit.
+\begin{table}[ht]
+    \centering\begin{tabular}{cc}
+        Circuit Name & Composition                   \\ \toprule
+        $A$          & $U_0 \otimes U_0 \otimes U_0$ \\
+        $B$          & $\CNOT \otimes \1$            \\
+        $C$          & $U_1 \otimes \1 \otimes \1$   \\
+        $D$          & $\controlled{U_2}$            \\
+        $E$          & $\1 \otimes \SWAP$            \\
+        $F$          & $U_3$                         \\
+    \end{tabular}
+    \caption{Gate Compositions}\label{tab:gates2circuit}
+\end{table}
 
-\section{Formalizing}
+We now have the machinery for circuits, and one of the important questions we need to ask is \emph{when are two circuits the same?}
+Surely we can compare the circuits as strings in $G^*$, but if $G = \qty{\1, X}$, it will not tell us that $C = \1$ and $C' = XX$ are the same despite the same physical process happening.
+To this end we wish to understand how the combinations of gates come together to form the entire process.
+Following~\cite{formalcircuit} we define a map $\dbrackets{-}: G^* \to \U{2^n}$ which takes a quantum circuit, or sequence of gates, and multiplies them together to obtain a single unitary operator: $\dbrackets{g_1g_2\cdots g_m} = g_1\cdot g_2 \cdots g_m$.\footnote{Notice here on the left we have string concatenation, and on the right matrix multiplication.}
+Then we can say two circuits $C$ and $C'$ are effectively the same if $\dbrackets{C} = \dbrackets{C'}$.
 
-This formalization is inspired by~\cite{formalcircuit}.
-% The first important object to define is that of a \textbf{quantum gate set}.
-% These are the gates that we will be able to natively perform on our hardware.
-% \begin{definition}
-%     A \emph{quantum gate set} is a (typically finite) subset $G\subseteq \U{2^n}$. An element of $G$ is called a quantum gate.
-% \end{definition}
-% From these gates, we can construct a \textbf{quantum circuit} by applying a sequence of elements from the gate set.
-% \begin{definition}
-%     Let $G$ be a quantum gate set, and let $G^*$ denote\footnote{This operation is known as the Kleene star.} the set of words over $G$.
-%     A \emph{quantum circuit} is an element of $G^*$.
-% \end{definition}
-% Thus if our gate set $G = \qty{a, b, c}$, then some example circuits may be $aacba$, $cccbbb$, $cbbcbab$.
-
-Something to note here is that in this abstraction, all of our quantum gates are assumed to act on all qubits.
-Hence if we have hardware with 2 qubits, and we can perform a Pauli $X$ gate on either qubit, then our gate is not simply $\qty{X}$, but rather $\qty{\1\otimes \1, \1\otimes X, X\otimes \1, X\otimes X}$.\footnote{We don't always think of the identity gate $\1$ as a gate that needs to be included, but doing nothing to a qubit is no easy task, so it's important to remember to treat it just like any other gate and understand it's error rates as well.}
-Sometimes this gate set is denoted $\qty{\1, X_0, X_1, X_0X_1}$, but we will try and be explicit here.
-
-We can now define a map $\mult: G^* \to \U{2^n}$ which takes a quantum circuit, or sequence of gates, and multiplies them together to get a final unitary: $\mult(U_1U_2\cdots U_n) = U_1\cdot U_2\cdots U_n$.
-This map allows us to frame the following important question.
-
+This formalism also allows us to frame the following important question about unitary synthesis.
 \begin{question}\label{qu:synthesis}
-    Given a quantum gate set $G$, and unitary $U\in\U{2^n}$, does there exist a circuit $C\in G^*$, such that $\mult(C) = U$?
+    Given a quantum gate set $G$, and unitary operator $U\in\U{2^n}$, does there exist a circuit $C\in G^*$, such that $\dbrackets{C} = U$?
 \end{question}
-In the case this can we done, we say that a circuit $C$ implements a unitary $U$.
+If the answer is yes, we say a gate set $G$ \textbf{synthesizes} $U$.
 Further, if the answer to~\ref{qu:synthesis} is positive, there is often a follow on question.
 \begin{question}\label{qu:optimalsynthesis}
-    If $\mult(C) = U$, and $f: G^* \to \R$ is a cost function, can we find
+    If $G$ synthesizes $U$, and if $f: G^* \to \R$ is a cost function, can we find
     \begin{equation*}
-        C_\text{min} = \argmin_{C\in G^*} \qty{f(C) : \mult(C) = U}?
+        C_\text{min} = \argmin_{C\in G^*} \qty{f(C) : \dbrackets{C} = U}?
     \end{equation*}
 \end{question}
 Some examples of common cost functions are given below, and multiple can be used in the case of tie-breaking.
 \begin{itemize}
     \item $f(C) = \mathtt{length}(C)$ (commonly referred to as the depth of the circuit)
     \item $f(C) = $ \# of uses of a particular gate in $C$
-    \item $f(C) = \mathtt{duration}(C)$ (by this we mean the total elapsed time the circuit takes)
+    \item $f(C) = \mathtt{duration}(C)$ (by this we mean the total elapsed time the circuit takes)\footnote{We have not discussed this yet, but each gate $g\in C$ takes a non-zero amount of time, during which the computation may be disturbed by outside forces.}
+\end{itemize}
+
+\subsection{Universal Gate Sets}
+In order to harness the full power of a quantum computer, we hope it to be able
+\begin{definition}
+    A gate set $G$ on $n$ qubits is called \emph{universal} if for all $U\in\U{2^n}$ there exists a circuit $C\in G^*$ such that $\mult(C) = U$.
+\end{definition}
+
+The question of which gate sets are universal for quantum computation is important both for our theoretical understanding of quantum computation, but also for building physical devices.
+Examples that have been shown to be universal are
+\begin{itemize}
+    \item \CNOT{} plus $\U{2}$ as shown in~\cite{universal-cnot-u2}
+    \item \CNOT{}, Hadamard, and the $\frac{\pi}{8}$-gate\footnote{The $\frac{\pi}{8}$-gate is also sometimes called $T$ and has matrix representation $\smqty[1 & 0 \\ 0 & \e^{\iu\pi/4}]$.} as shown in~\cite{universal-cnot-had-p8}
+    \item \CCNOT{} (Toffoli), Hadamard, and the $\frac{\pi}{4}$-gate\footnote{The $\frac{\pi}{4}$-gate is also sometimes called $S$ and has matrix representation $\smqty[1 & 0 \\ 0 & \e^{\iu\pi/2}]$.} as shown in~\cite{universal-ccnot-had-p4}
+    \item \CNOT{} plus any single qubit gate that does not preserve the computational basis and is not the Hadamard gate as shown in~\cite{universal-cnot-basis-change}
 \end{itemize}
 
 \begin{definition}
@@ -258,29 +282,4 @@ We can now define the main problem of quantum circuit compilation: that of the q
 If we have both a quantum circuit $C\in G^*$, and a quantum computer with network topology $G$, can the computer perform our circuit?
 In order to address this question we must first talk about universal gate sets.
 
-\subsection{Universal Gate Sets}
-In order to harness the full power of a quantum computer, we hope it to be able
-\begin{definition}
-    A gate set $G$ on $n$ qubits is called \emph{universal} if for all $U\in\U{2^n}$ there exists a circuit $C\in G^*$ such that $\mult(C) = U$.
-\end{definition}
-
-The question of which gate sets are universal for quantum computation is important both for our theoretical understanding of quantum computation, but also for building physical devices.
-Examples that have been shown to be universal are
-\begin{itemize}
-    \item \CNOT{} plus $\U{2}$ as shown in~\cite{universal-cnot-u2}
-    \item \CNOT{}, Hadamard, and the $\frac{\pi}{8}$-gate\footnote{The $\frac{\pi}{8}$-gate is also sometimes called $T$ and has matrix representation $\smqty[1 & 0 \\ 0 & \e^{\iu\pi/4}]$.} as shown in~\cite{universal-cnot-had-p8}
-    \item \CCNOT{} (Toffoli), Hadamard, and the $\frac{\pi}{4}$-gate\footnote{The $\frac{\pi}{4}$-gate is also sometimes called $S$ and has matrix representation $\smqty[1 & 0 \\ 0 & \e^{\iu\pi/2}]$.} as shown in~\cite{universal-ccnot-had-p4}
-    \item \CNOT{} plus any single qubit gate that does not preserve the computational basis and is not the Hadamard gate as shown in~\cite{universal-cnot-basis-change}
-\end{itemize}
-
-The authors in~\cite{universal-cnot-u2} also show
-
-With these universal gate sets
-
-
-% With these two definitions we can already formulate a very important question.
-% Suppose we have a target unitary $U\in\U{2^n}$.
-% Is there a circuit $C\in\free{G}$ such that $\dbrackets{C} = U$?
-% hi
-% If we'd like our circuit to implement a target unitary $U\in\U{2^n}$,
 % In \cite{optimalSyn}
