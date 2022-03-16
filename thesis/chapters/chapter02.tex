@@ -6,7 +6,7 @@ In this chapter we will lay the groundwork for the necessary ideas from quantum 
 We will not attempt to introduce quantum computation from the ground up, but instead introduce and emphasize some ideas we will focus on first.
 The notation used here will mostly follow~\cite{watroustqi} and we recommend~\cite{nielsenchuang} for a more thorough introduction to the material.
 
-\section{Historical Development}
+\section{Historical Development}\label{sec:history}
 Without a precise definition of quantum computing it's hard to give a precise storyline through the subject.
 However, ideas rarely have clear cut boundaries and we must push forward to understand our messy world regardless.
 
@@ -66,8 +66,94 @@ In the computational basis we can expand this as
     \ket{\psi}\otimes \ket{\phi} & = \qty(\alpha\ket{0} + \beta\ket{1})\otimes\qty(\gamma\ket{0} + \delta\ket{1})                                                                \\
                                  & = \alpha\gamma\ket{0}\otimes\ket{0} + \alpha\delta\ket{0}\otimes\ket{1} + \beta\gamma\ket{1}\otimes\ket{0} + \beta\delta\ket{1}\otimes\ket{1}
 \end{align}
+where $\alpha, \beta, \gamma, \delta \in \C$.
+
+With the objects of the theory defined, we must now understand the dynamics, or choreography of the theory.
+As stated in~\cref{sec:history}, we take the theory of quantum mechanics to be reversible, and hence any operation we perform on a qubit $\ket{\psi}$ must be undo-able.
+Thankfully linear algebra has just the tool to transform complex vectors in a reversible, and general way: unitary matrices!
+\begin{definition}
+    An $n\times n$ matrix $A$ is called \emph{unitary} if
+    \begin{equation}\label{eq:unitary}
+        AA^\dagger = A^\dagger A = \1
+    \end{equation}
+    where $^\dagger$ is the conjugate transpose.
+    The collection of unitary matrices of dimension $n$ is called the \emph{unitary group} and is denoted \gls{un}.
+\end{definition}
+Hence when we have a qubit $\ket{\psi}$ and perform some action on it, we then have a new state $\ket{\phi} = U\ket{\psi}$ where $U$ represents whatever action we performed.
+The condition shown in~\cref{eq:unitary} is quite restrictive: where a general $n \times n$ matrix has $2n^2$ real degrees of freedom, an element of $\U{n}$ only has $n^2$.\footnote{This is to say $\dim_\R\U{n} = n^2$.}
+In fact for a general element of $\U{2}$ we can decompose it into pieces that look much more familiar.
+\begin{example}
+    Let $A$ be an arbitrary element of $\U{2}$.
+    Then the following decomposition holds for $\alpha, \beta, \gamma, \delta \in \R$.
+    \begin{equation}
+        A = \e^{\iu\alpha}\mqty[\dmat[0]{\e^{-\iu \beta}, \e^{\iu \beta}}]\mqty[\cos\gamma & -\sin\gamma \\ \sin\gamma & \phantom{+}\cos\gamma]\mqty[\dmat[0]{\e^{-\iu \delta}, \e^{\iu \delta}}]
+    \end{equation}
+    As we can see the middle matrix is simply a 2D rotation matrix, and the other two are of a simple diagonal form.
+    Lastly we have the global phase $\e^{\iu \alpha}$.
+\end{example}
+
+This is a particularly important example as the idea of decomposing unitary matrices into simpler pieces is something we will need heavily in circuit compilation tasks.
+
+\subsection{Quantum Gates}
+A quantum gate is simply any unitary.
+In this document we will mainly discuss quantum gates acting on 1 to 3 qubits since that is the range most quantum algorithms make use.
+Most physical quantum computers today can perform single and double qubit gates.
+\begin{table}[ht]
+    \centering
+    % \begin{noindent}
+    \begin{tabular}{cccc}
+        Name           & Notation & Circuit Diagram                                                                                 & Matrix                                                 \\ \toprule
+        Pauli X        & $X$      & \begin{tikzcd} \qw & \gate{X} & \qw \end{tikzcd}                                                & $\smqty[0 & 1 \\ 1 & 0]$                               \\
+        Pauli Z        & $Z$      & \begin{tikzcd} \qw & \gate{Z} & \qw \end{tikzcd}                                                & $\smqty[1 & \phantom{-}0 \\ 0 & -1]$                   \\
+        Hadamard       & $H$      & \begin{tikzcd} \qw & \gate{H} & \qw \end{tikzcd}                                                & $\frac{1}{\sqrt{2}}\smqty[1 & \phantom{-}1 \\ 1 & -1]$ \\
+        Controlled Not & \CNOT    & \begin{tikzcd} \qw & \ctrl{1} & \qw \\ \qw & \targ{} & \qw \end{tikzcd}                         & $\smqty[1 & & & \\ & 1 & & \\ & & 0 & 1 \\ & & 1 & 0]$ \\
+        Toffoli        & \CCNOT   & \begin{tikzcd} \qw & \ctrl{1} & \qw \\ \qw & \ctrl{1} & \qw \\ \qw & \targ{} & \qw \end{tikzcd} & $\smqty[1 & & & & & & & \\ & 1 & & & & & & \\ & & 1 & & & & & \\ & & & 1 & & & & \\ & & & & 1 & & & \\ & & & & & 1 & & \\ & & & & & & 0 & 1 \\ & & & & & & 1 & 0]$
+    \end{tabular}
+    % \end{noindent}
+    \caption{Common Quantum Gates}\label{tab:commongates}
+\end{table}
+
+
+\begin{example}
+    As we will later see, it is often important to be able to move qubits around on a physical chip.
+    To do this we cannot physically move them, but rather apply some sort of combination of gates enact the swap.
+    Thus we are looking for a unitary operation $\SWAP: \C^2\otimes \C^2 \to \C^2\otimes \C^2$ that acts as $\SWAP\qty[\ket{\psi}\otimes\ket{\phi}] = \ket{\phi}\otimes\ket{\psi}$.
+    This is can be done using \CNOT{} gates and is shown diagrammatically.
+    \begin{equation}\label{eq:cnotswap}
+        \begin{quantikz}
+            & \ctrl{1} & \targ{}   & \ctrl{1} & \midstick[2,brackets=none]{$\eqdef$} \qw & \swap{1} & \midstick[2,brackets=none]{$\equiv$} \qw & \gate[swap]{} & \qw \\
+            & \targ{}  & \ctrl{-1} & \targ{}  & \qw                               & \targX{} & \qw                               &               & \qw
+        \end{quantikz}
+    \end{equation}
+    Where the first equality shows us how to perform the swap with 3 \CNOT{} gates, and the last equality is an equivalence of notation.
+
+    We can also show this using more mathematical notation if we understand the \CNOT{} map to act as $\CNOT\qty[\ket{x}\otimes\ket{y}] = \ket{x}\ket{x\oplus y}$ where $x, y \in \F$ and $\oplus$ is binary addition.
+    With this we can explicitly compute the action of this circuit.
+    Here we use the notation $\CNOT^a_b$ to mean a $\CNOT{}$ gate acting from qubit $a$ (the control qubit) to qubit $b$ (the target qubit).
+    Then the 3 \CNOT{} gates in~\cref{eq:cnotswap} act under the following manipulations.
+    \begin{align*}
+        \ket{x}\otimes\ket{y} & \xrightarrow{\CNOT^1_2} \ket{x}\otimes\ket{x\oplus y}                                                     \\
+                              & \xrightarrow{\CNOT^2_1} \ket{x\oplus (x\oplus y)}\otimes \ket{x\oplus y}  = \ket{y}\otimes\ket{x\oplus y} \\
+                              & \xrightarrow{\CNOT^1_2} \ket{y}\otimes\ket{(x\oplus y)\oplus y} = \ket{y}\otimes \ket{x}.
+    \end{align*}
+    Thus exactly as desired.
+\end{example}
 
 \subsection{Quantum Circuits}
+
+We are now ready to start putting these pieces together to build larger structures.
+Since it is common that a quantum computer can perform a multitude of gates, we collect these together to form a \textbf{quantum gate set}.
+These are the gates that we will be able to natively perform on our hardware.
+\begin{definition}
+    A \emph{quantum gate set} is a (typically finite) subset $G \subseteq \U{2^n}$. An element of $G$ is called a quantum gate.
+\end{definition}
+From these gates, we can construct a \textbf{quantum circuit} by applying a sequence of elements from the gate set.
+\begin{definition}
+    Let $G$ be a quantum gate set, and let \gls{kleene} denote\footnote{This operation is known as the Kleene star.} the set of finite length words over $G$.
+    A \emph{quantum circuit} is an element of $G^*$.
+\end{definition}
+Thus if our gate set $G = \qty{a, b, c}$, then some example circuits may be $aacba$, $cccbbb$, $cbbbab$, $ab$.
+ugh
 
 
 \section{Quantum Circuits}
@@ -94,17 +180,17 @@ Hence in theoretical developments of quantum circuits we
 \section{Formalizing}
 
 This formalization is inspired by~\cite{formalcircuit}.
-The first important object to define is that of a \textbf{quantum gate set}.
-These are the gates that we will be able to natively perform on our hardware.
-\begin{definition}
-    A \emph{quantum gate set} is a (typically finite) subset $G\subseteq \gls{un}$. An element of $G$ is called a quantum gate.
-\end{definition}
-From these gates, we can construct a \textbf{quantum circuit} by applying a sequence of elements from the gate set.
-\begin{definition}
-    Let $G$ be a quantum gate set, and let $G^*$ denote\footnote{This operation is known as the Kleene star.} the set of words over $G$.
-    A \emph{quantum circuit} is an element of $G^*$.
-\end{definition}
-Thus if our gate set $G = \qty{a, b, c}$, then some example circuits may be $aacba$, $cccbbb$, $cbbcbab$.
+% The first important object to define is that of a \textbf{quantum gate set}.
+% These are the gates that we will be able to natively perform on our hardware.
+% \begin{definition}
+%     A \emph{quantum gate set} is a (typically finite) subset $G\subseteq \U{2^n}$. An element of $G$ is called a quantum gate.
+% \end{definition}
+% From these gates, we can construct a \textbf{quantum circuit} by applying a sequence of elements from the gate set.
+% \begin{definition}
+%     Let $G$ be a quantum gate set, and let $G^*$ denote\footnote{This operation is known as the Kleene star.} the set of words over $G$.
+%     A \emph{quantum circuit} is an element of $G^*$.
+% \end{definition}
+% Thus if our gate set $G = \qty{a, b, c}$, then some example circuits may be $aacba$, $cccbbb$, $cbbcbab$.
 
 Something to note here is that in this abstraction, all of our quantum gates are assumed to act on all qubits.
 Hence if we have hardware with 2 qubits, and we can perform a Pauli $X$ gate on either qubit, then our gate is not simply $\qty{X}$, but rather $\qty{\1\otimes \1, \1\otimes X, X\otimes \1, X\otimes X}$.\footnote{We don't always think of the identity gate $\1$ as a gate that needs to be included, but doing nothing to a qubit is no easy task, so it's important to remember to treat it just like any other gate and understand it's error rates as well.}

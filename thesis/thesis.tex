@@ -32,8 +32,8 @@
 \usetikzlibrary{arrows,shadows,positioning,fit}
 \usetikzlibrary{quantikz}
 
-\usepackage{glossaries}
-\newglossary{symbols}{sym}{sbl}{List of Symbols}
+\usepackage[style=super]{glossaries}
+\newglossary*{symbols}{List of Symbols}
 \makeglossary
 
 \usepackage{attrib}
@@ -70,7 +70,7 @@
 \cleardoublepage\include{aux/acknowledgments}
 \cleardoublepage\include{aux/contents}
 % ******************************************************
-% Mainmatter
+% Main matter
 % ******************************************************
 \cleardoublepage
 \pagestyle{scrheadings}
@@ -89,7 +89,7 @@
 \include{chapters/chapter02}
 \include{chapters/chapter03}
 % ******************************************************
-% Backmatter
+% Back matter
 % ******************************************************
 \appendix
 %\renewcommand{\thechapter}{\alph{chapter}}
@@ -102,4 +102,5 @@
 \cleardoublepage\include{aux/bibliography}
 \cleardoublepage\include{aux/declarations}
 \cleardoublepage\include{aux/colophon}
+
 \end{document}
