@@ -6,12 +6,10 @@ sub run_makeglossaries {
     pushd $path; # ... cd-ing into folder first, then running makeglossaries ...
 
     if ( $silent ) {
-        system "makeglossaries -q '$base_name'"; #unix
-        # system "makeglossaries", "-q", "$base_name"; #windows
+        system "makeglossaries -q '$base_name'";
     }
     else {
-        system "makeglossaries '$base_name'"; #unix
-        # system "makeglossaries", "$base_name"; #windows
+        system "makeglossaries '$base_name'";
     };
 
     popd; # ... and cd-ing back again
