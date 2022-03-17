@@ -4,6 +4,50 @@
 
 In this chapter we will give a brief overview of the necessary ideas one needs in order to understand the qubit mapping problem.
 
+\section{Quantum Chips}
+
+\begin{definition}
+    A \emph{quantum chip's topology} is a graph $G = (V, E)$ with the vertices representing qubits, and edges representing connections between qubits where quantum gates of the correct arity can be applied.
+\end{definition}
+
+As an example take the the topology of IBM's \texttt{ibmq\_jakarta} shown in~\ref{fig:ibm-jakarta}.
+``3'' being connected to ``1'' means that we can apply a 2-qubit unitary targeting both of those qubits, however the hardware does not support native 2-qubit gates between qubits ``2'' and ``6''.
+\begin{figure}[ht]
+    \centering
+    \begin{tikzpicture}
+        \tikzset{
+            node/.style={
+                    very thick,
+                    circle,
+                    fill=blue!20,
+                    draw,
+                    minimum size=.8cm,
+                }
+        }
+        \node[node] (0) {$0$};
+        \node[node] (1) [right = .8cm of 0] {$1$};
+        \node[node] (2) [right = .8cm of 1] {$2$};
+        \node[node] (3) [below = .8cm of 1] {$3$};
+        \node[node] (5) [below = .8cm of 3] {$5$};
+        \node[node] (4) [left  = .8cm of 5] {$4$};
+        \node[node] (6) [right = .8cm of 5] {$6$};
+
+        \path[draw, very thick]
+        (0) edge node {} (1)
+        (1) edge node {} (2)
+        (1) edge node {} (3)
+        (3) edge node {} (5)
+        (5) edge node {} (4)
+        (5) edge node {} (6);
+    \end{tikzpicture}
+    \caption{IBMQ Jakarta Architecture}\label{fig:ibm-jakarta}
+\end{figure}
+
+We can now define the main problem of quantum circuit compilation: that of the qubit mapping problem.\footnote{This sometimes also goes by the name of the qubit routing problem, or qubit scheduling problem although sometimes these mean slightly different things.}
+If we have both a quantum circuit $C\in G^*$, and a quantum computer with network topology $G$, can the computer perform our circuit?
+In order to address this question we must first talk about universal gate sets.
+
+% In \cite{optimalSyn}
 \section{T1}
 \section{T2}
 \section{CLOPS}
