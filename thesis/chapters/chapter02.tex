@@ -204,7 +204,7 @@ In~\cref{tab:gates2circuit} we see what each one of these circuits are under the
 We now have the machinery for circuits, and one of the important questions we need to ask is \emph{when are two circuits the same?}
 Surely we can compare the circuits as strings in $G^*$, but if $G = \qty{\1, X}$, it will not tell us that $C = \1$ and $C' = XX$ are the same despite the same physical process happening.
 To this end we wish to understand how the combinations of gates come together to form the entire process.
-Following~\cite{formalcircuit} we define a map $\dbrackets{-}: G^* \to \U{2^n}$ which takes a quantum circuit, or sequence of gates, and multiplies them together to obtain a single unitary operator: $\dbrackets{g_1g_2\cdots g_m} = g_1\cdot g_2 \cdots g_m$.\footnote{Notice here on the left we have string concatenation, and on the right matrix multiplication.}
+Following~\cite{formalcircuit} we define a map $\dbrackets{-}: G^* \to \U{2^n}$ which takes a quantum circuit, or sequence of gates, and multiplies them together to obtain a single unitary operator: $\dbrackets{g_1g_2\cdots g_m} = g_m\cdot g_{m-1} \cdots g_1$.\footnote{Notice here on the left we have string concatenation, and on the right matrix multiplication. Also note the fact that when doing the multiplication we reverse the order. This is an artifact of the way we draw quantum circuits from left to write, but apply gates mathematically right to left.}
 Then we can say two circuits $C$ and $C'$ are effectively the same if $\dbrackets{C} = \dbrackets{C'}$.
 
 This formalism also allows us to frame the following important question about unitary synthesis.
