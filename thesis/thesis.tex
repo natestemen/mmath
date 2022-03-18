@@ -38,6 +38,13 @@
 
 \usepackage{attrib}
 \usepackage{cleveref}
+\usepackage{enumitem}
+
+\newlist{requirements}{enumerate}{10}
+\setlist[requirements]{label*=\arabic*}
+\crefname{requirementsi}{requirements}{requirements}
+\Crefname{requirementsi}{Requirements}{Requirements}
+
 % ******************************************************
 % Bibliographies
 % ******************************************************

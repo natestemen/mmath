@@ -102,12 +102,21 @@ In fact for a general element of $\U{2}$ we can decompose it into pieces that lo
 \end{example}
 
 This is a particularly important example as the idea of decomposing unitary matrices into simpler pieces is something we will need heavily in circuit compilation tasks.
+This decomposition also shows how attached to each unitary there is a phase ($\e^{\iu\alpha}$ in the above case), which in quantum computation is often irrelevant.
+For that reason we also often work in the following group.
+\begin{definition}
+    If $A \in \U{n}$ be a unitary matrix that has the further property that
+    \begin{equation}
+        \det A = 1
+    \end{equation}
+    then $A$ is called a \emph{special unitary matrix} and we denote the collection of these matrices by $\gls{sun}$.
+\end{definition}
 
 \subsection{Quantum Gates}
 A quantum gate is simply any unitary.
 In this document we will mainly discuss quantum gates acting on 1 to 3 qubits since that is the range most quantum algorithms make use.
 Most physical quantum computers today can perform single and double qubit gates.
-\begin{table}[ht]
+\begin{table}[ht] % TODO make skinnier with text flow around?
     \centering
     % \begin{noindent}
     \begin{tabular}{cccc}
@@ -212,7 +221,23 @@ This formalism also allows us to frame the following important question about un
     Given a quantum gate set $G$, and unitary operator $U\in\U{2^n}$, does there exist a circuit $C\in G^*$, such that $\dbrackets{C} = U$?
 \end{question}
 If the answer is yes, we say a gate set $G$ \textbf{synthesizes} $U$.
-Further, if the answer to~\ref{qu:synthesis} is positive, there is often a follow on question.
+This question is answered, at least in part through the Solovay-Kitaev theorem first published in~\cite{bigkitaev} with further proofs/elucidations in~\cite{nielsenchuang,solovay-kitaev,kitaev-book}.
+The theorem, stated in our terminology follows.
+\begin{theorem}[Solovay-Kitaev]\label{thm:solovaykitaev}
+    Let $G$ be a quantum gate set such that
+    \begin{itemize}
+        \item $g\in\SU{2^n}$ for all $g\in G$,
+        \item $g^\dagger \in G$ for all $g\in G$, and
+        \item the free group $\langle G \rangle$ is dense in $\SU{2^n}$.
+    \end{itemize}
+    Take $\varepsilon > 0$.
+    Then, there is a constant $c > 3$, such that for any $U\in\SU{2^n}$, there exists a circuit $C\in G^*$ of length $\order{\log^c\qty(\frac{1}{\varepsilon})}$ that approximates $U$: that is $\norm{\dbrackets{C} - U} < \varepsilon$. % TODO: a lot of undefined stuff here \norm, \order (assumed, but not stated), free group
+\end{theorem}
+Not only does this theoretical result provide some insight into~\ref{qu:synthesis}, but it's constructive and hence provides an algorithm\footnote{This result sometimes goes under the name ``The Solovay-Kitaev Algorithm''.} to approximate arbitrary elements of $\SU{2^n}$ using gates from $\SU{2^m}$ for any $m \in \gls{intsn}$.
+This result was an important and motivating because it showed that one only need a finite number of gates to perform any unitary.
+
+With at least a partial answer to Question~\ref{qu:synthesis} we can begin to refine further questions.
+If the answer to~\ref{qu:synthesis} is positive, we can then ask the following.
 \begin{question}\label{qu:optimalsynthesis}
     If $G$ synthesizes $U$, and if $f: G^* \to \R$ is a cost function, can we find
     \begin{equation*}
@@ -227,16 +252,20 @@ Some examples of common cost functions are given below, and multiple can be used
 \end{itemize}
 
 \subsection{Universal Gate Sets}
-In order to harness the full power of a quantum computer, we hope it to be able
+
+We slightly danced around the idea of universality in~\cref{thm:solovaykitaev}, but we will make it clear now.
+In order to harness the full power of a quantum computer, we hope it to be able to perform arbitrary unitary operations.
 \begin{definition}
-    A gate set $G$ on $n$ qubits is called \emph{universal} if for all $U\in\U{2^n}$ there exists a circuit $C\in G^*$ such that $\mult(C) = U$.
+    A gate set $G$ on $n$ qubits is called \emph{universal} if for all $U\in\U{2^n}$ there exists a circuit $C\in G^*$ such that $\dbrackets{C} = U$.
 \end{definition}
+If our gate set is not universal, then we can often find ourselves in a situation where it is more efficient to simulate a given quantum algorithm than to actually run it.
+\Eg{} circuits composed of gates from $\qty{\CNOT, H, S}$ are known to be efficiently simulable~\cite{gottesman-knill} despite not limiting factors typically thought to make quantum computation more powerful such as entanglement.
 
 The question of which gate sets are universal for quantum computation is important both for our theoretical understanding of quantum computation, but also for building physical devices.
 Examples that have been shown to be universal are
 \begin{itemize}
     \item \CNOT{} plus $\U{2}$ as shown in~\cite{universal-cnot-u2}
     \item \CNOT{}, Hadamard, and the $\frac{\pi}{8}$-gate\footnote{The $\frac{\pi}{8}$-gate is also sometimes called $T$ and has matrix representation $\smqty[1 & 0 \\ 0 & \e^{\iu\pi/4}]$.} as shown in~\cite{universal-cnot-had-p8}
-    \item \CCNOT{} (Toffoli), Hadamard, and the $\frac{\pi}{4}$-gate\footnote{The $\frac{\pi}{4}$-gate is also sometimes called $S$ and has matrix representation $\smqty[1 & 0 \\ 0 & \e^{\iu\pi/2}]$.} as shown in~\cite{universal-ccnot-had-p4}
+    \item \CCNOT{} (Toffoli), Hadamard, and the $\frac{\pi}{4}$-gate\footnote{The $\frac{\pi}{4}$-gate is also sometimes called $S$ and has matrix representation $\smqty[1 & 0 \\ 0 & \e^{\iu\pi/2}]$.} as shown in~\cite{bigkitaev}
     \item \CNOT{} plus any single qubit gate that does not preserve the computational basis and is not the Hadamard gate as shown in~\cite{universal-cnot-basis-change}
 \end{itemize}
