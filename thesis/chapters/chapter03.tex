@@ -61,69 +61,7 @@ If we have both a quantum circuit $C\in G^*$, and a quantum computer with networ
 In order to address this question we must first talk about universal gate sets.
 
 % In \cite{optimalSyn}
-\section{T1}
-\section{T2}
-\section{CLOPS}
 
+\subsection{Hardware Specifications}
 
-\section{Quantum Compilers}
-We can now return to the issue of compilers.
-It should now be clear that the level of abstraction we work at when designing quantum algorithms is much higher than the capabilities of our current, and likely future hardware.
-Hence quantum compilers are needed for two steps.
-\begin{figure}[h]
-    \centering
-    \tikzset{
-        frame/.style={
-                draw,
-                text width=6em,
-                text centered,
-                minimum height=4em,
-                drop shadow,
-                fill=orange!40,
-                rounded corners,
-            },
-    }
-    \begin{tikzpicture}[font=\sffamily, very thick, node distance=4cm]
-        \node[align=center] (qa) {Quantum \\ Algorithm};
-        % \node[frame, right of=qa] (compiler) {Compiler};
-        \node[frame, right of=qa] (ir) {};%Intermediate \\ Representation};
-        \node[align=center, above right=.5cm and 1cm of ir] (ha) {Hardware A};
-        \node[align=center, below=.5cm of ha] (hb) {Hardware B};
-        \node[align=center, below=.1cm of hb] (hdots) {\vdots};
-
-        % \node[align=center, right of=compiler] (ml) {Hardware A};
-
-        \draw[-stealth] (qa) -- (ir);
-        \draw[-stealth] (ir) -- (ha);
-        \draw[-stealth] (ir) -- (hb);
-        % \draw[-stealth] (ir) -- (hdots);
-
-        \node[very thick, draw=orange!20, fit=(ir), inner sep=3mm, label=above:{Quantum Compiler}, rounded corners](qcompiler) {};
-    \end{tikzpicture}
-    \caption{Action of Quantum Compiler}\label{fig:quantumcompiler}
-\end{figure}
-
-\dots Thus when compiling circuits, we need to minimize the number of \SWAP{} gates we must add since we saw in~\cref{eq:cnotswap} that each \SWAP{} takes 3 \CNOT{} gates.
-
-\paragraph{Compiling the Toffoli Gate}
-Since most hardware are not capable of 3-qubit operations we must decompose the Toffoli, or \CCNOT{} gate into something more manageable.
-This is typically done using \CNOT{}'s, Hadamard's ($H$), and $\pi/8$ ($T$) gates~\cite{nielsenchuang}.
-\begin{equation}
-    \begin{quantikz}[column sep=.25cm]
-        & \ctrl{1} & \midstick[3,brackets=none]{$=$} \qw & \qw      & \qw      & \qw              & \ctrl{2} & \qw      & \qw      & \qw              & \ctrl{2} & \qw      & \ctrl{1} & \gate{T}         & \ctrl{1} & \qw \\
-        & \ctrl{1} & \qw                                 & \qw      & \ctrl{1} & \qw              & \qw      & \qw      & \ctrl{1} & \qw              & \qw      & \gate{T} & \targ{}  & \gate{T^\dagger} & \targ{}  & \qw \\
-        & \targ{}  & \qw                                 & \gate{H} & \targ{}  & \gate{T^\dagger} & \targ{}  & \gate{T} & \targ{}  & \gate{T^\dagger} & \targ{}  & \gate{T} & \gate{H} & \qw              & \qw      & \qw
-    \end{quantikz}
-\end{equation}
-This is an important decomposition as the \CCNOT{} gate appears in the modular exponentiation problem which is a core part of Shor's algorithm~\cite{shor-encryption}.
-Hence if there are smaller decompositions than shown above that would be ideal as \emph{one} \CCNOT{} gate becomes 14!
-\citeauthor{universal-cnot-u2} show a more compact decomposition of \CCNOT{} using only 3 \CNOT{} gates if the phase of one of the qubits is allowed to change~\cite{universal-cnot-u2}.
-Let $G = R_Y(\frac{\pi}{4})$ in the following circuit. % following https://arxiv.org/pdf/quant-ph/9705009.pdf rather than original paper
-\begin{equation}
-    \begin{quantikz}%[column sep=.25cm]
-        & \ctrl{1} & \midstick[3,brackets=none]{$\approx$} \qw & \qw                        & \qw      & \qw                        & \ctrl{2} & \qw                       & \qw      & \qw                       & \qw \\
-        & \ctrl{1} & \qw                                       & \qw                        & \ctrl{1} & \qw                        & \qw      & \qw                       & \ctrl{1} & \qw                       & \qw \\
-        & \targ{}  & \qw                                       & \gate{G^\dagger} & \targ{}  & \gate{G^\dagger} & \targ{}  & \gate{G} & \targ{}  & \gate{G} & \qw
-    \end{quantikz}
-\end{equation}
-However the question ended in~\citeyear{toff3cnot} when it was shown that a true equality preserving decomposition of the \CCNOT{} gate requires a minimum of 6 \CNOT{} gates~\cite{toff3cnot}.\footnote{This result shows that a minimum of 6 \CNOT{} gates must be used, \textbf{if} they are being used. Other decompositions not using \CNOT{} gates might still be more compact.}
+\section{Errors}
