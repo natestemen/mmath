@@ -4,6 +4,19 @@
 
 In this chapter we will give a brief overview of the necessary ideas one needs in order to understand the qubit mapping problem.
 
+\section{Requirements}
+As we saw in~\cref{sec:history} the first realization of a qubit happened in~\citeyear{firstqubit}.
+A year later theoretical physicist David DiVincenzo published~\cite{divincenzo} where he outlined 5 requirements to make an effective quantum information processing device.
+\begin{requirements}
+    \item A scalable physical system with well characterized qubits.\label{req:scalable}
+    \item The ability to initialize the state of the qubits to a simple fiducial state, such as $\ket{0}^{\otimes n}$.\label{req:initialize}
+    \item Long, relevant decoherence times, much longer than the gate operation time.\label{req:Ttimes}
+    \item A universal set of quantum gates.\label{req:universal}
+    \item A qubit specific measurement capability.\label{req:measure}
+\end{requirements}
+While not an entirely revolutionary list at the time of writing, having concrete goals and checkpoints for the community to rally around/focus on meant maintainable, and trackable progress.
+Again at the time of writing,~\cref{req:initialize,req:universal,req:measure} have mostly been taken care of and~\cref{req:Ttimes,req:scalable} are the areas we need the most improvement.
+
 \section{Quantum Chips}
 
 \begin{definition}
