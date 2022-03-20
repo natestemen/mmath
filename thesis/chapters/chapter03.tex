@@ -64,4 +64,33 @@ In order to address this question we must first talk about universal gate sets.
 
 \subsection{Hardware Specifications}
 
+\subsubsection{Relaxation and Dephasing Times}
+
+As qubits are two-state systems, they are often implemented experimentally using some physical system (\eg{} an atom) that has a ground state, and an excited state.
+Excited states often have a tendency to ``decay'' into ground states, especially so when interacting with the environment.
+Hence we define the \textbf{relaxation time}\footnote{This value also goes by the following names: coherence time, amplitude damping, longitudinal coherence time, spin lattice time, and spontaneous emission time.} $T_1$ as the lifetime for the state $\ket{1}$ decaying into $\ket{0}$.
+This value can be experimentally found using the following methodology.
+\begin{enumerate}
+    \item Prepare the state $\ket{0}$
+    \item Apply a Pauli $X$ gate to obtain $\ket{1}$
+    \item Wait some time $t$ (during this time the qubit may decay into $\ket{0}$)
+    \item Measure the qubit
+\end{enumerate}
+Each time we measure the qubit in the ground state we record the amount of time $t$ we waited.
+This process is then modelled with an exponential decay of the form $\e^{-t/T_1}$.
+
+The second important factor we need to understand is the \textbf{dephasing time}\footnote{Again, this value also goes by the following names: phase coherence time, phase damping, spin-spin relaxation time, transverse coherence time, and elastic scattering time.}
+This time, instead of watching for the the bit flip from $\ket{1}$ to $\ket{0}$ we will watch for a phase flip from $\ket{+}$ to $\ket{-}$ via the following procedure.
+\begin{enumerate}
+    \item Prepare the state $\ket{0}$
+    \item Apply a Hadamard $H$ gate to obtain $\ket{+}$
+    \item Wait some time $t$ (during this time a phase might appear on either qubit)
+    \item Apply another Hadamard $H$
+    \item Measure the qubit
+\end{enumerate}
+Again, this experiment models an exponential decay with lifetime which we denote $T_2$.
+This decoherence time is a measure of how quickly a superposition ($\ket{+}$) will decay into a classical mixture.
+Since $T_1$ is a measure of how robust the qubit is against bit flips, and $T_2$ is a measure of how robust the qubit is against becoming probabilistic, these two quantities are very important track the progress of quantum computers.
+
+
 \section{Errors}
