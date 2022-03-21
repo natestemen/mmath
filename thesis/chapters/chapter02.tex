@@ -166,8 +166,8 @@ These are the gates that we will be able to natively perform on our hardware.
     A \emph{quantum gate set} is a (typically finite) subset $G \subseteq \U{2^n}$. An element of $G$ is called a quantum gate.
 \end{definition}
 From these gates, we can construct a \textbf{quantum circuit} by applying a sequence of elements from the gate set.
-\begin{definition}
-    Let $G$ be a quantum gate set, and let \gls{kleene} denote\footnote{This $^*$ operation is known as the Kleene star.} the set of finite length words over $G$.
+\begin{definition}\label{def:circuit}
+    Let $G$ be a quantum gate set, and let \gls{kleene} denote\footnote{This $^*$ operation is known as the Kleene star.} the set of finite length words over $G$ (and the empty word which we take to mean identity).
     A \emph{quantum circuit} is an element of $G^*$.
 \end{definition}
 Thus if our gate set $G = \qty{a, b, c}$, then some example circuits may be $aacba$, $cccbbb$, $cbbbab$, and $ab$.
@@ -228,7 +228,7 @@ The theorem, stated in our terminology follows.
     \begin{itemize}
         \item $g\in\SU{2^n}$ for all $g\in G$,
         \item $g^\dagger \in G$ for all $g\in G$, and
-        \item the free group $\langle G \rangle$ is dense in $\SU{2^n}$.
+        \item the free group $\free{G}$ is dense in $\SU{2^n}$.
     \end{itemize}
     Take $\varepsilon > 0$.
     Then, there is a constant $c > 3$, such that for any $U\in\SU{2^n}$, there exists a circuit $C\in G^*$ of length $\order{\log^c\qty(\frac{1}{\varepsilon})}$ that approximates $U$: that is $\norm{\dbrackets{C} - U} < \varepsilon$. % TODO: a lot of undefined stuff here \norm, \order (assumed, but not stated), free group
@@ -269,3 +269,42 @@ Examples that have been shown to be universal are
     \item \CCNOT{} (Toffoli), Hadamard, and the $\frac{\pi}{4}$-gate\footnote{The $\frac{\pi}{4}$-gate is also sometimes called $S$ and has matrix representation $\smqty[1 & 0 \\ 0 & \e^{\iu\pi/2}]$.} as shown in~\cite{bigkitaev}
     \item \CNOT{} plus any single qubit gate that does not preserve the computational basis and is not the Hadamard gate as shown in~\cite{universal-cnot-basis-change}
 \end{itemize}
+
+\section{Mathematics} % TODO cover some math for solovay-kitaev
+
+Before moving on there are a few more bits of mathematics we need to cover.
+All of our discussions in this section will assume our vector space $V$ is some complex space $\C^n$.
+
+\subsection{Operator Norms}
+
+\paragraph{Vector induced norms:}
+Suppose our vector space $V$ has an existing norm defined on it $\norm{\cdot}: V \to \R$.
+This induces a norm on the space of operators \gls{endV} as
+\begin{equation}
+    \norm{A}_\text{vec} \defeq \max_{v \in V}\qty{\norm{A v}: \norm{v} = 1}.
+\end{equation}
+
+\paragraph{Trace norm:}
+\begin{equation}
+    \norm{A}_\text{tr} \defeq \tr(\sqrt{A^\dagger A})
+\end{equation}
+
+\paragraph{Frobenius norm:}
+\begin{equation}
+    \norm{A}_\text{F} \defeq \sqrt{\tr(A^\dagger A)} = \qty(\sum_{i, j \in [n]}\abs{a_{ij}}^2)^{1/2} = \norm{\vectorize(A)}
+\end{equation}
+
+
+\subsection{Free Group}
+We will not attempt a rigorous definition of the free group and instead opt for something more informal since we will not need to work with the details.
+Let $S$ be a finite set, and denote by $S^{-1}$ the formal inverse of elements in $S$.
+Then the free group $\free{S} \defeq (S\cup S^{-1})^*$ where the asterisk indicates the Kleene star.
+
+As an example take $S = \qty{f, g, h}$, and hence $S^{-1} = \qty{f^{-1}, g^{-1}, h^{-1}}$.
+Then the free group $\free{S}$ contains elements such as $fg^{-1}hhhh^{-1}$, $fghhhf$, and $h^{-1}gh^{-1}f^{-1}ghgg$.
+Note that this may appear very similar to~\cref{def:circuit}, however we did not require our ``words'' to be over the inverses as we have here; only elements of the set itself.\footnote{This is done because in practice, being able to perform a quantum gate $U$, does not always imply we can easily perform it's inverse $U^\dagger$.} % TODO: cref not working properly with named stuff
+
+\subsection{Dense-ness}
+
+What does it mean for a gate set $G$ to be dense in $\SU{2^n}$?
+It means that for every $U \in \SU{2^n}$, and every $\varepsilon > 0$, we have a sequence of gates $C = g_1g_2\cdots g_m$ such that $\norm{\dbrackets{C} - U} < \varepsilon$.
