@@ -92,6 +92,31 @@ Again, this experiment models an exponential decay with lifetime which we denote
 This decoherence time is a measure of how quickly a superposition ($\ket{+}$) will decay into a classical mixture.
 Since $T_1$ is a measure of how robust the qubit is against bit flips, and $T_2$ is a measure of how robust the qubit is against becoming probabilistic, these two quantities are very important track the progress of quantum computers.
 
+\subsubsection{Gate Duration}
+
+As qubits are finnicky beasts that don't want to retain their quantum-ness, how quickly we can perform gates is a very important measure and one tracked across many quantum computers.
+This measure usually comes under the guise of \ac{CLOPS} first introduced in~\cite{clops}.
+
+\subsubsection{Quantum Volume}
+
+Now that we have seen how one might go about calibrating gates for a quantum computer, we must then ask: does individually calibrated gates imply a fully functional quantum computer?
+Researchers have found that despite isolating qubits to the best of their ability, when sending instructions to a qubit (\eg{} a gate), nearby qubits can ``hear'' such a message and be affected by it~\cite{crosstalk,crosstalk2}.\todo{Are there other types of errors that make quantum volume worthwhile?}
+With the introduction of errors that are not solely from a single qubit or gate, it makes sense to have a measure of how effective the quantum computer is as a whole.
+\citeauthor{qvolume} introduce the notion of \textbf{quantum volume} designed to give a single number to measure the effectiveness of \ac{NISQ}-era quantum computers~\cite{qvolume}.
+While understanding the full method to compute a quantum computer's quantum volume, the process consists of applying round of permutations $\pi$ of the qubits, followed by random elements of $\SU{4}$ as seen in~\cref{fig:qvolume}.
+
+\begin{figure}[ht]
+    \centering
+    \begin{quantikz}
+        & \gate[wires=4]{\pi}\gategroup[4,steps=2,style={dashed,rounded corners,fill=blue!20, inner xsep=2pt}, background]{Round 1} & \gate[wires=2]{\SU{4}} & \gate[wires=4]{\pi}\gategroup[4,steps=2,style={dashed,rounded corners,fill=blue!20, inner xsep=2pt}, background]{Round 2} & \gate[wires=2]{\SU{4}} & \ \ldots\ \qw & \gate[wires=4]{\pi}\gategroup[4,steps=2,style={dashed,rounded corners,fill=blue!20, inner xsep=2pt}, background]{Round $d$} & \gate[wires=2]{\SU{4}} & \qw \\
+        &                     &                        &                     &                        & \ \ldots\ \qw &                     &                        & \qw \\
+        &                     & \gate[wires=2]{\SU{4}} &                     & \gate[wires=2]{\SU{4}} & \ \ldots\ \qw &                     & \gate[wires=2]{\SU{4}} & \qw \\
+        &                     &                        &                     &                        & \ \ldots\ \qw &                     &                        & \qw
+    \end{quantikz}
+    \caption{Quantum Volume Protocol}\label{fig:qvolume}
+\end{figure}
+
+
 
 \section{Errors}
 
