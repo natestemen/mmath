@@ -31,4 +31,4 @@ EOI = Expression of Interest
 | -------------------------------------------------------------------------------------------------------------- | -------------- | ------- | ------ |
 | [Quantum Applications Engineer](https://bleximo-corp.breezy.hr/p/4f6f19d83611-quantum-applications-engineer)   | Bleximo        |         |        |
 | [Senior/Principal Software Engineer](https://jobs.lever.co/atomcomputing/ddbb99a9-73fb-4747-91bf-e9d22d16eee4) | Atom Computing |         |        |
-| [Member of Technical Staff](https://unitary.fund/jobs/mts.html)                                                | Unitary Fund   | X       |        |
+| [Member of Technical Staff](https://unitary.fund/jobs/mts.html)                                                | Unitary Fund   | X       | offer  |
