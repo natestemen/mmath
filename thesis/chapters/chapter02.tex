@@ -308,3 +308,13 @@ Note that this may appear very similar to~\cref{def:circuit}, however we did not
 
 What does it mean for a gate set $G$ to be dense in $\SU{2^n}$?
 It means that for every $U \in \SU{2^n}$, and every $\varepsilon > 0$, we have a sequence of gates $C = g_1g_2\cdots g_m$ such that $\norm{\dbrackets{C} - U} < \varepsilon$.
+
+\subsection{Fidelity}
+
+Suppose $\rho$ and $\sigma$ are two density operators.
+Their \textbf{fidelity} is a measure of how similar the two states are and is given by
+\begin{equation}
+    \Fid(\rho, \sigma) \defeq \norm{\sqrt{\rho}\sqrt{\sigma}}_\text{tr} = \tr(\sqrt{\sqrt{\sigma}\rho\sqrt{\sigma}}).
+\end{equation}
+We can see if $\rho = \sigma$, then their fidelity is equal to 1, and otherwise this value lies between 0 and 1.
+This notion can be expanded from quantum states to quantum gates by considering~\cite{fidelity}.
