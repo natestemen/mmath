@@ -317,4 +317,13 @@ Their \textbf{fidelity} is a measure of how similar the two states are and is gi
     \Fid(\rho, \sigma) \defeq \norm{\sqrt{\rho}\sqrt{\sigma}}_\text{tr} = \tr(\sqrt{\sqrt{\sigma}\rho\sqrt{\sigma}}).
 \end{equation}
 We can see if $\rho = \sigma$, then their fidelity is equal to 1, and otherwise this value lies between 0 and 1.
-This notion can be expanded from quantum states to quantum gates by considering~\cite{fidelity}.
+This notion can be expanded from quantum states to quantum gates to obtain a measure of how well one unitary approximates another~\cite{fidelity}.
+Since $\Fid(\rho, \sigma)$ is a measure of distance between states $\rho$ and $\sigma$, and we are interested in understanding the difference of a quantum circuit and a specified target unitary, then we can calculate $\Fid(U\rho U^\dagger, \mathcal{E}(\rho))$.\footnote{Here we are using $\mathcal{E}$ to denote some quantum circuit, and $\mathcal{E}(\rho)$ it's action on $\rho$.}\todo{maybe change this notation.}
+This is great, however to study a circuit more effectively, we'd like to ditch the associated state $\rho$ since we don't want to perform this analysis for every such $\rho$.
+We can then define the \textbf{average gate fidelity} of a unitary $U$ and quantum circuit $\mathcal{E}$ as
+\begin{equation}
+    \Fid_\text{gate}(U, \mathcal{E}) \defeq \int \Fid(U\rho U^\dagger, \mathcal{E}(\rho))\dd{\rho}
+\end{equation}
+where the integral $\int\dd{\rho}$ is taken over all density operators.\todo{is this even right?}
+
+
