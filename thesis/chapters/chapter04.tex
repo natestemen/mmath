@@ -69,4 +69,11 @@ However the question ended in~\citeyear{toff3cnot} when it was shown that a true
 
 \section{Methods}
 
+It's important to note there that quantum circuit compilers exist and in many of the references that follow the authors' proposed compilation methods are benchmarked against the most prevalent compiler Qiskit~\cite{qiskit}.
+
+\paragraph{QAOA:}
+Compilers have also been built to attack specific problems such as the \ac{QAOA}~\cite{qaoa} where particular gates can be swapped horizontally in circuit diagrams due to their commutative nature.
+Focusing in this particular problem, the authors in~\cite{qaoa-compiler} have been able to reduce the gate count by 23\% and circuit depth by 53\% on average.\todo{are there more instances of problem specific compilers?}
+In the future we might hope to build these problem specific compilers into a more general purpose one that can diagnose and understand when to use problem specific compilers on demand.
+
 \section{Quantum Stack}
