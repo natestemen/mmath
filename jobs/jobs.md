@@ -1,3 +1,9 @@
+# jobs
+
+| title                                                           | company      | status    |
+| --------------------------------------------------------------- | ------------ | --------- |
+| [Member of Technical Staff](https://unitary.fund/jobs/mts.html) | Unitary Fund | accepted! |
+
 # internships
 
 | title                                     | company           | status   |
@@ -22,9 +28,3 @@
 X = applied
 
 EOI = Expression of Interest
-
-# jobs
-
-| title                                                           | company      | status    |
-| --------------------------------------------------------------- | ------------ | --------- |
-| [Member of Technical Staff](https://unitary.fund/jobs/mts.html) | Unitary Fund | accepted! |
