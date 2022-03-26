@@ -1,4 +1,5 @@
 CmdLine {
+  -n1  # command terminated w space
   -n3  # (a)^b vs {(a)}^b
   -n46 # $math$ vs \( math \)
 }
