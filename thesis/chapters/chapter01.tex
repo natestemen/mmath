@@ -1,19 +1,23 @@
 %************************************************
-\chapter{Introduction}\label{ch:introduction}
+\chapter{Classical Compilers}\label{chap:compilers}
 %************************************************
+
+% \section{What is it?} % better organization I think... later
+% \section{Why is it?}
 
 \section{Compilers}
 In order to understand what quantum circuit compilation is all about, it is helpful to first know what compilation means, and where our classical notions of compilation come from.
-Merriam-Webster defines \textbf{compile} to mean % TODO how to cite this?
+To start at the very beginning, Merriam-Webster defines the word \textbf{compile} to mean~\cite{compiledef}
 \begin{quote}
     to compose out of materials from other documents.
 \end{quote}
-We can see this definition reflected in~\citetitle{dragonbook}\footnote{Colloquially known as ``The Dragon Book'' because of the cover, and likely the most famous book on (classical) compilers.}\graffito{
-    \centering
+We can see this definition reflected in~\citetitle{dragonbook}\footnote{Colloquially known as ``The Dragon Book'' because of the cover, and likely the most famous book on (classical) compilers. This is also where the logo of the LLVM project originates from which we will discuss in~\cref{sec:llvm}.}\graffito{
     \includegraphics[width=\marginparwidth]{img/dragonbook.png}
     \emph{The Dragon Book}
+    \includegraphics[width=\marginparwidth]{img/llvmlogo.png}
+    \emph{LLVM Logo}
 }~\cite{dragonbook} where the authors introduce compilers through the process of transforming software.
-\begin{quotation} % TODO technically the sentence doesn't start with Before, not sure how to formally quote it
+\begin{quotation}
     [B]efore a program can be run, it first must be translated into a form in which it can be executed by a computer.
 
     The software systems that do this translation are called \emph{compilers}.
@@ -62,6 +66,34 @@ Thankfully we will not need to understand all of these parts, and the majority o
     \item[clang:] This \emph{is} a compiler in the strictest sense. As input it takes C/C++ and provides executable versions of that code that an be run on hardware.
 \end{description}
 
+\subsection{Intermediate Representations}
+
+Suppose we have the following line in our code.
+\begin{center}
+    \verb|x_final = x_initial + velocity * time|
+\end{center}
+From this, one of the first steps the front end of a compiler might do is generate what's called a \textbf{syntax tree}.
+This is a representation of the line of code in a tree format as in~\cref{fig:syntaxtree}.
+While it may not be obvious why this is a helpful representation of the line of code, it \emph{is} indeed a representation that is used for further processing.
+In this context, what we see in~\cref{fig:syntaxtree} is known as an \ac{IR} because it is not the initial, nor final representation of the piece of code.
+While the compiler has the code in this state it can perform syntax and semantic analysis to ensure the code is well formed (syntactically), and meaningful (semantically).
+Optimizations may also be performed.
+\Eg{} if \verb|distance = velocity * time| has already been calculated, the subtree
+\begin{figure}[htbp]
+    \centering
+    \Tree [.* velocity time]
+    \caption{hi}
+\end{figure}
+can be replaced by simply \texttt{distance}.
+
+\begin{figure}[ht!]
+    \centering
+    \newcommand{\qleafhook}[1]{\texttt{#1}}
+    \newcommand{\qlabelhook}[1]{\texttt{#1}}
+    \Tree [.= x\_final [.+ x\_initial [.* velocity time ] ] ]
+    \caption{Syntax Tree}\label{fig:syntaxtree}
+\end{figure}
+
 \subsection{Computer Architecture}
 To understand why it is we need compilers in the first place, we need to understand how modern computers work.
 In a highly simplified model we can think of a computer as a \ac{CPU} connected to input and output devices (think keyboard and screen), and some sort of memory.
@@ -109,6 +141,6 @@ This operation is almost never the inverse of compiler because most languages al
 With these tools we can raise and lower our levels of abstraction as desired and further push the details of the ``metal'' or hardware implementation away.
 
 
-\section{LLVM}
+\section{LLVM}\label{sec:llvm}
 
 % \subsection{\acf{MLIR}}
