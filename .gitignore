@@ -1,6 +1,7 @@
 notes/*.pdf
 jobs/*.pdf
 thesis/*.pdf
+thesis/tikz/*.pdf
 *.aux
 *.acr
 *.fdb_latexmk

@@ -1,0 +1,32 @@
+\documentclass[tikz]{standalone}
+
+\usetikzlibrary{arrows,shadows,positioning,fit}
+
+\begin{document}
+
+\tikzset{
+    frame/.style={
+            draw,
+            text width=6em,
+            text centered,
+            minimum height=4em,
+            drop shadow,
+            fill=orange!40,
+            rounded corners,
+        },
+    line/.style={
+            draw, -latex',rounded corners=3mm,
+        }
+}
+\begin{tikzpicture}[font=\sffamily, thick, node distance=4cm]
+    \node[frame](input){Input Device(s)};
+    \node[frame, below=2cm](output){Output Device(s)};
+    \node[frame, below right=-.15cm and 1cm of input](cpu){CPU};
+    \node[frame, right of=cpu](memory){Memory};
+
+    \path[line] (input) -| (cpu);
+    \path[line] (cpu) |- (output);
+    \draw[stealth-stealth] (cpu) -- (memory);
+\end{tikzpicture}
+
+\end{document}

@@ -99,30 +99,7 @@ To understand why it is we need compilers in the first place, we need to underst
 In a highly simplified model we can think of a computer as a \ac{CPU} connected to input and output devices (think keyboard and screen), and some sort of memory.
 \begin{figure}[ht]
     \centering
-    \tikzset{
-        frame/.style={
-                draw,
-                text width=6em,
-                text centered,
-                minimum height=4em,
-                drop shadow,
-                fill=orange!40,
-                rounded corners,
-            },
-        line/.style={
-                draw, -latex',rounded corners=3mm,
-            }
-    }
-    \begin{tikzpicture}[font=\sffamily, thick, node distance=4cm]
-        \node[frame](input){Input Device(s)};
-        \node[frame, below=2cm](output){Output Device(s)};
-        \node[frame, below right=-.15cm and 1cm of input](cpu){CPU};
-        \node[frame, right of=cpu](memory){Memory};
-
-        \path[line] (input) -| (cpu);
-        \path[line] (cpu) |- (output);
-        \draw[stealth-stealth] (cpu) -- (memory);
-    \end{tikzpicture}
+    \includestandalone[width=0.8\textwidth]{tikz/arch}
     \caption{von Neumann Architecture scheme}\label{fig:comparch}
 \end{figure}
 
