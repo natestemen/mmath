@@ -1,9 +1,62 @@
 %************************************************
-\chapter{Classical Compilers}\label{chap:compilers}
+\chapter{All Things Classical}\label{chap:compilers}
 %************************************************
 
-% \section{What is it?} % better organization I think... later
-% \section{Why is it?}
+Okay, maybe not \emph{all} things classical, but some things\dots
+Okay, maybe just one or two really.
+
+In this chapter we will give a very brief overview of the components of classical computers that will be helpful to further discussions of quantum circuit compilation.
+A key component to quantum circuit compilation is the word ``compilation'' and its' origins (in computing) span back to the early 1950's when electronic digital computers were in their early stages.
+Understanding the historical development of compilation and its' tecniques will provide ideas and tools necessary in solving the new task of quantum circuit compilation.
+
+This chapter is meant to provide the reader with the basics of some computing terminology and ideas.
+It is by no means a complete introduction to compilers, nor computer architecture.
+
+\section{What can a computer do?}
+
+If you're reading this, I'm sure you can imagine something your computer is capable of.
+Maybe reading this document online, sending messages/email, browsing the internet, writing documents, etc.
+These are very high level operations our computer can perform, but under the hood much more primitive operations are taking place.
+It is these primitive operations that we wish to understand, and will have many similarities with modern-day quantum hardware.
+
+A simplified model of computer architecture, known as the von Neumann Architecture (\cref{fig:comparch}) shows what we now call a \ac{CPU} which is the workhorse of the computer.\footnote{At least in this \emph{very simplified} model.}
+
+\begin{figure}[h]
+    \centering
+    \includestandalone[width=0.8\textwidth]{tikz/arch}
+    \caption{von Neumann Architecture scheme}\label{fig:comparch}
+\end{figure}
+
+Since the \ac{CPU} is the computational piece of a computer, what can it do?
+Most modern \acp{CPU} are built on the \acp{ISA} which means that the \ac{CPU} has a finite set of operations or instructions that it can perform and everything we might wish to perform on a computer, must be built up from these primitive operations.
+Some examples of what these primitive operations might be are
+\begin{itemize}
+    \item put a value into memory,
+    \item add two values in memory together and store in a new location,
+    \item perform the bitwise negation on a value,
+    \item compute the square root of a value.
+\end{itemize}
+With a set of performable operations laid out, one can then use these primitives to build up more and more complex functionality that eventually implements the things we know and love (and hate) computers for.
+One thing worth mentioning here that is often glossed over in treatments of \acp{ISA} is that the instruction set must be computationally universal.\footnote{Or Turing-complete if you're computer science oriented.}
+Without going too much into the weeds, we should think of computationally universal (in the classical sense) as wielding the full power of a computer, rather than only being able to do a particular type of computation.\todo{I don't like this explanation.}
+Thankfully, this is relatively easy to do in the classical setting and there are even theoretical machines that use a \emph{single} operation to achieve universal computation.
+\Eg{} one can achieve universal classical computation with the following instruction which implements ``subtract, and branch if negative''.
+\begin{lstlisting}% TODO format this
+    Instruction subneg a, b, c
+    Memory[b] = Memory[b] - Memory[a]
+    if (Memory[b] < 0)
+        goto c
+\end{lstlisting}
+
+While this style of architecture is great, and has worked very well, it requires the programmer to code at a very low level since the operations a \ac{CPU} performs are themselves primitive.
+In order to work at a higher level of abstraction, computer scientists and programmers began to create new languages which were easier to read and write, yet could be translated into a form the brains of the computer could understand.
+This would improve productivity by allowing those writing code to work at a higher level of abstraction, and bury implementation details into the code which performed the translation into the machine's instruction set.
+The software responsible for translating these higher level ideas into a machines instruction set are known as \textbf{compilers}.
+
+
+% With the exception of the last item, these operations are generally considered to be simple, and the latter complex.
+% This has given rise to a distinction in \ac{CPU} architecture where we see \acp{CISC} and \acp{RISC}.
+% The goal of the former to implement more and more complex ``primitive'' operations, while the latter leaving more work to be performed by the compiler~\cite{dragonbook}.
 
 \section{Compilers}
 In order to understand what quantum circuit compilation is all about, it is helpful to first know what compilation means, and where our classical notions of compilation come from.
@@ -74,15 +127,16 @@ Suppose we have the following line in our code.
 \end{center}
 From this, one of the first steps the front end of a compiler might do is generate what's called a \textbf{syntax tree}.
 This is a representation of the line of code in a tree format as in~\cref{fig:syntaxtree}.
-While it may not be obvious why this is a helpful representation of the line of code, it \emph{is} indeed a representation that is used for further processing.
+% While it may not be obvious why this is a helpful representation, it \emph{is} indeed a representation that is used for further processing.
 In this context, what we see in~\cref{fig:syntaxtree} is known as an \ac{IR} because it is not the initial, nor final representation of the piece of code.
-While the compiler has the code in this state it can perform syntax and semantic analysis to ensure the code is well formed (syntactically), and meaningful (semantically).
+While the compiler works with the code in this state it can perform syntactic and semantic analysis to ensure the code is well formed (syntactically), and meaningful (semantically).
+
 Optimizations may also be performed.
-\Eg{} if \verb|distance = velocity * time| has already been calculated, the subtree
-\begin{figure}[htbp]
+\Eg{} if \verb|distance = velocity * time| has already been calculated previously in the code, the subtree
+\begin{figure}[ht!]
     \centering
-    \Tree [.* velocity time]
-    \caption{hi}
+    \Tree [.* velocity time ]
+    \caption*{}
 \end{figure}
 can be replaced by simply \texttt{distance}.
 
@@ -97,11 +151,6 @@ can be replaced by simply \texttt{distance}.
 \subsection{Computer Architecture}
 To understand why it is we need compilers in the first place, we need to understand how modern computers work.
 In a highly simplified model we can think of a computer as a \ac{CPU} connected to input and output devices (think keyboard and screen), and some sort of memory.
-\begin{figure}[ht]
-    \centering
-    \includestandalone[width=0.8\textwidth]{tikz/arch}
-    \caption{von Neumann Architecture scheme}\label{fig:comparch}
-\end{figure}
 
 At the very basic level, a \ac{CPU} has a finite number of possible operations it can perform despite there being a much larger input space of ``possible programs'' that we can feed it.
 How then does the computer take a script and run it on it's \ac{CPU}?
