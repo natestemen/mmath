@@ -196,46 +196,19 @@ A few examples are in order to help understand how compilers work in the real wo
     \item[TensorFlow:] TensorFlow is a platform for machine learning that embodies the structure of a compiler in it's design. Indeed it has a front-end where the user builds their model, an optimizer that speeds up the model, and once it's ready the model can be brought to multiple backends (in browser, mobile, laptop). This is all even before we talk about TensorFlow Quantum which was introduced in~\cite{tensoflowquantum} to aid in optimizing noisy circuits on \acs{NISQ} devices.\footnote{We will get into, and define this terminology shortly!}
 \end{description}
 
-\subsection{Intermediate Representations}
+\section{LLVM}\label{sec:llvm}
 
-Suppose we have the following line in our code.
-\begin{center}
-    \verb|x_final = x_initial + velocity * time|
-\end{center}
-From this, one of the first steps the front end of a compiler might do is generate what's called a \textbf{syntax tree}.
-This is a representation of the line of code in a tree format as in~\cref{fig:syntaxtree}.
-In this context, what we see in~\cref{fig:syntaxtree} is known as an \ac{IR} because it is not the initial, nor final representation of the piece of code.
-While the compiler works with the code in this state it can perform syntactic and semantic analysis to ensure the code is well formed (syntactically), and meaningful (semantically).
-
-Optimizations may also be performed.
-\Eg{} if \verb|distance = velocity * time| has already been calculated previously in the code, the subtree
-\begin{figure}[ht!]
-    \centering
-    \Tree [.* velocity time ]
-    \caption*{}
-\end{figure}
-can be replaced by simply \texttt{distance}.
-
-\begin{figure}[ht!]
-    \centering
-    \newcommand{\qleafhook}[1]{\texttt{#1}}
-    \newcommand{\qlabelhook}[1]{\texttt{#1}}
-    \Tree [.= x\_final [.+ x\_initial [.* velocity time ] ] ]
-    \caption{Syntax Tree}\label{fig:syntaxtree}
-\end{figure}
-
-
-Chris Lattner (the founder of one of the largest compiler projects; LLVM) has characterized compilers succinctly in~\cite{lattnerquote} as
+The LLVM\footnote{The project, while originally was an acronym for Low Level Virtual Machine no longer is an acronym, and instead solely goes by LLVM.} project~\cite{llvm} is one of the largest open source compiler projects in existence and much of the compiler architecture we've discussed here come from it's design.
+The founder of the project Chris Lattner has characterized compilers succinctly in~\cite{lattnerquote} as
 \begin{quote}
     the art of allowing humans to think at a level of abstraction that they want to think about.
 \end{quote}
 
-\paragraph{Abstraction} With Lattner's quote in mind we can think of compilers as the tool that allows us to work with languages that are very abstract when compared to the instructions our \ac{CPU} can perform.
-There also exist tools known as decompilers which take executables and turn them back into source code.
-This operation is almost never the inverse of compiler because most languages allow for many ways of writing code that performs the same task.
-With these tools we can raise and lower our levels of abstraction as desired and further push the details of the ``metal'' or hardware implementation away.
+Indeed as an interesting historical note, once \ac{ISA} had become commonplace, chip designers began to implement more and more complex instructions so programmers could use them natively.
+At the same time compilers became more popular, especially as their optimizations became more and more robust.
+This led to a distinction between chip architectures known as \ac{CISC} and \ac{RISC}.
+While \ac{CISC} \acp{CPU} are still being made, \ac{RISC} \acp{CPU} are becoming more popular to the point where \ac{RISC} is sometimes said to be an acronym for ``Relegate Interesting Stuff to the Compiler''.
 
-
-\section{LLVM}\label{sec:llvm}
-
-% \subsection{\acf{MLIR}}
+With the growth of LLVM, the developers have sought to continue to grow the use of the compiler and extend it's use to ``heterogeneous hardware''~\cite{mlir}, which could in the future encompass something like a \ac{QPU}.
+This is exciting not \emph{just} because classical computing infrastructure is starting to think about quantum, but because this also means that our job as quantum programmers, and architects might be made easier by the monumental effort those who have come before us have built.
+In quantum computing it can often feel like everything must be done from scratch as the new paradigm is so different from classical computing, yet here is a glimmer of hope we can recycle, or at the very least, learn from what has been built.
