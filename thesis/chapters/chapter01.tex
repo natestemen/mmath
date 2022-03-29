@@ -40,8 +40,8 @@ With a set of performable operations laid out, one can then use these primitives
 One thing worth mentioning here that is often glossed over in treatments of \acp{ISA} is that the instruction set must be computationally universal.\footnote{Or Turing-complete if you're computer science oriented.}
 Without going too much into the weeds, we should think of computationally universal (in the classical sense) as wielding the full power of a computer, rather than only being able to do a particular type of computation.\todo{I don't like this explanation.}
 Thankfully, this is relatively easy to do in the classical setting and there are even theoretical machines that use a \emph{single} operation to achieve universal computation.
-\Eg{} one can achieve universal classical computation with the following instruction which implements ``subtract, and branch if negative''.
-\begin{lstlisting}% TODO format this
+\Eg{} one can achieve universal classical computation with the following instruction which implements ``subtract and branch if negative''.
+\begin{lstlisting}
     Instruction subneg a, b, c
     Memory[b] = Memory[b] - Memory[a]
     if (Memory[b] < 0)
