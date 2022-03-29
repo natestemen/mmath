@@ -59,11 +59,15 @@ The software responsible for translating these higher level ideas into a machine
 % The goal of the former to implement more and more complex ``primitive'' operations, while the latter leaving more work to be performed by the compiler~\cite{dragonbook}.
 
 \section{Compilers}
-In order to understand what quantum circuit compilation is all about, it is helpful to first know what compilation means, and where our classical notions of compilation come from.
-To start at the very beginning, Merriam-Webster defines the word \textbf{compile} to mean~\cite{compiledef}
+
+While compilers have their origins in the aforementioned translation of higher level code into lower level code, they have grown considerably to perform many more tasks.
+Before we dive into all of the capabilities of a modern compilers, let's take a step back and recall what the word compile means.
+
+Merriam-Webster defines the word \textbf{compile} to mean~\cite{compiledef}
 \begin{quote}
     to compose out of materials from other documents.
 \end{quote}
+In this context we might imagine ``other documents'' to mean the higher level code (and maybe other configuration files) and we are composing the lower level machine code.
 We can see this definition reflected in~\citetitle{dragonbook}\footnote{Colloquially known as ``The Dragon Book'' because of the cover, and likely the most famous book on (classical) compilers. This is also where the logo of the LLVM project originates from which we will discuss in~\cref{sec:llvm}.}\graffito{
     \includegraphics[width=\marginparwidth]{img/dragonbook.png}
     \emph{The Dragon Book}
@@ -75,33 +79,15 @@ We can see this definition reflected in~\citetitle{dragonbook}\footnote{Colloqui
 
     The software systems that do this translation are called \emph{compilers}.
 \end{quotation}
-Hence we can visualize the action of a compiler as a sort of informal function.
+Hence we can view compilers as a function taking software written at one level of abstraction and bringing it down to a lower level that a computer's \ac{CPU} can understand.
 \begin{figure}[ht]
     \centering
-    \tikzset{
-        frame/.style={
-                draw,
-                text width=6em,
-                text centered,
-                minimum height=4em,
-                drop shadow,
-                fill=orange!40,
-                rounded corners,
-            },
-    }
-    \begin{tikzpicture}[font=\sffamily, thick, node distance=4cm]
-        \node[align=center] (pl) {Programming \\ Language};
-        \node[frame, right of=pl] (compiler) {Compiler};
-        \node[align=center, right of=compiler] (ml) {Machine \\ Language};
-
-        \draw[-stealth] (pl) -- (compiler);
-        \draw[-stealth] (compiler) -- (ml);
-    \end{tikzpicture}
+    \includestandalone[width=0.8\textwidth]{tikz/compiler}
     \caption{Action of Compiler}\label{fig:compiler}
 \end{figure}
 
 The term compiler was coined by Grace Hopper in the early 1950's while working on a system that could translate symbolic mathematics into a machine language.
-Initially Hopper was met with resistance for her new idea.
+Initially Hopper's new idea was met with resistance.
 \begin{quotation}
     I had a running compiler, and nobody would touch it because, they carefully told me, computers could only do arithmetic; they could not do programs.
     It was a selling job to get people to try it.
@@ -109,14 +95,105 @@ Initially Hopper was met with resistance for her new idea.
     \attrib{Grace Hopper 1952~\cite{hopperquote}}
 \end{quotation}
 In the end she succeeded in selling the idea and compilers became a ubiquitous piece of modern computing infrastructure.
-Since Hopper coined the term the job of a compiler has grown enormously and now encompasses line reconstruction, preprocessing, lexical analysis, syntax analysis, semantic analysis, conversion to an \ac{IR}, optimization, target dependent optimizations, and finally code generation.
+Some of the many functions a modern compiler can perform are line reconstruction, preprocessing, lexical analysis, syntax analysis, semantic analysis, conversion to an \ac{IR}, optimization, and finally code generation.
 Thankfully we will not need to understand all of these parts, and the majority of this document will focus on \aclp{IR}, optimizations, and code generation.
 
-\subsection{Examples of Compilers}
+\subsection{Compilation Phases}
+
+As alluded to in the previous section, a compiler has many different responsibilities.
+Each responsibility is broken into a separate component so that it can be understood on it's own.
+A schematic for this can be seen in~\cref{fig:compilerphases} for the main steps that we will be concerned with in this document.
+\begin{wrapfigure}[24]{i}{0.25\textwidth}% TODO tweak lineheight
+    \centering
+    \includestandalone[width=0.23\textwidth]{tikz/phases}
+    \caption{Compiler Phases}\label{fig:compilerphases}
+\end{wrapfigure}
+
+\paragraph{Syntax Analyzer}
+This phase is for ensuring the code is syntactically well formed (that is it abides by the specification of the language).
+If one is writing code in a binary alphabet with characters \texttt{0} and \texttt{1}, then the ``program'' \texttt{00011} is syntactically valid, while \texttt{1102} is not because a \texttt{2} appears in the code.
+To complete this step many compilers turn the code into a syntax tree to complete the verification.
+
+\paragraph{Semantic Analyzer}
+During this step the program is validated in such a way that ensures the code can run on a computer.\todo{this is a bad description}
+Part of this is usually doing type checking to ensure calculations are computed between valid types.
+In many languages the operation \texttt{'hello' * 5} would pass the syntax analyzer, but fail the semantic analyzer because a string multiplied by an integer is usually not defined.\footnote{It is completely valid in other languages though like python!}
+
+\paragraph{Intermediate Code Generator}
+When we've reached this phase, we know our code is well formed in every sense and we must start preparing it to execute on hardware.
+We could pass directly to some type of code generator from this point, but this phase helps speed up the code itself.
+From the existing code (or sometimes using the syntax tree created in the previous steps) a mid-level representation of it is created with the intention of being close enough to machine code that later translations are easy.
+This is best seen with a simple example.
+Suppose we have the following snippet to calculate the final location of a moving object after some 5 seconds.
+\begin{lstlisting}
+    x_final = x_initial + velocity * 5
+\end{lstlisting}
+Upon transforming this code via the intermediate code generator we might end up with something like the following.
+\begin{lstlisting}[label=lst:ir]
+    t1 = inttofloat(5)
+    t2 = velocity * t1
+    t3 = x_initial + t2
+    x_final = t3
+\end{lstlisting}
+While this may not seem like a particularly important transformation, it allows \emph{many} different languages to be represented in the same \acf{IR} which is what we see in~\cref{lst:ir}.% TODO cref wrong
+
+\paragraph{Code Optimizer}
+Once the code is in the \ac{IR} the optimizer kicks in to try an speed up the code.
+The above code may be transformed into something slightly simpler.
+\begin{lstlisting}
+    t1 = velocity * 5.0
+    x_final = initial + t1
+\end{lstlisting}
+Here we have skipped the call to \texttt{inttofloat} and instead immediately converted the integer \texttt{5} to the float \texttt{5.0}.
+We have also combined two of the steps to reduce the number of temporary variables we have to create and store in memory.
+As you can see the task of the optimizer is not only to try and speed up the code, but reduce it's memory usage as well.
+Some of the other problems the code generator must tackle are instruction selection, register allocation, and instruction scheduling all of which have analogs we will see in~\cref{chap:qcomps}.
+
+\paragraph{Code Generator}
+Finally we have an optimized \ac{IR} and we can generate code for hardware.
+This requires us to know which hardware it is we'd like to run our code on as each chip might have a different \ac{ISA}.
+With a specific instruction set, we can go ahead and generate code to run on it and again following our example we might end up with something like the following.
+
+\begin{minipage}{0.5\textwidth}
+    \begin{lstlisting}
+    LDF R2, velocity
+    MULF R2, R2, #5.0
+    LDF R1, x_initial
+    ADDF R1, R1, R2
+    STF x_final, R1
+\end{lstlisting}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+    \centering
+    \begin{tabular}{cc}
+        Function      & Meaning         \\ \toprule
+        \texttt{LDF}  & Load float      \\
+        \texttt{MULF} & Multiply floats \\
+        \texttt{ADDF} & Add floats      \\
+        \texttt{STF}  & Store float
+    \end{tabular}
+    \captionof{table}{Machine Code}\label{fig:machcode}
+\end{minipage}
+Here each function's first argument is either a register (if it starts with \texttt{R}), or a variable as in \texttt{STF}.
+
+The phases described here are often grouped into three larger categories.
+The syntax and semantic analysis, as well as the generation of an \ac{IR} fall under the umbrella of ``front end'', the optimizer is the optimizer, and everything else that follows is the ``back end''.
+The implications of this design is that an optimizer and backend can be paired with many different front ends as long as the front end can generate the optimizer's \ac{IR}.
+\begin{figure}[ht]
+    \centering
+    \includestandalone[width=0.8\textwidth]{tikz/frontback}
+    \caption{Compiler with many front and back ends}\label{fig:compends}
+\end{figure}
+
+\subsection{Examples}
+
+We've now seen what it is a compiler is, and what we typically use it for.
+A few examples are in order to help understand how compilers work in the real world, and just how varied they can be.
+
 \begin{description}
     \item[clang:] This \emph{is} a compiler in the strictest sense. As input it takes C/C++ and provides executable versions of that code that an be run on hardware.
-    \item[Latex:] While perhaps not very obvious, \LaTeX{} is indeed a compiler in the sense that it takes in code, and produces a lower level representation of what the user wants to typeset. Usually that comes in the form of postscript which is another programming language that is read by printers (hardware) to produce the requested document.
-    \item[TensorFlow:] TensorFlow is a platform for machine learning that embodies the structure of a compiler very nicely. Indeed it has a front-end where the user builds their model, an optimizer that speeds up the model, and once it's ready the model can be brought to multiple backends (in browser, mobile, laptop). This is all even before we talk about TensorFlow Quantum which was introduced in~\cite{tensoflowquantum} to aid in optimizing noisy circuits on \acs{NISQ} devices.\footnote{We will get into, and define this terminology shortly!}
+    \item[Latex:] While perhaps not very obvious, \LaTeX{} is indeed a compiler in the sense that it takes in code, and produces a lower level representation of what the user wants to typeset. Usually that comes in the form of postscript which is another programming language that is read by printers (hardware) to produce the requested document. Postscript can also be read by PDF readers which then display content as the user desired (maybe).
+    \item[TensorFlow:] TensorFlow is a platform for machine learning that embodies the structure of a compiler in it's design. Indeed it has a front-end where the user builds their model, an optimizer that speeds up the model, and once it's ready the model can be brought to multiple backends (in browser, mobile, laptop). This is all even before we talk about TensorFlow Quantum which was introduced in~\cite{tensoflowquantum} to aid in optimizing noisy circuits on \acs{NISQ} devices.\footnote{We will get into, and define this terminology shortly!}
 \end{description}
 
 \subsection{Intermediate Representations}
@@ -127,7 +204,6 @@ Suppose we have the following line in our code.
 \end{center}
 From this, one of the first steps the front end of a compiler might do is generate what's called a \textbf{syntax tree}.
 This is a representation of the line of code in a tree format as in~\cref{fig:syntaxtree}.
-% While it may not be obvious why this is a helpful representation, it \emph{is} indeed a representation that is used for further processing.
 In this context, what we see in~\cref{fig:syntaxtree} is known as an \ac{IR} because it is not the initial, nor final representation of the piece of code.
 While the compiler works with the code in this state it can perform syntactic and semantic analysis to ensure the code is well formed (syntactically), and meaningful (semantically).
 
@@ -147,13 +223,6 @@ can be replaced by simply \texttt{distance}.
     \Tree [.= x\_final [.+ x\_initial [.* velocity time ] ] ]
     \caption{Syntax Tree}\label{fig:syntaxtree}
 \end{figure}
-
-\subsection{Computer Architecture}
-To understand why it is we need compilers in the first place, we need to understand how modern computers work.
-In a highly simplified model we can think of a computer as a \ac{CPU} connected to input and output devices (think keyboard and screen), and some sort of memory.
-
-At the very basic level, a \ac{CPU} has a finite number of possible operations it can perform despite there being a much larger input space of ``possible programs'' that we can feed it.
-How then does the computer take a script and run it on it's \ac{CPU}?
 
 
 Chris Lattner (the founder of one of the largest compiler projects; LLVM) has characterized compilers succinctly in~\cite{lattnerquote} as

@@ -1,0 +1,27 @@
+\documentclass[tikz]{standalone}
+
+\usetikzlibrary{arrows,shadows,positioning,fit}
+
+\begin{document}
+
+\tikzset{
+    frame/.style={
+            draw,
+            text width=6em,
+            text centered,
+            minimum height=4em,
+            drop shadow,
+            fill=orange!40,
+            rounded corners,
+        },
+}
+\begin{tikzpicture}[font=\sffamily, thick, node distance=4cm]
+    \node[align=center] (pl) {Programming \\ Language};
+    \node[frame, right of=pl] (compiler) {Compiler};
+    \node[align=center, right of=compiler] (ml) {Machine \\ Language};
+
+    \draw[-stealth] (pl) -- (compiler);
+    \draw[-stealth] (compiler) -- (ml);
+\end{tikzpicture}
+
+\end{document}

@@ -1,0 +1,36 @@
+\documentclass[tikz]{standalone}
+
+\usetikzlibrary{arrows,shadows,positioning,fit}
+
+\begin{document}
+
+\tikzset{
+    frame/.style={
+            draw,
+            text width=6em,
+            text centered,
+            minimum height=4em,
+            drop shadow,
+            fill=orange!40,
+            rounded corners,
+        },
+}
+\begin{tikzpicture}[font=\sffamily, thick, node distance=.7cm]
+    % \node[frame, align=center] (lex) {Lexical Analyzer};
+    \node[frame] (syn) {Syntax Analyzer};
+    \node[frame, below=of syn] (sem) {Semantic Analyzer};
+    \node[frame, below=of sem] (ir)  {Intermediate Code Generator};
+    \node[frame, below=of ir]  (opt) {Code optimizer};
+    \node[frame, below=of opt] (gen) {Code generator};
+    % \node[frame, below=of gen] (dopt){Machine dependent code optimizer};
+
+
+    % \draw[-stealth] (lex) -- (syn);
+    \draw[-stealth] (syn) -- (sem);
+    \draw[-stealth] (sem) -- (ir);
+    \draw[-stealth] (ir)  -- (opt);
+    \draw[-stealth] (opt) -- (gen);
+    % \draw[-stealth] (gen) -- (dopt);
+\end{tikzpicture}
+
+\end{document}

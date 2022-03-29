@@ -1,0 +1,38 @@
+\documentclass[tikz]{standalone}
+
+\usetikzlibrary{arrows,shadows,positioning,fit}
+
+\begin{document}
+
+\tikzset{
+    frame/.style={
+            draw,
+            text width=6em,
+            text centered,
+            minimum height=4em,
+            drop shadow,
+            fill=orange!40,
+            rounded corners,
+        }
+}
+\begin{tikzpicture}[font=\sffamily, thick, node distance=1cm]
+    \node[frame]                (C)    {C Frontend};
+    \node[frame, below=of C]    (hask) {Haskell Frontend};
+    \node[frame, below=of hask] (rust) {Rust Frontend};
+
+    \node[frame, right=of hask] (opt) {Optimizer};
+
+    \node[frame, right=of opt] (arm) {ARM Backend};
+    \node[frame, above=of arm] (x86) {X86 Backend};
+    \node[frame, below=of arm] (ppc) {PowerPC Backend};
+
+    \draw[-stealth] (C)    -- (opt);
+    \draw[-stealth] (hask) -- (opt);
+    \draw[-stealth] (rust) -- (opt);
+
+    \draw[-stealth] (opt) -- (x86);
+    \draw[-stealth] (opt) -- (arm);
+    \draw[-stealth] (opt) -- (ppc);
+\end{tikzpicture}
+
+\end{document}
