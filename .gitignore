@@ -9,6 +9,7 @@ thesis/tikz/*.pdf
 *.log
 *.out
 *.synctex.gz
+*.synctex(busy)
 *.bbl
 *.bcf
 *.blg
