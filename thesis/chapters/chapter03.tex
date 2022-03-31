@@ -97,7 +97,20 @@ While understanding the full method to compute a quantum computer's quantum volu
 
 \section{Errors}
 
-\subsection{State Preparation and Measurement}
-\ac{SPAM}
+Errors are ubiquitous in quantum computing and for the near future there is almost certainly no getting around them.
+Not only are errors abundant, but they can vary across the chip, and they can very in type.
+The first error that is often encountered is that of \textbf{gate errors}.
+Some examples of gate errors might be
+\begin{itemize}
+    \item performing $R_X(\theta + \varepsilon)$ when you intended to do $R_X(\theta)$, or
+    \item performing $H + \varepsilon X$ when you intended to apply $H$.
+\end{itemize}
+This first type of error is sometimes mitigated experimentally if $\varepsilon$ is either fixed, or coupled in some way to $\theta$.
+However it may be the case that a more complex coupling is taking place dependent on the surrounding state of the qubit that the gate is acting on.
+Since we represent a quantum chip as a graph, one way to quantify errors is to attach a number to each node and edge.
+The node error rate represents the computers error rate on performing a single qubit unitary, and the edge represents the computers error rate for performing a 2-qubit unitary.
 
-\subsection{Calibration}
+The next type of error that's important for circuit compilation is that of \textbf{\ac{SPAM}} errors. % TODO it's bolding the acro :(
+Again each node on the computers chip can be assigned another number which denotes the computers error rate when performing a measurement.\todo{how to state prep. errors come into play?}
+
+Finally we have cross-talk.\todo{can we even mitigate cross-talk with compilation?}
