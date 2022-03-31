@@ -2,7 +2,9 @@
 \chapter{Quantum Hardware}\label{ch:hardware}
 %************************************************
 
-In this chapter we will give a brief overview of the necessary ideas one needs in order to understand the qubit mapping problem.
+The goal of this chapter is twofold.
+First we introduce the most common constraints seen in modern quantum hardware, as well as other common tools used to measure the effectiveness and efficacy of a given quantum computer.
+Second we will introduce the mathematical formalism needed in order to formulate the problems related to quantum circuit compilation we will see in~\cref{ch:qcomps}.
 
 \section{Requirements}
 As we saw in~\cref{sec:history} the first realization of a qubit happened in~\citeyear{firstqubit}.
@@ -14,7 +16,7 @@ A year later theoretical physicist David DiVincenzo published~\cite{divincenzo} 
     \item A universal set of quantum gates.\label{req:universal}
     \item A qubit specific measurement capability.\label{req:measure}
 \end{requirements}
-While not an entirely revolutionary list at the time of writing, having concrete goals and checkpoints for the community to rally around/focus on meant maintainable, and trackable progress.
+While not an entirely revolutionary list at the time of writing,\todo{whose writing?} having concrete goals and checkpoints for the community to rally around/focus on meant maintainable, and trackable progress.
 Again at the time of writing,~\cref{req:initialize,req:universal,req:measure} have mostly been taken care of and~\cref{req:Ttimes,req:scalable} are the areas we need the most improvement.
 
 \section{Quantum Chips}
@@ -23,36 +25,11 @@ Again at the time of writing,~\cref{req:initialize,req:universal,req:measure} ha
     A \emph{quantum chip's topology} is a graph $G = (V, E)$ with the vertices representing qubits, and edges representing connections between qubits where quantum gates of the correct arity can be applied.
 \end{definition}
 
-As an example take the the topology of IBM's \texttt{ibmq\_jakarta} shown in~\ref{fig:ibm-jakarta}.
+As an example take the the topology of IBM's \texttt{ibmq\_jakarta} shown in~\ref{fig:ibm-jakarta}~\cite{ibmq}.
 ``3'' being connected to ``1'' means that we can apply a 2-qubit unitary targeting both of those qubits, however the hardware does not support native 2-qubit gates between qubits ``2'' and ``6''.
 \begin{figure}[ht]
     \centering
-    \begin{tikzpicture}
-        \tikzset{
-            node/.style={
-                    very thick,
-                    circle,
-                    fill=blue!20,
-                    draw,
-                    minimum size=.8cm,
-                }
-        }
-        \node[node] (0) {$0$};
-        \node[node] (1) [right = .8cm of 0] {$1$};
-        \node[node] (2) [right = .8cm of 1] {$2$};
-        \node[node] (3) [below = .8cm of 1] {$3$};
-        \node[node] (5) [below = .8cm of 3] {$5$};
-        \node[node] (4) [left  = .8cm of 5] {$4$};
-        \node[node] (6) [right = .8cm of 5] {$6$};
-
-        \path[draw, very thick]
-        (0) edge node {} (1)
-        (1) edge node {} (2)
-        (1) edge node {} (3)
-        (3) edge node {} (5)
-        (5) edge node {} (4)
-        (5) edge node {} (6);
-    \end{tikzpicture}
+    \includestandalone[width=0.4\textwidth]{tikz/jakarta}
     \caption{IBMQ Jakarta Architecture}\label{fig:ibm-jakarta}
 \end{figure}
 
