@@ -71,9 +71,22 @@ However the question ended in~\citeyear{toff3cnot} when it was shown that a true
 
 It's important to note there that quantum circuit compilers exist and in many of the references that follow the authors' proposed compilation methods are benchmarked against the most prevalent compiler Qiskit~\cite{qiskit}.
 
-\paragraph{QAOA:}
+\paragraph{QAOA}
 Compilers have also been built to attack specific problems such as the \ac{QAOA}~\cite{qaoa} where particular gates can be swapped horizontally in circuit diagrams due to their commutative nature.
-Focusing in this particular problem, the authors in~\cite{qaoa-compiler} have been able to reduce the gate count by 23\% and circuit depth by 53\% on average.\todo{are there more instances of problem specific compilers?}
+Focusing in this particular problem, the authors in~\cite{qaoa-compiler} have been able to reduce the gate count by 23\% and circuit depth by 53\% on average.
 In the future we might hope to build these problem specific compilers into a more general purpose one that can diagnose and understand when to use problem specific compilers on demand.
+
+\paragraph{VQE}
+Another hybrid quantum-classical algorithm that has seem much attention is that of the \ac{VQE}~\cite{vqe,vqe2}.
+This algorithm is used in quantum chemistry to calculate the ground state of a molecular Hamiltonian using a parametrized quantum circuit as a cost function, and the classical compute nodes as an optimizer.
+\Eg{} let $\boldsymbol{\theta} \in \R^n$ be a vector of numbers that our circuit $U$ depends on, \ie{} $U: \R^n \to \U{2^m}$ for some number of qubits $m$.
+\begin{figure}[ht] % TODO label positioning fucked
+    \centering
+    \includestandalone[width=0.8\textwidth]{tikz/vqe}
+    \caption{\acs{VQE} Schematic}\label{fig:vqe}
+\end{figure}
+A compiler specific to this problem has been created, and generalized to further quantum-classical algorithms in~\cite{vqe-compiler} and the authors have leveraged much of the existing infrastructure brought forth by the LLVM project discussed in~\cref{sec:llvm}.
+This allows the classical optimizations to be handled by the robust LLVM system, while using new circuit compilation techniques on the variational circuit.
+
 
 \section{Quantum Stack}

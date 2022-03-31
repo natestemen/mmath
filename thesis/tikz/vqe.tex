@@ -1,0 +1,26 @@
+\documentclass[tikz]{standalone}
+
+\usetikzlibrary{arrows,shadows,positioning,fit}
+
+\begin{document}
+
+\tikzset{
+    frame/.style={
+            draw,
+            text width=6em,
+            text centered,
+            minimum height=4em,
+            drop shadow,
+            fill=orange!40,
+            rounded corners,
+        },
+}
+\begin{tikzpicture}[font=\sffamily, thick, node distance=4cm]
+    \node[frame] (circ) {Quantum Node};
+    \node[frame] (opt) [right of=circ] {Classical Node};
+
+    \draw[-stealth] (circ) to [bend left=40] (opt) node[above, left=1cm] {Compute $\expval{U(\boldsymbol{\theta})}{\psi}$};
+    \draw[-stealth] (opt)  to [bend left=40] (circ) node [below, right=1cm] {Modify parameters $\boldsymbol{\theta}\to \boldsymbol{\theta}'$};
+\end{tikzpicture}
+
+\end{document}
