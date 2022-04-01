@@ -90,15 +90,24 @@
 
 \cleardoublepage
 
-\ctparttext{In this part we will cover the both the basics of quantum computation, as well as some information related to classical compilers. These topics, while seemingly disparate, will come together in the second part of this document.}
-\part{Front End}\label{pt:intro}
+\ctparttext{
+    To begin this document we will introduce the notion of a compiler and show the foundational role it plays in our modern computing infrastructure.
+    We will cover the the main ideas from compilers that are useful for our quest to understand quantum circuit compilers in~\cref{part:backend}.
+    We will then switch gears to cover the basics of quantum computation needed to understand the quantum part of our story.
+}
+\part{Front End}\label{part:frontend}
 \include{chapters/chapter01}
 \include{chapters/chapter02}
 
 \cleardoublepage
 
-\ctparttext{You can put some informational part preamble text here.}
-\part{Back End}\label{pt:qompilers}
+\ctparttext{
+    The goal of this part is to familiarize the reader with the realities of quantum hardware.
+    This means understanding their architecture, strengths, weaknesses, and some of the many measures we have to quanitify their effectiveness.
+    With an understanding of the limitations of hardware we can decisively understand the problem of quantum circuit compilation.
+    We will show how the problem is both similar and different from classical compilation and how we can benefit from using existing classical infrastructure.
+}
+\part{Back End}\label{part:backend}
 \include{chapters/chapter03}
 \include{chapters/chapter04}
 
