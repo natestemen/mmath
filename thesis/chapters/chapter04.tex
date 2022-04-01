@@ -71,6 +71,112 @@ This in effect provides an optimized quantum simulator.
 
 \section{Compiling on a ring}
 
+In this section we will see an example that will take us through some of the many difficulties one might face while attempting to come up with a general purpose algorithm/method for compiling quantum circuits.
+This example is drawn from~\cite{ring-compilation} with modifications.
+
+To begin suppose we'd like to run the quantum circuit shown in~\cref{fig:presquish}.
+\begin{figure}[ht]
+    \centering
+    \begin{quantikz}%[row sep=.2cm]
+        & \targ{}   & \qw      & \gate{X} & \qw      & \ctrl{1} & \qw      & \qw      & \qw      & \qw       & \targ{}   & \qw       & \qw \\
+        & \qw       & \ctrl{2} & \qw      & \ctrl{1} & \targ{}  & \ctrl{1} & \qw      & \gate{H} & \targ{}   & \ctrl{-1} & \qw       & \qw \\
+        & \ctrl{-2} & \qw      & \qw      & \targ{}  & \qw      & \targ{}  & \gate{H} & \qw      & \ctrl{-1} & \qw       & \targ{}   & \qw \\
+        & \qw       & \targ{}  & \qw      & \qw      & \qw      & \qw      & \qw      & \qw      & \qw       & \qw       & \ctrl{-1} & \qw
+    \end{quantikz}
+    \caption{Circuit to be compiled}\label{fig:presquish}
+\end{figure}
+The first step we can take is to compress the diagram into a fewer number of layers.
+To do this we group operations on non-overlapping qubits since they can be performed at the same time.
+This is vital as decoherence times (\cref{sec:Ttimes}) are so short.
+This ``compressed'' version of the circuit is seen in~\cref{fig:precomp}.
+\begin{figure}[ht]
+    \centering
+    \begin{quantikz}
+        & \targ{}   & \qw \slice{} & \gate{X} \slice{} & \ctrl{1} \slice{} & \qw \slice{} & \qw \slice{} & \qw \slice{} & \targ{}   & \qw \\
+        & \qw       & \ctrl{2}     & \ctrl{1}          & \targ{}           & \ctrl{1} \gategroup[2,steps=3,style={dashed,rounded corners,fill=blue!20, inner xsep=2pt}, background]{}    & \gate{H}     & \targ{}      & \ctrl{-1} & \qw \\
+        & \ctrl{-2} & \qw          & \targ{}           & \qw               & \targ{}      & \gate{H}     & \ctrl{-1}    & \targ{}   & \qw \\
+        & \qw       & \targ{}      & \qw               & \qw               & \qw          & \qw          & \qw          & \ctrl{-1} & \qw
+    \end{quantikz}
+    \caption{Circuit after compression}\label{fig:precomp}
+\end{figure}
+
+We can now apply a ``device independent optimization'' or ``peephole optimization'' using the fact that $\CNOT^2_1\cdot (H \otimes H)\cdot\CNOT^1_2 = H \otimes H$. %TODO add something in chapter 1 about the diff between pre and post device optimizations so this can relate
+This minor optimization, and many others can be found in~\cite{peephole}.
+Hence we can drop the two \CNOT{} gates in the blue box to obtain the figure seen in~\cref{fig:predevice}.
+\begin{figure}[ht]
+    \centering
+    \begin{quantikz}
+        q_1 & \targ{}   & \qw \slice{} & \gate{X} \slice{} & \ctrl{1} \slice{} & \qw \slice{} & \targ{}   & \qw \\
+        q_2 & \qw       & \ctrl{2}     & \ctrl{1}          & \targ{}           & \gate{H}     & \ctrl{-1} & \qw \\
+        q_3 & \ctrl{-2} & \qw          & \targ{}           & \qw               & \gate{H}     & \targ{}   & \qw \\
+        q_4 & \qw       & \targ{}      & \qw               & \qw               & \qw          & \ctrl{-1} & \qw
+    \end{quantikz}
+    \caption{Circuit after peephole optimization}\label{fig:predevice}
+\end{figure}
+
+To continue with the problem we must now choose hardware we would like to run this circuit on.
+As the section title suggest, we will be choosing a qubit network topology of a ring.
+\begin{figure}[ht] % TODO make labels Q_i instead of i
+    \centering
+    \includestandalone[width=0.4\textwidth]{tikz/ring}
+    \caption{Ring Topology}\label{fig:ring}
+\end{figure}
+The first problem we need to tackle is placing the qubits from the circuit onto the ring.
+The first slice of the circuit contains \CNOT{}s connecting $q_1 \leftrightarrow q_3$ and $q_2 \leftrightarrow q_4$ so placing them together to prevent additional \SWAP{}s from being added is the first task.
+There are many configurations to satisfy this, but only one\footnote{Modulo ring rotations/reflections.} that satisfy the requirements that no \SWAP{} gates are added in the second slice as well!
+That mapping is
+\begin{align}
+    q_1 \to 1 &  & q_2 \to 3 &  & q_3 \to 2 &  & q_4 \to 4.
+\end{align}
+Hence the first two slices of the circuit can be computed without any additional \SWAP{} gates being added.
+
+Executing the gates in slice 3 however will require a \SWAP{} as qubits $q_1$ and $q_2$ are no longer adjacent.
+To make these qubits adjacent we can either swap qubits $q_1$ and $q_3$ or $q_2$ and $q_3$.
+Looking ahead to slice 5 we see we need adjacency of $q_1 \leftrightarrow q_2$ and $q_3 \leftrightarrow q_4$.
+Swapping $q_1$ and $q_3$ would mean two additional \SWAP{} gates before slice 5, but swapping $q_2$ and $q_3$ leaves the qubits in their desired positions for slice 5.
+Hence our compiled circuit in it's final form:
+\begin{figure}[ht]
+    \centering
+    \begin{quantikz}
+        & \targ{}   & \gate{X}  & \qw           & \ctrl{1} & \qw      & \qw           & \targ{}   & \qw \\
+        & \ctrl{-1} & \targ{}   & \gate[swap]{} & \targ{}  & \gate{H} & \gate[swap]{} & \ctrl{-1} & \qw \\
+        & \ctrl{1}  & \ctrl{-1} &               & \qw      & \gate{H} &               & \targ{}   & \qw \\
+        & \targ{}   & \qw       & \qw           & \qw      & \qw      & \qw           & \ctrl{-1} & \qw
+    \end{quantikz}
+    \caption{Compiled Circuit}\label{fig:compcirc}
+\end{figure}
+
+If the quantum chip has the further restriction that it's network topology is a directed graph and all the edges point clockwise, we can no longer use the typical \SWAP{} decomposition we are used to as in~\cref{eq:cnotswap}.
+Instead we must use
+\begin{equation}
+    \begin{quantikz}
+        & \targ{}   & \midstick[2,brackets=none]{$=$} \qw & \gate{H} & \ctrl{1} & \gate{H} & \qw \\
+        & \ctrl{-1} & \qw                                 & \gate{H} & \targ{}  & \gate{H} & \qw
+    \end{quantikz}
+\end{equation}
+in~\cref{eq:cnotswap} to decompose \SWAP{} using only \CNOT{} gates that go in one direction.
+\begin{equation}
+    \begin{quantikz}
+        & \gate[swap]{} & \midstick[2,brackets=none]{$=$} \qw & \targ{}   & \gate{H} & \targ{}   & \gate{H} & \targ{}   & \qw \\
+        &               & \qw                                 & \ctrl{-1} & \gate{H} & \ctrl{-1} & \gate{H} & \ctrl{-1} & \qw
+    \end{quantikz}
+\end{equation}
+With this addition the compiled circuit begins to grow very quickly (\cref{fig:dirringcomp})
+\begin{figure}[ht]
+    \centering
+    \begin{quantikz}[column sep=.1cm]
+        & \gate{H} & \ctrl{1} & \gate{H} & \gate{X} & \qw      & \qw      & \qw      & \qw      & \qw      & \qw      & \ctrl{1} & \qw      & \qw      & \qw      & \qw      & \qw      & \qw      & \gate{H} & \ctrl{1} & \gate{H} & \qw \\
+        & \gate{H} & \targ{}  & \qw      & \ctrl{1} & \gate{H} & \ctrl{1} & \gate{H} & \ctrl{1} & \gate{H} & \ctrl{1} & \targ{}  & \gate{H} & \ctrl{1} & \gate{H} & \ctrl{1} & \gate{H} & \ctrl{1} & \gate{H} & \targ{}  & \gate{H} & \qw \\
+        & \qw      & \ctrl{1} & \gate{H} & \targ{}  & \gate{H} & \targ{}  & \gate{H} & \targ{}  & \gate{H} & \targ{}  & \qw      & \gate{H} & \targ{}  & \gate{H} & \targ{}  & \gate{H} & \targ{}  & \gate{H} & \ctrl{1} & \gate{H} & \qw \\
+        & \qw      & \targ{}  & \qw      & \qw      & \qw      & \qw      & \qw      & \qw      & \qw      & \qw      & \qw      & \qw      & \qw      & \qw      & \qw      & \qw      & \qw      & \gate{H} & \targ{}  & \gate{H} & \qw
+    \end{quantikz}
+    \caption{Compiled Circuit on Directed Ring}\label{fig:dirringcomp}
+\end{figure}
+
+While this was a relatively simple example of some of the tasks a circuit compiler must complete, it did not begin to touch on the problem of gate decomposition.
+In the above example all gates applied were ones our made up ring computer could natively work with.
+
+
 \section{Methods}
 
 It's important to note that quantum circuit compilers exist and in many of the references that follow the authors' proposed compilation methods are benchmarked against the most prevalent compiler which happens to be IBM's Qiskit~\cite{qiskit}.
