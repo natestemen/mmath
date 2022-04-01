@@ -202,5 +202,12 @@ This allows the classical optimizations to be handled by the robust LLVM system,
 \section{Quantum Stack}
 
 In this section we will give an overview of the related technologies to quantum circuit compilation and try and explain how they fit together to form a quantum full stack.
+\todo{all these need to be tied together}
 
-\texttt{qcor}~\cite{qcor}.
+\texttt{qcor}~\cite{qcor} is a C++ compiler for hybrid quantum-classical computing built on \texttt{clang} (C++ compiler mentioned in~\cref{sec:compiler-examples}).
+
+Authors in~\cite{qisa} introduce the \texttt{quil} language~\cite{quil} which is intended to be a Quantum \ac{ISA} suitable for program analysis and compilation.
+
+OpenQASM~\cite{openqasm2,openqasm3} aims to be a lower-level programming language that can handle hybrid quantum-classical computations.
+
+\texttt{staq}~\cite{staq} is a full stack toolkit that can be used for compilation of OpenQASM.
