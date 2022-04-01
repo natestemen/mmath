@@ -20,3 +20,12 @@ When you don't sleep, you start to hallucinate, and that's not good.
 
 I was made for another planet altogether. I mistook the way.
 --- Simone de Beauvoir
+
+It is a puzzling thing. The truth knocks on the door and you say, 'Go away, I'm looking for the truth,' and so it goes away. Puzzling.
+--- Robert M. Pirsig
+
+People say nothing is impossible, but I do nothing every day.
+--- Winnie the Pooh
+
+I will participate, but not as asked
+--- Jenny Odell
