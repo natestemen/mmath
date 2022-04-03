@@ -5,28 +5,40 @@
 The goal of this chapter is twofold.
 First we introduce the most common constraints seen in modern quantum hardware, as well as other common tools used to measure the effectiveness and efficacy of a given quantum computer.
 Second we will introduce the mathematical formalism needed in order to formulate the problems related to quantum circuit compilation we will see in~\cref{ch:circuit-compilers}.
+We will not, however, attempt to give an introduction to the physical implementations of quantum hardware and instead refer the reader to~\cite{nielsenchuang} for a more comprehensive introduction.
 
 \section{Requirements}
 As we saw in~\cref{sec:history} the first realization of a qubit happened in~\citeyear{firstqubit}.
-A year later theoretical physicist David DiVincenzo published~\cite{divincenzo} where he outlined 5 requirements to make an effective quantum information processing device.
+A year later David DiVincenzo proposed 5 requirements as being necessary to make an effective quantum information processing device~\cite{divincenzo}.
+His proposed requirement are summarized here.
 \begin{requirements}
     \item A scalable physical system with well characterized qubits.\label{req:scalable}
-    \item The ability to initialize the state of the qubits to a simple fiducial state, such as $\ket{0}^{\otimes n}$.\label{req:initialize}
-    \item Long, relevant decoherence times, much longer than the gate operation time.\label{req:Ttimes}
+    \item The ability to initialize the state of the qubits to a simple fiducial state, such as $\ket{0}^{\!\otimes n}$.\label{req:initialize}
+    \item Long decoherence times, much longer than the gate operation time.\label{req:Ttimes}
     \item A universal set of quantum gates.\label{req:universal}
     \item A qubit specific measurement capability.\label{req:measure}
 \end{requirements}
-While not an entirely revolutionary list at the time of writing,\todo{whose writing?} having concrete goals and checkpoints for the community to rally around/focus on meant maintainable, and trackable progress.
-Again at the time of writing,~\cref{req:initialize,req:universal,req:measure} have mostly been taken care of and~\cref{req:Ttimes,req:scalable} are the areas we need the most improvement.
+While all of these requirements are still under active research,~\cref{req:initialize,req:universal,req:measure} are completed for \ac{NISQ} devices, while~\cref{req:Ttimes,req:scalable} keep us in the \ac{NISQ}-era.
+However, even if all of these problems were solved completely, there is still many things that can go wrong.
+Just because your qubits scale doesn't mean you have an unlimited amount that you can use for memory an algorithm might require.
+Just because there is a long decoherence time doesn't mean a qubit can't error in some other way.
+Just because you have a universal gate set doesn't mean you know how to efficiently decompose a gate from the algorithm you are trying to run.
+
+As you can see, these five requirements provide us with the backbone upon which we can build further, but do not guarantee optimal quantum computations.
+It is some of these secondary question we wish to understand more deeply to make quantum computers more useful once the bedrock has been established.
 
 \section{Quantum Chips}
 
+Intuitively a quantum chip is a collection of qubits along with the capability to perform operations on subsets of the qubits.
+This can be formalized using the notion of a hypergraph as follows.
 \begin{definition}
-    A \emph{quantum chip's topology} is a graph $G = (V, E)$ with the vertices representing qubits, and edges representing connections between qubits where quantum gates of the correct arity can be applied.
+    A \emph{quantum chip} is a 2-tuple $(G, H)$ where $G$ is a gateset, and $H$ is a hypergraph $H = (Q, E)$ with the vertices $Q$ representing qubits, and edges $E$ being a subset of the powerset $\mathcal{P}(Q) \setminus \qty{\emptyset}$ representing connections between qubits where quantum gates of the correct arity can be applied.
 \end{definition}
+In practice it is often the case that that a quantum chip has the more standard structure of a graph and there are no native $k$-qubit gates for $k > 2$.
+This can partially be attributed to the fact that we do not need 3-qubit gates for universal computation~\cite{universal-cnot-u2}, but also due to the experimental difficulty in implementing such capabilities.
 
-As an example take the the topology of IBM's \texttt{ibmq\_jakarta} shown in~\ref{fig:ibm-jakarta}~\cite{ibmq}.
-``3'' being connected to ``1'' means that we can apply a 2-qubit unitary targeting both of those qubits, however the hardware does not support native 2-qubit gates between qubits ``2'' and ``6''.
+As an example take the the topology of IBM's \texttt{ibmq\_jakarta} shown in~\cref{fig:ibm-jakarta}~\cite{ibmq}.
+Node/qubit ``3'' being connected to ``1'' means that we can apply a 2-qubit unitary targeting both of those qubits, however the hardware does not support native 2-qubit gates between qubits ``2'' and ``6''.
 \begin{figure}[ht]
     \centering
     \includestandalone[width=0.4\textwidth]{tikz/jakarta}
@@ -34,12 +46,19 @@ As an example take the the topology of IBM's \texttt{ibmq\_jakarta} shown in~\re
 \end{figure}
 
 We can now define the main problem of quantum circuit compilation: that of the qubit mapping problem.\footnote{This sometimes also goes by the name of the qubit routing problem, or qubit scheduling problem although sometimes these mean slightly different things.}
-If we have both a quantum circuit $C\in G^*$, and a quantum computer with network topology $G$, can the computer perform our circuit?
-In order to address this question we must first talk about universal gate sets.
-
-% In \cite{optimalSyn}
+If we have both a quantum circuit $C \in G^*$ and a quantum computer with chip $(H, (Q, E))$, can the computer perform our circuit? % TODO better notation pls
+In the case when the number of qubits required in $C$ is greater than $\abs{Q}$, the answer is no.\footnote{There are however specific cases when this \emph{is} possible. If the algorithm only required $n < \abs{Q}$ qubits to be entangled at once, there are clever scheduling tactics one can employ to implement such an algorithm. There are also ``quantum autoencoders'' which attempt to implement compressed versions of circuits on smaller numbers of qubits~\cite{autoencode}.}
+On the other hand when the number of qubits required for $C$ is fewer than the number we have access to $\abs{Q}$, then the answer is yes, provided
+\begin{enumerate}
+    \item $H$ is a universal gate set, and
+    \item $(Q, E)$ is connected.\footnote{That is for any two vertices, there is a path between them.}
+\end{enumerate}
+Despite formulating the key problem we'd like to understand in this document, there are many contributing factors that effect solutions to this problem
+For that reason we need to not just understand a theoretical model of quantum hardware, but some of the implementation details as well.
 
 \subsection{Hardware Specifications}
+
+Here we will briefly cover the most important topics discussed in quantum circuit compilation when it comes to optimizations on \ac{NISQ}-era hardware.
 
 \subsubsection{Relaxation and Dephasing Times}\label{sec:Ttimes}
 
@@ -92,8 +111,6 @@ While understanding the full method to compute a quantum computer's quantum volu
     \end{quantikz}
     \caption{Quantum Volume Protocol}\label{fig:qvolume}
 \end{figure}
-
-
 
 \section{Errors}
 
