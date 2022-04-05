@@ -30,23 +30,62 @@ It is some of these secondary question we wish to understand more deeply to make
 \section{Quantum Chips}
 
 Intuitively a quantum chip is a collection of qubits along with the capability to perform operations on subsets of the qubits.
-This can be formalized using the notion of a hypergraph as follows.
-\begin{definition}
-    A \emph{quantum chip} is a 2-tuple $(G, H)$ where $G$ is a gateset, and $H$ is a hypergraph $H = (Q, E)$ with the vertices $Q$ representing qubits, and edges $E$ being a subset of the powerset $\mathcal{P}(Q) \setminus \qty{\emptyset}$ representing connections between qubits where quantum gates of the correct arity can be applied.
-\end{definition}
-In practice it is often the case that that a quantum chip has the more standard structure of a graph and there are no native $k$-qubit gates for $k > 2$.
-This can partially be attributed to the fact that we do not need 3-qubit gates for universal computation~\cite{universal-cnot-u2}, but also due to the experimental difficulty in implementing such capabilities.
+This can be formalized using the graph structure as follows. % TODO better lead in
 
-As an example take the the topology of IBM's \texttt{ibmq\_jakarta} shown in~\cref{fig:ibm-jakarta}~\cite{ibmq}.
-Node/qubit ``3'' being connected to ``1'' means that we can apply a 2-qubit unitary targeting both of those qubits, however the hardware does not support native 2-qubit gates between qubits ``2'' and ``6''.
+\begin{definition}\label{def:topology}
+    A \emph{quantum connectivity graph} is simply a graph $H = (V, E)$\footnote{$V$ is a finite set which we refer to as vertices, and $E$ is a collection of pairs of vertices, \ie{} $E \subseteq V \times V$.} such that $(v, v) \in E$ for all $v \in V$.
+    That is $H$ contains all self loops.
+\end{definition}
+The notion of a connectivity graph is sometimes referred to as a (network) topology.
+In this definition we ensure a connectivity graph has all self loops as edges are the model for performing quantum gates.
+Since all quantum hardware can perform single qubit unitary gates we include self edges to indicate this.
+Once the connectivity graph has been established we can consider which gate-sets are possible by ensuring only qubits which are connected via an edge are acted on in a nontrivial manner.
+\begin{definition}
+    Let $H = (V, E)$ be a quantum connectivity graph.
+    A gate set $G$ is said to be \emph{amenable} to $H$ if
+    \begin{itemize}
+        \item $G$ acts on $\abs{V}$ qubits, and
+        \item $\qubits(g) \in E$ for all gates $g \in G$.\todo{this only works if gate set is defined in a particular way that doesn't allow things like $X \otimes X$ in gate set.}
+    \end{itemize}
+\end{definition}
+We can now combine the connectivity graph and an amenable gate set to form the model of quantum hardware.
+\begin{definition}
+    A \emph{quantum chip} $T = (H, G)$ is a quantum connectivity graph $H = (V, E)$ together with an amenable gate set $G$.
+    The gates $g \in G$ are often called \emph{native} to $T$.
+\end{definition}
+
+While this formalism does have the drawback of restricting our gate sets to single and two qubit gates, this model applies to the majority of hardware today.
+Multi-qubit gates can be allowed using the notion of a hypergraph in~\cref{def:topology}, but doing so introduces complexity without a clear advantage.
+This slightly simplified notion still encompasses universal quantum computation as three (and higher) qubit gates are not needed as we saw in~\cref{sec:universal}.
+
+As an example the connectivity graph of IBM's 7-qubit quantum computer \texttt{ibmq\_jakarta} shown in~\cref{fig:ibm-jakarta} and the gate set is as follows~\cite{ibmq}.
+\begin{equation} % TODO this doesn't align with how we've defined gate sets in chap 2
+    \qty{\CNOT, \1, R_Z, S_X, X}
+\end{equation}
+Vertex ``3'' being connected to ``1'' means that we can apply a 2-qubit unitary targeting both of those qubits, however the hardware does not support 2-qubit gates between qubits ``2'' and ``6'' natively.
 \begin{figure}[ht]
     \centering
     \includestandalone[width=0.4\textwidth]{tikz/jakarta}
     \caption{IBMQ Jakarta Architecture}\label{fig:ibm-jakarta}
 \end{figure}
 
+\begin{definition}
+    Let $G$ be a quantum gate set acting on $n$ qubits.
+    Define a function $\qubits: G \to \mathcal{P}([n])$ which returns a set containing the index of the qubits each gate acts on nontrivially.
+\end{definition}
+As an example if $G = \qty{\1 \otimes \1, \1 \otimes X, X \otimes \1, X \otimes X}$, then $\qubits(\1 \otimes \1) = \emptyset$, $\qubits(\1 \otimes X) = \qty{1}$, and $\qubits(X \otimes X) = \qty{0, 1}$.
+
+\begin{definition}
+    Let $T = (G, H)$ be a quantum chip with graph $H = (V, E)$, and $C \in G^*$ be a circuit.
+    The quantum chip $T$ can run $C$ if for all $g \in C$ we have $\qubits(g) \in E$.
+    In this case we say that $C$ is \emph{executable} on $T$.
+\end{definition}
+
 We can now define the main problem of quantum circuit compilation: that of the qubit mapping problem.\footnote{This sometimes also goes by the name of the qubit routing problem, or qubit scheduling problem although sometimes these mean slightly different things.}
-If we have both a quantum circuit $C \in G^*$ and a quantum computer with chip $(H, (Q, E))$, can the computer perform our circuit? % TODO better notation pls
+\begin{question}
+    Let $C \in G^*$ be a circuit over quantum gate set $G$, and $T$ a quantum chip with gate set $G'$ and connectivity graph $H$.
+    Is there a circuit $C' \in G'$ such that $\dbrackets{C'} = \dbrackets{C}$?
+\end{question}
 In the case when the number of qubits required in $C$ is greater than $\abs{Q}$, the answer is no.\footnote{There are however specific cases when this \emph{is} possible. If the algorithm only required $n < \abs{Q}$ qubits to be entangled at once, there are clever scheduling tactics one can employ to implement such an algorithm. There are also ``quantum autoencoders'' which attempt to implement compressed versions of circuits on smaller numbers of qubits~\cite{autoencode}.}
 On the other hand when the number of qubits required for $C$ is fewer than the number we have access to $\abs{Q}$, then the answer is yes, provided
 \begin{enumerate}
@@ -56,7 +95,7 @@ On the other hand when the number of qubits required for $C$ is fewer than the n
 Despite formulating the key problem we'd like to understand in this document, there are many contributing factors that effect solutions to this problem
 For that reason we need to not just understand a theoretical model of quantum hardware, but some of the implementation details as well.
 
-\subsection{Hardware Specifications}
+\section{Hardware Specifications}
 
 Here we will briefly cover the most important topics discussed in quantum circuit compilation when it comes to optimizations on \ac{NISQ}-era hardware.
 
@@ -127,7 +166,11 @@ However it may be the case that a more complex coupling is taking place dependen
 Since we represent a quantum chip as a graph, one way to quantify errors is to attach a number to each node and edge.
 The node error rate represents the computers error rate on performing a single qubit unitary, and the edge represents the computers error rate for performing a 2-qubit unitary.
 
-The next type of error that's important for circuit compilation is that of \textbf{\ac{SPAM}} errors. % TODO it's bolding the acro :(
-Again each node on the computers chip can be assigned another number which denotes the computers error rate when performing a measurement.\todo{how to state prep. errors come into play?}
+The next type of error that can be introduced into a quantum computation is through \textbf{\ac{SPAM}} errors. % TODO it's bolding the acro :(
+These---as you might have guessed---are introduced during state preparation and measurement.
+Despite these being one of the largest sources of errors on modern quantum hardware, quantum circuit compilation cannot aid in mitigating these errors.
 
-Finally we have cross-talk.\todo{can we even mitigate cross-talk with compilation?}
+Finally, the last major source of noise that is seen in quantum computers is that of \textbf{crosstalk}.
+Crosstalk corrupts information in our system when multiple gates are performed simultaneously.
+This is unfortunate as parallelizing computation drastically improves the running time and keeps the total computation time below decoherence times discussed in~\cref{sec:Ttimes}.
+These errors arise as qubits are not perfectly isolated from each other and hence can interact especially when control pulses (\ie{} the gate implementations) bleed into nearby qubits.
