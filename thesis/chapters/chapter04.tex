@@ -197,7 +197,10 @@ This algorithm is used in quantum chemistry to calculate the ground state of a m
 \end{figure}
 A compiler specific to this problem has been created, and generalized to other quantum-classical algorithms~\cite{vqe-compiler} leveraging much of the existing infrastructure brought forth by the LLVM project discussed in~\cref{sec:llvm}.
 This allows the classical optimizations to be handled by the robust LLVM system, while using new circuit compilation techniques that take advantage of the fact that variational circuits have a particular form.
-The structure of variational circuits has been further been taken advantage of by pre-compiling specific blocks of gates which resulted in 1.5-3 times improvement over existing systems~\cite{vqe-partial}.
+The structure of variational circuits has been further been taken advantage of by pre-compiling specific blocks of gates which resulted in 1.5--3 times improvement over existing systems~\cite{vqe-partial}.
+
+\paragraph{Crosstalk}
+Due to crosstalk's prevalence on nearly all hardware, compilers have been developed to mitigate this problem by utilizing both commutation identities and physical gate timing~\cite{crosstalk-commute,crosstalk-mitigation}. % TODO add picture from either paper
 
 
 
