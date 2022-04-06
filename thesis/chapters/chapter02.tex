@@ -71,10 +71,12 @@ In the case of \cref{eq:qubit} the state $\ket{\psi}$ is said to be in a \textbf
 
 We often need to understand more complicated systems than just simple qubits, and to do so we use the \textbf{tensor product} to build up systems from subsystems.
 \Eg{} if $\ket{\psi}\in\C^2$ and $\ket{\phi}\in\C^2$ represent two distinct physical qubits, we can represent the combined system as a single vector $\ket{\psi}\otimes \ket{\phi}$ in a larger complex Euclidean space $\C^2\otimes \C^2\cong \C^4$.
-In the computational basis we can expand this as
+In many cases it is customary to drop the $\otimes$ symbol and write $\ket{\psi}\ket{\phi}$ or even $\ket{\psi\,\phi}$ when the underlying complex Euclidean spaces are understood.
+In the computational basis we can expand this tensor product as
 \begin{align}
-    \ket{\psi}\otimes \ket{\phi} & = \qty(\alpha\ket{0} + \beta\ket{1})\otimes\qty(\gamma\ket{0} + \delta\ket{1})                                                                \\
-                                 & = \alpha\gamma\ket{0}\otimes\ket{0} + \alpha\delta\ket{0}\otimes\ket{1} + \beta\gamma\ket{1}\otimes\ket{0} + \beta\delta\ket{1}\otimes\ket{1}
+    \ket{\psi}\otimes \ket{\phi} & = \qty(\alpha\ket{0} + \beta\ket{1})\otimes\qty(\gamma\ket{0} + \delta\ket{1})            \\
+    %  & = \alpha\gamma\ket{0}\otimes\ket{0} + \alpha\delta\ket{0}\otimes\ket{1} + \beta\gamma\ket{1}\otimes\ket{0} + \beta\delta\ket{1}\otimes\ket{1} \\
+                                 & = \alpha\gamma\ket{00} + \alpha\delta\ket{01} + \beta\gamma\ket{10} + \beta\delta\ket{11}
 \end{align}
 where $\alpha, \beta, \gamma, \delta \in \C$.
 
@@ -89,7 +91,7 @@ Thankfully linear algebra has just the tool to transform complex vectors in a re
     where $^\dagger$ is the conjugate transpose.
     The collection of unitary matrices of dimension $n$ is called the \emph{unitary group} and is denoted \gls{un}.
 \end{definition}
-Hence when we have a qubit $\ket{\psi}$ and perform some action on it, we then have a new state $\ket{\phi} = U\ket{\psi}$ where $U$ represents whatever action we performed.
+Hence when we have a qubit $\ket{\psi}$ and perform some action on it, the new state is modeled by $\ket{\phi} = U\ket{\psi}$ where $U$ represents whatever action we performed.
 The condition shown in~\cref{eq:unitary} is quite restrictive: where a general $n \times n$ matrix has $2n^2$ real degrees of freedom, an element of $\U{n}$ only has $n^2$.\footnote{This is to say $\dim_\R\U{n} = n^2$.}
 In fact for a general element of $\U{2}$ we can decompose it into pieces that look much more familiar.
 \begin{example}
@@ -112,11 +114,16 @@ For that reason we also often work in the following group.
     \end{equation}
     then $A$ is called a \emph{special unitary matrix} and we denote the collection of these matrices by $\gls{sun}$.
 \end{definition}
+However this does not always solve the problem of removing unnecessary (and nonphysical) phases as $\det(-A) = \det(A)$ despite implementing indistinguishable transformations.
+Hence we define the \textbf{projective unitary group} to remove these pesky complex phases by modding out unit complex numbers: $\gls{pun} \defeq \U{n} / \U{1}$.
 
 \subsection{Quantum Gates}
-A quantum gate is simply any unitary.
-In this document we will mainly discuss quantum gates acting on 1 to 3 qubits since that is the range most quantum algorithms make use.
-Most physical quantum computers today can perform single and two qubit gates.
+
+A \textbf{quantum gate} is a physically realizable, and unambigious mathematical transformation.
+More formally a quantum gate on $n$ qubits is an element $g \in \PU{2^n}$.
+In this document we will mainly discuss quantum gates acting on 1 and 2 qubits as that is the capability of most modern hardware we will discuss in~\cref{chap:hardware}.
+The~\cref{tab:commongates} outlines some of the common gates we will encounter throughout this document, and their associated notations both mathematically, and diagrammatically.
+
 \begin{table}[ht] % TODO make skinnier with text flow around?
     \centering
     % \begin{noindent}
@@ -132,6 +139,14 @@ Most physical quantum computers today can perform single and two qubit gates.
     \caption{Common Quantum Gates}\label{tab:commongates}
 \end{table}
 
+Along with the examples seen in~\cref{tab:commongates} we \textbf{parametric gates} which we view as gates that are dependent on some number of parameters, although we will often just use one.
+Parametric gates are modeled by functions $g: \R \to \PU{2^n}$ and in all technicality are not gates in and of themselves, but rather a function whose images are gates.
+Two important parametric gates are the $X$ and $Z$ rotations.
+\begin{align}
+    R_X(\theta) = \smqty[\cos(\sfrac{\theta}{2}) & -\iu \sin(\sfrac{\theta}{2}) \\ -\iu \sin(\sfrac{\theta}{2}) & \cos(\sfrac{\theta}{2})] && R_Z(\theta) = \smqty[\e^{-\iu \sfrac{\theta}{2}} & 0 \\0 & \e^{\iu\sfrac{\theta}{2}}]
+\end{align}
+These two can also be represented more compactly as $R_X(\theta) = \e^{-\iu X \sfrac{\theta}{2}}$ and similarly $R_Z(\theta) = \e^{-\iu Z \theta/2}$ where $X$ and $Z$ are the Pauli operators as in~\cref{tab:commongates}.
+Note that these two functions may seem to have period $4\pi$, but due to the quotient structure on the image space $\PU{2^n}$, all phases are modded out to ensure $R_X(\theta) = R_X(\theta + 2\pi)$.
 
 \begin{example}
     As we will later see, it is often important to be able to move qubits around on a physical chip.
@@ -146,7 +161,7 @@ Most physical quantum computers today can perform single and two qubit gates.
     \end{equation}
     Where the first equality shows us how to perform the swap with 3 \CNOT{} gates, and the last equality is an equivalence of notation.
 
-    We can also show this using more mathematical notation if we understand the \CNOT{} map to act as $\CNOT\qty[\ket{x}\otimes\ket{y}] = \ket{x}\ket{x\oplus y}$ where $x, y \in \F$ and $\oplus$ is binary addition.
+    We can show this using the fact that the \CNOT{} gate is defined to act as $\CNOT\qty[\ket{x}\otimes\ket{y}] = \ket{x} \otimes \ket{x\oplus y}$ where $x, y \in \gls{binF}$ and $\oplus$ is binary addition.
     With this we can explicitly compute the action of this circuit.
     Here we use the notation $\CNOT^a_b$ to mean a $\CNOT{}$ gate acting from qubit $a$ (the control qubit) to qubit $b$ (the target qubit).
     Then the 3 \CNOT{} gates in~\cref{eq:cnotswap} act under the following manipulations.
@@ -155,26 +170,32 @@ Most physical quantum computers today can perform single and two qubit gates.
                               & \xrightarrow{\CNOT^2_1} \ket{x\oplus (x\oplus y)}\otimes \ket{x\oplus y}  = \ket{y}\otimes\ket{x\oplus y} \\
                               & \xrightarrow{\CNOT^1_2} \ket{y}\otimes\ket{(x\oplus y)\oplus y} = \ket{y}\otimes \ket{x}.
     \end{align*}
-    Thus exactly as desired.
+    Exactly as desired.
+    The \SWAP{} gate also has the following matrix representation.
+    \begin{equation}
+        \SWAP = \smqty[1 & & & \\ & 0 & 1 & \\ & 1 & 0 & \\ & & & 1]
+    \end{equation}
 \end{example}
 
 \subsection{Quantum Circuits}
 
-We are now ready to start putting these pieces together to build larger structures.
-Since it is common that a quantum computer can perform a multitude of gates, we collect these together to form a \textbf{quantum gate set}.
-These are the gates that we will be able to natively perform on our hardware.
+We are now ready to put these pieces together to build larger structures.
+Since it is common that a quantum computer can perform a multitude of gates, we collect them together to form a \textbf{quantum gate set}.
 \begin{definition}
-    A \emph{quantum gate set} is a (typically finite) subset $G \subseteq \U{2^n}$. An element of $G$ is called a quantum gate.
+    A \emph{quantum gate set} is a (typically finite) subset $G \subsetneq \PU{2^n}$. An element of $G$ is called a quantum gate.
 \end{definition}
+Just as we had gates and parametric gates in the previous section, some authors also like to define another set keeping track of said parametric gates.
+A \textbf{parametric quantum gate set} $G'$ is a finite collection of parametric gates.
+While we only have a finite collection of parametric gates, this usually means an infinite amount of quantum gates.
 From these gates, we can construct a \textbf{quantum circuit} by applying a sequence of elements from the gate set.
 \begin{definition}\label{def:circuit}
-    Let $G$ be a quantum gate set, and let \gls{kleene} denote\footnote{This $^*$ operation is known as the Kleene star.} the set of finite length words over $G$ (and the empty word which we take to mean identity).
+    Let $G$ be a quantum gate set, and let \gls{kleene} denote the set of finite length words over $G$ (and the empty word which we take to mean identity).\footnote{This $^*$ operation is known as the Kleene star.}
     A \emph{quantum circuit} is an element of $G^*$.
 \end{definition}
-Thus if our gate set $G = \qty{a, b, c}$, then some example circuits may be $aacba$, $cccbbb$, $cbbbab$, and $ab$.
+Thus if our gate set $G = \qty{a, b, c}$, then the following are example circuits: $aacba$, $cccbbb$, $cbbbab$, and $ab$.
 
 Something to note here is that in this abstraction, all of our quantum gates are assumed to act on all qubits.
-Hence, with a 2 qubit quantum chip and the ability to perform a Pauli $X$ gate on either qubit, then our gate is $\qty{\1\otimes \1, \1\otimes X, X\otimes \1, X\otimes X}$.\footnote{We don't always think of the identity gate $\1$ as a gate that needs to be included, but doing nothing to a qubit is no easy task, so it's important to remember to treat it just like any other gate and understand it's error rates as well.}
+With a 2 qubit quantum chip and the ability to perform a Pauli $X$ gate on either qubit, our gate set is $\qty{\1\otimes \1, \1\otimes X, X\otimes \1, X\otimes X}$.\footnote{We don't always think of the identity gate $\1$ as a gate that needs to be included, but doing nothing to a qubit is no easy task, so it's important to remember to treat it just like any other gate and understand it's error rates as well.}
 Sometimes this gate set is denoted $\qty{\1, X_0, X_1, X_0X_1}$, but we will try to use more explicit notation here.
 
 Circuits are often drawn using diagram as in~\cref{fig:excircuit} where each horizontal ``wire'' represents a qubit, and boxes and other gadgets represent quantum gates.
@@ -214,35 +235,34 @@ In~\cref{tab:gates2circuit} we see what each one of these circuits are under the
 We now have the machinery for circuits, and one of the important questions we need to ask is \emph{when are two circuits the same?}
 Surely we can compare the circuits as strings in $G^*$, but if $G = \qty{\1, X}$, it will not tell us that $C = \1$ and $C' = XX$ are the same despite the same physical process happening.
 To this end we wish to understand how the combinations of gates come together to form the entire process.
-Following~\cite{formalcircuit} we define a map $\dbrackets{-}: G^* \to \U{2^n}$ which takes a quantum circuit, or sequence of gates, and multiplies them together to obtain a single unitary operator: $\dbrackets{g_1g_2\cdots g_m} = g_m\cdot g_{m-1} \cdots g_1$.\footnote{Notice here on the left we have string concatenation, and on the right matrix multiplication. Also note the fact that when doing the multiplication we reverse the order. This is an artifact of the way we draw quantum circuits from left to write, but apply gates mathematically right to left.}
-Then we can say two circuits $C$ and $C'$ are effectively the same if $\dbrackets{C} = \dbrackets{C'}$.
+Following~\cite{formalcircuit} we define a map $\implement{-}: G^* \to \PU{2^n}$ which takes a quantum circuit, or sequence of gates, and multiplies them together to obtain a single unitary operator: $\implement{g_1g_2\cdots g_m} = g_m\cdot g_{m-1} \cdots g_1$.\footnote{Notice here on the left we have string concatenation, and on the right matrix multiplication. Also note the fact that when doing the multiplication we reverse the order. This is an artifact of the way we draw quantum circuits from left to write, but apply gates mathematically right to left.}
+With this notation we can say two circuits $C$ and $C'$ implement the same operation if $\implement{C} = \implement{C'}$.
 
 This formalism also allows us to frame the following important question about unitary synthesis.
 \begin{question}\label{qu:synthesis}
-    Given a quantum gate set $G$, and unitary operator $U\in\U{2^n}$, does there exist a circuit $C\in G^*$, such that $\dbrackets{C} = U$?
+    Given a quantum gate set $G$ over $n$ qubits, and unitary operator $U \in \PU{2^n}$, does there exist a circuit $C\in G^*$, such that $\implement{C} = U$?
 \end{question}
 If the answer is yes, we say a gate set $G$ \textbf{synthesizes} $U$.
 This question is answered, at least in part through the Solovay-Kitaev theorem first published in~\cite{bigkitaev} with further proofs/elucidations in~\cite{nielsenchuang,solovay-kitaev,kitaev-book}.
 The theorem, stated in our terminology follows.
 \begin{theorem}[Solovay-Kitaev]\label{thm:solovaykitaev}
-    Let $G$ be a quantum gate set such that
+    Let $G$ be a quantum gate set on $n$ qubits such that for all $g \in G$
     \begin{itemize}
-        \item $g\in\SU{2^n}$ for all $g\in G$,
-        \item $g^\dagger \in G$ for all $g\in G$, and
+        \item $g\in\SU{2^n}$,
+        \item $g^\dagger \in G$, and
         \item the free group $\free{G}$ is dense in $\SU{2^n}$.
     \end{itemize}
-    Take $\varepsilon > 0$.
-    Then, there is a constant $c > 3$, such that for any $U\in\SU{2^n}$, there exists a circuit $C\in G^*$ of length $\order{\log^c\qty(\frac{1}{\varepsilon})}$ that approximates $U$: that is $\norm{\dbrackets{C} - U} < \varepsilon$. % TODO: a lot of undefined stuff here \norm, \order (assumed, but not stated), free group
+    Then with $\varepsilon > 0$, there is a constant $c > 3$, such that for any $U \in \SU{2^n}$, there exists a circuit $C \in G^*$ of length $\order{\log^c\qty(\frac{1}{\varepsilon})}$ that approximates $U$ with error less than $\varepsilon$: that is $\norm{\implement{C} - U} < \varepsilon$.
 \end{theorem}
 Not only does this theoretical result provide some insight into~\ref{qu:synthesis}, but it's constructive and hence provides an algorithm\footnote{This result sometimes goes under the name ``The Solovay-Kitaev Algorithm''.} to approximate arbitrary elements of $\SU{2^n}$ using gates from $\SU{2^m}$ for any $m \in \gls{intsn}$.
-This result was an important and motivating because it showed that one only need a finite number of gates to perform any unitary.
+This was, and remains to be, a very important result in the field of quantum computing because it was the first to show that with the right gate set, one can theoretically perform any desired unitary.
 
 With at least a partial answer to Question~\ref{qu:synthesis} we can begin to refine further questions.
 If the answer to~\ref{qu:synthesis} is positive, we can then ask the following.
 \begin{question}\label{qu:optimalsynthesis}
     If $G$ synthesizes $U$, and if $f: G^* \to \R$ is a cost function, can we find
     \begin{equation*}
-        C_\text{min} = \argmin_{C\in G^*} \qty{f(C) : \dbrackets{C} = U}?
+        C_\text{min} = \argmin_{C\in G^*} \qty{f(C) : \implement{C} = U}?
     \end{equation*}
 \end{question}
 Some examples of common cost functions are given below, and multiple can be used in the case of tie-breaking.
@@ -257,17 +277,17 @@ Some examples of common cost functions are given below, and multiple can be used
 We slightly danced around the idea of universality in~\cref{thm:solovaykitaev}, but we will make it clear now.
 In order to harness the full power of a quantum computer, we hope it to be able to perform arbitrary unitary operations.
 \begin{definition}
-    A gate set $G$ on $n$ qubits is called \emph{universal} if for all $U\in\U{2^n}$ there exists a circuit $C\in G^*$ such that $\dbrackets{C} = U$.
+    A gate set $G$ on $n$ qubits is called \emph{universal} if for all $U \in \PU{2^n}$ there exists a circuit $C\in G^*$ such that $\implement{C} = U$.
 \end{definition}
 If our gate set is not universal, then we can often find ourselves in a situation where it is more efficient to simulate a given quantum algorithm than to actually run it.
 \Eg{} circuits composed of gates from $\qty{\CNOT, H, S}$ are known to be efficiently simulable~\cite{gottesman-knill} despite not limiting factors typically thought to make quantum computation more powerful such as entanglement.
 
 The question of which gate sets are universal for quantum computation is important both for our theoretical understanding of quantum computation, but also for building physical devices.
-Examples that have been shown to be universal are
+Some examples that have been shown to be universal are the following.
 \begin{itemize}
     \item \CNOT{} plus $\U{2}$ as shown in~\cite{universal-cnot-u2}
     \item \CNOT{}, Hadamard, and the $\frac{\pi}{8}$-gate\footnote{The $\frac{\pi}{8}$-gate is also sometimes called $T$ and has matrix representation $\smqty[1 & 0 \\ 0 & \e^{\iu\pi/4}]$.} as shown in~\cite{universal-cnot-had-p8}
-    \item \CCNOT{} (Toffoli), Hadamard, and the $\frac{\pi}{4}$-gate\footnote{The $\frac{\pi}{4}$-gate is also sometimes called $S$ and has matrix representation $\smqty[1 & 0 \\ 0 & \e^{\iu\pi/2}]$.} as shown in~\cite{bigkitaev}
+    \item Toffoli, Hadamard, and the $\frac{\pi}{4}$-gate\footnote{The $\frac{\pi}{4}$-gate is also sometimes called $S$ and has matrix representation $\smqty[1 & 0 \\ 0 & \e^{\iu\pi/2}]$.} as shown in~\cite{bigkitaev}
     \item \CNOT{} plus any single qubit gate that does not preserve the computational basis and is not the Hadamard gate as shown in~\cite{universal-cnot-basis-change}
 \end{itemize}
 
@@ -308,7 +328,7 @@ Note that this may appear very similar to~\cref{def:circuit}, however we did not
 \subsection{Dense-ness}
 
 What does it mean for a gate set $G$ to be dense in $\SU{2^n}$?
-It means that for every $U \in \SU{2^n}$, and every $\varepsilon > 0$, we have a sequence of gates $C = g_1g_2\cdots g_m$ such that $\norm{\dbrackets{C} - U} < \varepsilon$.
+It means that for every $U \in \SU{2^n}$, and every $\varepsilon > 0$, we have a sequence of gates $C = g_1g_2\cdots g_m$ such that $\norm{\implement{C} - U} < \varepsilon$.
 
 \subsection{Fidelity}
 

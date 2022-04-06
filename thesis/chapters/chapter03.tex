@@ -1,5 +1,5 @@
 %************************************************
-\chapter{Quantum Hardware}\label{ch:hardware}
+\chapter{Quantum Hardware}\label{chap:hardware}
 %************************************************
 
 The goal of this chapter is twofold.
@@ -30,16 +30,16 @@ It is some of these secondary question we wish to understand more deeply to make
 \section{Quantum Chips}
 
 Intuitively a quantum chip is a collection of qubits along with the capability to perform operations on subsets of the qubits.
-This can be formalized using the graph structure as follows. % TODO better lead in
+This can be formalized using a graph structure as follows. % TODO better lead in
 
 \begin{definition}\label{def:topology}
-    A \emph{quantum connectivity graph} is simply a graph $H = (V, E)$\footnote{$V$ is a finite set which we refer to as vertices, and $E$ is a collection of pairs of vertices, \ie{} $E \subseteq V \times V$.} such that $(v, v) \in E$ for all $v \in V$.
+    A \emph{quantum connectivity graph} is an undirected\footnote{TODO} graph $H = (V, E)$\footnote{$V$ is a finite set which we refer to as vertices, and $E$ is a collection of pairs of vertices, \ie{} $E \subseteq V \times V$.} such that $(v, v) \in E$ for all $v \in V$.
     That is $H$ contains all self loops.
 \end{definition}
-The notion of a connectivity graph is sometimes referred to as a (network) topology.
-In this definition we ensure a connectivity graph has all self loops as edges are the model for performing quantum gates.
-Since all quantum hardware can perform single qubit unitary gates we include self edges to indicate this.
-Once the connectivity graph has been established we can consider which gate-sets are possible by ensuring only qubits which are connected via an edge are acted on in a nontrivial manner.
+What we call the connectivity graph is sometimes referred to as a (network) topology in other resources.
+We ensure the connectivity graph has all self loops as edges are the basis for performing quantum gates and all modern hardware has the capability of performing single qubit gates.
+Once the connectivity graph has been established we can consider which gate-sets are allowable by ensuring only qubits which are connected via an edge are acted on in a nontrivial manner.
+\Ie{} if two nodes are not connected via an edge, there should be no entangling gates operating on them. % TODO define entangling gate
 \begin{definition}
     Let $H = (V, E)$ be a quantum connectivity graph.
     A gate set $G$ is said to be \emph{amenable} to $H$ if
@@ -84,7 +84,7 @@ As an example if $G = \qty{\1 \otimes \1, \1 \otimes X, X \otimes \1, X \otimes 
 We can now define the main problem of quantum circuit compilation: that of the qubit mapping problem.\footnote{This sometimes also goes by the name of the qubit routing problem, or qubit scheduling problem although sometimes these mean slightly different things.}
 \begin{question}
     Let $C \in G^*$ be a circuit over quantum gate set $G$, and $T$ a quantum chip with gate set $G'$ and connectivity graph $H$.
-    Is there a circuit $C' \in G'$ such that $\dbrackets{C'} = \dbrackets{C}$?
+    Is there a circuit $C' \in G'$ such that $\implement{C'} = \implement{C}$?
 \end{question}
 In the case when the number of qubits required in $C$ is greater than $\abs{Q}$, the answer is no.\footnote{There are however specific cases when this \emph{is} possible. If the algorithm only required $n < \abs{Q}$ qubits to be entangled at once, there are clever scheduling tactics one can employ to implement such an algorithm. There are also ``quantum autoencoders'' which attempt to implement compressed versions of circuits on smaller numbers of qubits~\cite{autoencode}.}
 On the other hand when the number of qubits required for $C$ is fewer than the number we have access to $\abs{Q}$, then the answer is yes, provided
