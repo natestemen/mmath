@@ -202,6 +202,13 @@ The structure of variational circuits has been further been taken advantage of b
 \paragraph{Crosstalk}
 Due to crosstalk's prevalence on nearly all hardware, compilers have been developed to mitigate this problem by utilizing both commutation identities and physical gate timing~\cite{crosstalk-commute,crosstalk-mitigation}. % TODO add picture from either paper
 
+\subsection{Verification}
+
+While retaining the semantic meaning of a circuit is one of the highest priorities during circuit compilation, it is possible it has changed.
+Thus, just as chip manufacturers use verification techniques to ensure electronics are built to specification, circuit compilation can also benefit from such techniques.
+With smaller circuits it's possible to ensure the correctness of compilers by simulation, but this is not a scalable approach to due to the inherent complexities in simulating quantum systems.
+To this end various methods have been developed such as formal proof~\cite{circuit-verification-formal-proof}, diagrammatic methods~\cite{circuit-verification-diagrammatic}, equivalence checking~\cite{circuit-verification-equivalence-check} and functional verification~\cite{circuit-verification-functional}.
+There have also been circuit optimizers written in formal languages like Coq~\cite{coq} using the semantics of matrices to only perform optimizations it has formally verified to be correct~\cite{verified-optimizer}.
 
 
 \section{Quantum Stack}
