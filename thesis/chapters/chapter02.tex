@@ -43,17 +43,7 @@ The problem presented in this document is relevant to quantum computers past the
 \section{Quantum Computation}
 
 In this section we will go over the basics of quantum computation.
-% This section is written with a moderate amount of protest since I do not believe I will give a pedagogically proper and sound treatment of the material. % TODO make this a little lighter
 Before continuing I would like to recommend~\cite{nielsenchuang} as well as \url{https://quantum.country} as great resources to learn the basics of quantum computing.
-
-% TODO: talk about these
-% There are three main models used for quantum computation:
-% \begin{itemize}
-%     \item circuital quantum computing
-%     \item adiabatic quantum computing
-%     \item measurement based quantum computing
-% \end{itemize}
-% Because of the ease in implementing universal quantum computation, the circuital model has become the most popular. % TODO
 
 \subsection{Formalism}
 
@@ -291,7 +281,29 @@ Some examples that have been shown to be universal are the following.
     \item \CNOT{} plus any single qubit gate that does not preserve the computational basis and is not the Hadamard gate as shown in~\cite{universal-cnot-basis-change}
 \end{itemize}
 
-\section{Mathematics} % TODO cover some math for solovay-kitaev
+\section{Fault Tolerance}\label{sec:ft}
+
+Introduced in context of quantum computation by \citeauthor{fault-tolerance}, the idea of fault tolerance is make quantum computers that can perform meaningful computation despite decoherence and other errors~\cite{fault-tolerance}.
+As it stands, even with basic quantum error correction quantum errors can spread and quickly become unwieldy.
+Suppose we have a general two qubit state that we'd like to perform a \CNOT{} gate on, but a bit-flip error occurs on the first qubit before the \CNOT{} can be applied.
+This single qubit error is then propagated to the second qubit as follows.
+\begin{align}
+    \alpha\ket{00} + \beta\ket{01} & + \gamma\ket{10} + \delta\ket{11} \label{eq:2qbitstate}                                     \\
+                                   & \xrightarrow{X \otimes \1} \alpha\ket{10} + \beta\ket{11} + \gamma\ket{00} + \delta\ket{01} \\
+                                   & \xrightarrow{\CNOT{}} \alpha\ket{11} + \beta\ket{10} + \gamma\ket{00} + \delta\ket{01}
+\end{align}
+Compare that with the effect of a \CNOT{} on the general two qubit state in~\cref{eq:2qbitstate}.
+\begin{align}
+    \alpha\ket{00} + \beta\ket{01} & + \gamma\ket{10} + \delta\ket{11}                                                      \\
+                                   & \xrightarrow{\CNOT{}} \alpha\ket{00} + \beta\ket{01} + \gamma\ket{11} + \delta\ket{10}
+\end{align}
+To solve this problem (and many others like it), fault tolerance encodes single qubits into many to increase information redundancy.
+Gates are then replaced by \textbf{gadgets} which implement the one and two qubit gates on the encoded logical qubits.
+To prevent errors from spreading, restrictions are placed on the number of two qubit inter-gates.
+Here inter-gates refer to gates within the encoded qubits, and the restrictions are in place to ensure errors spread in only a limited capacity.
+Further explanation and details can be found in~\cite{intro-ft}.
+
+\section{Mathematics}
 
 Before moving on there are a few more bits of mathematics we need to cover.
 All of our discussions in this section will assume our vector space $V$ is some complex space $\C^n$.
