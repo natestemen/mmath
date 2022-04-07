@@ -67,8 +67,9 @@ Merriam-Webster defines the word \textbf{compile} to mean~\cite{compiledef}
 \begin{quote}
     to compose out of materials from other documents.
 \end{quote}
-In this context we might imagine ``other documents'' to mean the higher level code (and maybe other configuration files) and we are composing the lower level machine code.
-We can see this definition reflected in~\citetitle{dragonbook}\footnote{Colloquially known as ``The Dragon Book'' because of the cover, and likely the most famous book on (classical) compilers. This is also where the logo of the LLVM project originates from which we will discuss in~\cref{sec:llvm}.}\graffito{
+In this context ``other documents'' might mean the higher level code itself, as well as configuration and environment variables.
+With these materials the lower level machine code is then composed.
+This definition is reflected in~\citetitle{dragonbook}\footnote{Colloquially known as ``The Dragon Book'' because of the cover, and likely the most famous book on (classical) compilers. This is also where the logo of the LLVM project originates from which we will discuss in~\cref{sec:llvm}.}\graffito{
     \includegraphics[width=\marginparwidth]{img/dragonbook.png}
     \emph{The Dragon Book}
     \includegraphics[width=\marginparwidth]{img/llvmlogo.png}
@@ -86,17 +87,17 @@ Hence we can view compilers as a function taking software written at one level o
     \caption{Action of Compiler}\label{fig:compiler}
 \end{figure}
 
-The term compiler was coined by Grace Hopper in the early 1950's while working on a system that could translate symbolic mathematics into a machine language.
-Initially Hopper's new idea was met with resistance.
+The term compiler was first used in the context computers by Grace Hopper in the early 1950's while working on a system that could translate symbolic mathematics into a machine language.
+Initially Hopper's new idea was met with resistance as it was thought to be unrealistic.
 \begin{quotation}
     I had a running compiler, and nobody would touch it because, they carefully told me, computers could only do arithmetic; they could not do programs.
     It was a selling job to get people to try it.
     I think with any new idea, because people are allergic to change, you have to get out and sell the idea.
     \attrib{Grace Hopper~\cite{hopperquote}}
 \end{quotation}
-In the end she succeeded in selling the idea and compilers became a ubiquitous piece of modern computing infrastructure.
-Some of the many functions a modern compiler can perform are line reconstruction, preprocessing, lexical analysis, syntax analysis, semantic analysis, conversion to an \ac{IR}, optimization, and finally code generation.
-Thankfully we will not need to understand all of these parts, and the majority of this document will focus on \aclp{IR}, optimizations, and code generation.
+In the end she succeeded in selling the idea and compilers have become a ubiquitous piece of modern computing infrastructure.
+While Hopper's compiler focused solely on code translation, a modern compiler might perform all of line reconstruction, preprocessing, lexical analysis, syntax analysis, semantic analysis, conversion to an \ac{IR}, optimization (and there are many different types!), and finally code generation.
+Thankfully we will not need to understand \emph{all} of these parts in full, but rather will focus on \aclp{IR}, optimizations, and code generation.
 
 \subsection{Compilation Phases}
 
@@ -106,7 +107,7 @@ A schematic for this can be seen in~\cref{fig:compilerphases} for the main steps
 \begin{wrapfigure}[24]{i}{0.25\textwidth}% TODO tweak lineheight
     \centering
     \includestandalone[width=0.23\textwidth]{tikz/phases}
-    \caption{Compiler Phases}\label{fig:compilerphases}
+    \caption{Compiler Phases}\label{fig:compilerphases} % TODO can we fix this caption?
 \end{wrapfigure}
 
 \paragraph{Syntax Analyzer}
@@ -115,14 +116,14 @@ If one is writing code in a binary alphabet with characters \texttt{0} and \text
 To complete this step many compilers turn the code into a syntax tree to complete the verification.
 
 \paragraph{Semantic Analyzer}
-During this step the program is validated in such a way that ensures the code can run on a computer.\todo{this is a bad description}
-Part of this is usually doing type checking to ensure calculations are computed between valid types.
-In many languages the operation \texttt{'hello' * 5} would pass the syntax analyzer, but fail the semantic analyzer because a string multiplied by an integer is usually not defined.\footnote{It is completely valid in other languages though like python!}
+Now that the code is syntactically valid we can ensure it has meaning.
+This phase usually consists of type checking and scope validation (ensuring the code does not access variables outside of scope).
+In some languages the operation \texttt{'hello' * 5} would pass syntax analysis, but fail semantic analysis because a string multiplied by an integer is usually not a valid operation defined.\footnote{It is completely valid in other languages like python, but python is not a compiled language.}
 
 \paragraph{Intermediate Code Generator}
-When we've reached this phase, we know our code is well formed in every sense and we must start preparing it to execute on hardware.
-We could pass directly to some type of code generator from this point, but this phase helps speed up the code itself.
-From the existing code (or sometimes using the syntax tree created in the previous steps) a mid-level representation of it is created with the intention of being close enough to machine code that later translations are easy.
+The code is now ensured to be well formed and can begin preparation to execute on hardware.
+Passing directly to the code generator is sometimes possible from here, but the end product will be slower as no optimizations will take place.
+From the existing code (or sometimes using the syntax tree created in the previous steps) a mid-level representation is created with the intention of being close enough to machine code that later translations are easy, and expressive enough to encompass to be optimizable.
 This is best seen with a simple example.
 Suppose we have the following snippet to calculate the final location of a moving object after some 5 seconds.
 \begin{lstlisting}
@@ -135,11 +136,14 @@ Upon transforming this code via the intermediate code generator we might end up 
     t3 = x_initial + t2
     x_final = t3
 \end{lstlisting}
-While this may not seem like a particularly important transformation, it allows \emph{many} different languages to be represented in the same \acf{IR} which is what we see in~\cref{lst:ir}.% TODO cref wrong
+The power here comes from the fact that the \acf{IR} can be language agnostic, and hence many languages can compile into the same \ac{IR}.
+This helps us get the most out of the optimizer in the next step.
 
 \paragraph{Code Optimizer}
-Once the code is in the \ac{IR} the optimizer kicks in to try an speed up the code.
-The above code may be transformed into something slightly simpler.
+Once the code is in the \ac{IR} the optimizer will attempt to improve it using many different methods.
+Improve can mean many different things, but it usually refers to runtime, and memory use.
+Typically optimizations that occur during this step are constant propagation, dead code elimination,
+Returning to the example, upon optimization we may be left with something slightly simpler.
 \begin{lstlisting}
     t1 = velocity * 5.0
     x_final = initial + t1
@@ -147,12 +151,19 @@ The above code may be transformed into something slightly simpler.
 Here we have skipped the call to \texttt{inttofloat} and instead immediately converted the integer \texttt{5} to the float \texttt{5.0}.
 We have also combined two of the steps to reduce the number of temporary variables we have to create and store in memory.
 As you can see the task of the optimizer is not only to try and speed up the code, but reduce it's memory usage as well.
-Some of the other problems the code generator must tackle are instruction selection, register allocation, and instruction scheduling all of which have analogs we will see in~\cref{chap:qcomps}.
+Some of the other problems the code optimizer must tackle are instruction selection, register allocation, and instruction scheduling all of which have analogs we will see in~\cref{chap:circuit-compilers}.
 
 \paragraph{Code Generator}
 Finally we have an optimized \ac{IR} and we can generate code for hardware.
 This requires us to know which hardware it is we'd like to run our code on as each chip might have a different \ac{ISA}.
-With a specific instruction set, we can go ahead and generate code to run on it and again following our example we might end up with something like the following.
+This is a very difficult step as many of the sub-problems that are required to be solved are themselves NP-complete such as register allocation~\cite{register-allocation-NP}. % TODO complexity
+Further, generating mathematically optimal machine code has also been shown to be undecidable~\cite{dragonbook}!
+Hence this step uses effective heuristics to solve the problem at hand in tractable amounts of time.
+Typically this step is broken down into first optimizing the \ac{IR} for the hardware that has been chosen, followed by the actual code generation.
+If this occurs the optimizer is typically referred to as hardware-independent optimizer, and a later stage of optimizations is performed in a hardware-dependent optimizer.
+We will see later that the distinct phases of optimization are of crucial importance when compiling quantum circuits.
+
+Again following the above code example, upon code generation we may end with the following generic hardware instruction code.
 
 \begin{minipage}{0.5\textwidth}
     \begin{lstlisting}
@@ -174,16 +185,47 @@ With a specific instruction set, we can go ahead and generate code to run on it 
     \end{tabular}
     \captionof{table}{Machine Code}\label{fig:machcode}
 \end{minipage}
-Here each function's first argument is either a register (if it starts with \texttt{R}), or a variable as in \texttt{STF}.
+Here anything beginning with \texttt{R} is a register.
 
 The phases described here are often grouped into three larger categories.
 The syntax and semantic analysis, as well as the generation of an \ac{IR} fall under the umbrella of ``front end'', the optimizer is the optimizer, and everything else that follows is the ``back end''.
-The implications of this design is that an optimizer and backend can be paired with many different front ends as long as the front end can generate the optimizer's \ac{IR}.
+The implications of this design is that an optimizer and backend can be paired with many different front ends as long as the front end can generate the optimizer's preferred \ac{IR} flavor.
 \begin{figure}[ht]
     \centering
-    \includestandalone[width=0.8\textwidth]{tikz/frontback}
+    \includestandalone[width=0.75\textwidth]{tikz/frontback}
     \caption{Compiler with many front and back ends}\label{fig:compends}
 \end{figure}
+
+\subsection{Optimizations}
+
+Before moving on to some examples of compilers, it's important to understand the separation of concerns in the two types of optimizations we've seen.
+The main optimizer we see in~\cref{fig:compilerphases} as ``Code optimizer'' and again the ``Optimizer'' in~\cref{fig:compends} are typically where the majority of optimizations take place in classical compilers and are performed on an \ac{IR}.
+One interesting class of examples are peephole optimizations~\cite{classical-peephole}.
+These are optimizations that take advantage of small patterns found in code that can be simplified in some way.
+Some examples are seen in~\cref{tab:peephole}.
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{p{.5\textwidth}l}
+        Instruction                                                      & Optimized Instruction \\ \toprule
+        Read value into a register, then immediately store it in memory. & Do nothing            \\
+        $a \cdot x + b \cdot x$                                          & $(a + b) \cdot x$     \\
+        $x - x$                                                          & $0$                   \\
+        $(A^\intercal B^\intercal)^\intercal$                            & $BA$
+    \end{tabular}
+    \caption{Peephole Optimizations}\label{tab:peephole}
+\end{table}
+Other examples include dead code elimination, common subexpression elimination, and inlining.
+The optimizations done here---usually to the ends of faster runtime and smaller memory use---are performed in the hopes that once the code is compiled into machine code it \emph{will} run faster.
+The intuitive optimizations often remove duplication, but many other optimizations that are not so clear take advantage of the commonalities among \ac{CPU} design to produce code that will run faster on any \ac{CPU}.
+
+With an optimized \ac{IR}, and a chosen backend, or hardware, the code can be modified to suit the instruction set, as well as other restrictions the hardware may place on computation.
+\Eg{} most \acp{CPU} have a small number of registers, and hence must use them wisely throughout the computation so as to use \emph{all} of them where possible, but not slow down computation by waiting for a register to be available.
+Another example is instruction scheduling where the compiler must figure out an optimal ordering to the computation, again to maximize the \acp{CPU} compute power, while not causing bottlenecks.
+There are many other examples of hardware-dependent optimizations, but as you might imagine many require an intimate knowledge of the hardware's particular design.
+It must do this translation all while maintaining the same semantic meaning of the original program.
+
+In summary the first hardware-independent optimization should be thought of as optimizing the implementation theoretically, and the hardware-dependent optimization as ensuring the optimized algorithm runs as fast as possible in its final implementation.
+Many more examples of optimizations (both hardware-independent and hardware-dependent) can be found in~\cite[Chapter~8]{compiler-optimizations}.
 
 \subsection{Examples}\label{sec:compiler-examples}
 
@@ -191,27 +233,26 @@ We've now seen what it is a compiler is, and what we typically use it for.
 A few examples are in order to help understand how compilers work in the real world, and just how varied they can be.
 
 \begin{description}
-    \item[clang:] This \emph{is} a compiler in the strictest sense. As input it takes C/C++ and provides executable versions of that code that an be run on hardware.
-    \item[Latex:] While perhaps not very obvious, \LaTeX{} is indeed a compiler in the sense that it takes in code, and produces a lower level representation of what the user wants to typeset. Usually that comes in the form of postscript which is another programming language that is read by printers (hardware) to produce the requested document. Postscript can also be read by PDF readers which then display content as the user desired (maybe).
-    \item[TensorFlow:] TensorFlow is a platform for machine learning that embodies the structure of a compiler in it's design. Indeed it has a front-end where the user builds their model, an optimizer that speeds up the model, and once it's ready the model can be brought to multiple backends (in browser, mobile, laptop). This is all even before we talk about TensorFlow Quantum which was introduced in~\cite{tensoflowquantum} to aid in optimizing noisy circuits on \acs{NISQ} devices.\footnote{We will get into, and define this terminology shortly!}
+    \item[clang:] Short for C Language, this is a compiler frontend for the C/\CPP{} languages. It takes in C/\CPP{} code and produces an LLVM \ac{IR} which we will learn about in~\cref{sec:llvm}. It then lets LLVM handle the rest of the compilation processing.
+    \item[Latex:] While perhaps not very obvious, \LaTeX{} is indeed a compiler as it takes high level formatting code, and produces a lower level representation of what the user wants to typeset. Usually that comes in the form of postscript which is another programming language that is read by printers (hardware) to produce the requested document. Postscript can also be read by PDF readers and browsers which then display content as the author desired (maybe).
+    \item[TensorFlow:] TensorFlow is a library for machine learning that has drawn on the design principles of compilers in attempts to speed up and ensure the accuracy of models. Indeed it has a frontend where the user builds their model and compiles it into an \ac{IR} known as HLO \ac{IR} or High Level Operations. Typical optimizations then occur and again using the LLVM compiler infrastructure this code can be brought to many backends such as the browser, mobile, and specialized compute infrastructure (such as Google's \ac{TPU}). This is all before we talk about TensorFlow Quantum which allows for hybrid quantum-classical machine learning models~\cite{tensoflowquantum}.
 \end{description}
 
 \section{LLVM}\label{sec:llvm}
 
-The LLVM\footnote{The project, while originally was an acronym for Low Level Virtual Machine no longer is an acronym, and instead solely goes by LLVM.} project~\cite{llvm} is one of the largest open source compiler projects in existence and much of the compiler architecture we've discussed here come from it's design.
+The LLVM\footnote{The project, while originally an acronym for Low Level Virtual Machine now goes solely by LLVM. The original name reflects the fact that the compiler targets low level \ac{IR} code that runs on some theoretical (hence the term virtual) machine. Since the inception virtual machines have come to mean something different, hence the abandonment of the acronym.} project~\cite{llvm} is one of the largest open source compiler projects in existence and much of the compiler architecture we've discussed here come from it's design.
 The founder of the project Chris Lattner has characterized compilers succinctly in~\cite{lattnerquote} as
 \begin{quote}
     the art of allowing humans to think at a level of abstraction that they want to think about.
 \end{quote}
 
-Indeed as an interesting historical note, once the \ac{ISA} scheme had become commonplace, chip designers began to implement more and more complex instructions so programmers could use them natively.
+Indeed as an interesting historical note, once the \ac{ISA} scheme had become commonplace, chip designers began to implement more and more complex instructions on \acp{CPU} so that machine code became higher level.
 At the same time compilers became more popular, especially as their optimizations became more and more robust.
 This led to a distinction between chip architectures known as \ac{CISC} and \ac{RISC}.
-While \ac{CISC} \acp{CPU} are still being made, \ac{RISC} \acp{CPU} are becoming more popular to the point where \ac{RISC} is sometimes said to be an acronym for ``Relegate Interesting Stuff to the Compiler''.
+While \ac{CISC} \acp{CPU} are still being made and designed, they are no longer the obvious choice.
+While there are many factors at play, including the economic cost of hardware vs software \ac{RISC} \acp{CPU} are becoming more popular.
+Today \acp{RISC} are sometimes referred to using the backronym ``Relegate Interesting Stuff to the Compiler''.
 
-With the growth of LLVM, the developers have sought to continue to grow the use of the compiler and extend it's use to ``heterogeneous hardware''~\cite{mlir}, which could in the future encompass something like a \ac{QPU}.
+With the growth of LLVM, developers have pushed the compiler to extend it's use to ``heterogeneous hardware''~\cite{mlir} which already includes new types of computing hardware like \acp{TPU} and could in the future encompass a \ac{QPU}.
 This is exciting not \emph{just} because classical computing infrastructure is starting to think about quantum, but because this also means that our job as quantum programmers, and architects might be made easier by the monumental effort those who have come before us have built.
 In quantum computing it can often feel like everything must be done from scratch as the new paradigm is so different from classical computing, yet here is a glimmer of hope we can recycle, or at the very least, learn from what has been built.
-
-
-\cite{classical-peephole}.\todo{cite this}
