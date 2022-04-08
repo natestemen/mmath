@@ -1,0 +1,38 @@
+\documentclass[tikz]{standalone}
+
+\usetikzlibrary{arrows,shadows,positioning,fit}
+
+\begin{document}
+
+\tikzset{
+    frame/.style={
+            draw,
+            text width=6em,
+            text centered,
+            minimum height=4em,
+            drop shadow,
+            fill=orange!40,
+            rounded corners,
+        }
+}
+\begin{tikzpicture}[font=\sffamily, thick, node distance=1cm]
+    \node[frame]                     (qiskit)    {Qiskit Frontend};
+    \node[frame, below=of qiskit]    (pennylane) {Pennylane Frontend};
+    \node[frame, below=of pennylane] (tket)      {TKET Frontend};
+
+    \node[frame, right=of pennylane] (opt) {\acs{QIR} Optimizer};
+
+    \node[frame, right=of opt]  (ibmq) {IBMQ Backend};
+    \node[frame, above=of ibmq] (ionq) {IONQ Backend};
+    \node[frame, below=of ibmq] (brak) {Amazon Braket Backend};
+
+    \draw[-stealth] (qiskit)    -- (opt);
+    \draw[-stealth] (pennylane) -- (opt);
+    \draw[-stealth] (tket)      -- (opt);
+
+    \draw[-stealth] (opt) -- (ionq);
+    \draw[-stealth] (opt) -- (ibmq);
+    \draw[-stealth] (opt) -- (brak);
+\end{tikzpicture}
+
+\end{document}

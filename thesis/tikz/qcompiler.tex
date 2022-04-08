@@ -1,0 +1,35 @@
+\documentclass[tikz]{standalone}
+
+\usetikzlibrary{arrows,shadows,positioning,fit}
+
+\begin{document}
+\tikzset{
+    frame/.style={
+            draw,
+            text width=6em,
+            text centered,
+            minimum height=4em,
+            drop shadow,
+            fill=orange!40,
+            rounded corners,
+        },
+}
+\begin{tikzpicture}[font=\sffamily, very thick, node distance=4cm]
+    \node[align=center] (qa) {Quantum \\ Algorithm};
+    % \node[frame, right of=qa] (compiler) {Compiler};
+    \node[frame, right of=qa] (ir) {};%Intermediate \\ Representation};
+    \node[align=center, above right=.5cm and 1cm of ir] (ha) {Hardware A};
+    \node[align=center, below=.5cm of ha] (hb) {Hardware B};
+    \node[align=center, below=.1cm of hb] (hdots) {\vdots};
+
+    % \node[align=center, right of=compiler] (ml) {Hardware A};
+
+    \draw[-stealth] (qa) -- (ir);
+    \draw[-stealth] (ir) -- (ha);
+    \draw[-stealth] (ir) -- (hb);
+    % \draw[-stealth] (ir) -- (hdots);
+
+    \node[very thick, draw=orange!20, fit=(ir), inner sep=3mm, label=above:{Quantum Compiler}, rounded corners](qcompiler) {};
+\end{tikzpicture}
+
+\end{document}

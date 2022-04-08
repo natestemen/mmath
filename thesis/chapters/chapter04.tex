@@ -1,80 +1,79 @@
 % ***********************************************
-\chapter{Circuit Compilers}\label{ch:circuit-compilers}
+\chapter{Circuit Compilers}\label{chap:circuit-compilers}
 % ***********************************************
 
-We can now return to the issue of compilers.
-It should now be clear that the level of abstraction we work at when designing quantum algorithms is much higher than the capabilities of our current, and likely future hardware.
-Hence quantum compilers are needed for two steps.
-\begin{figure}[h]
+We can now return to the topic of compilers.
+It should now be clear that the level of abstraction we work at when designing quantum algorithms (\ie{} quantum circuits possibly with some some classical computation mixed in) is much higher than the capabilities of our current, and likely near-future hardware.
+Hence, just as we saw in~\cref{chap:compilers}, we are in need of a tool to translate this description down to a lower level of abstraction that embodies the restrictions of the hardware.
+As in~\cref{fig:compilerphases} which detailed the phases of a compiler, there are syntax and semantic analyses that are performed to ensure circuits are well formed, but we will not go any further into this topic here.
+The most interesting, and complicated portions of circuit compilation occur in transforming a circuit to an \ac{IR}, optimizing it, and generating machine level instructions.
+Na\"{i}vely this is three phases, but because current quantum hardware is so restrictive this can often be broken down into the following four step.
+
+\begin{enumerate}
+    \item Conversion of quantum algorithm to a \ac{QIR}.
+    \item Optimization of the \ac{QIR}.
+    \item Compilation of the \ac{QIR} to a specific quantum chip, resulting in an instruction set.
+    \item Optimization of the instruction set.
+\end{enumerate}
+This is reflected in the following diagram.
+\begin{figure}[h] % TODO finish diagram
     \centering
-    \tikzset{
-        frame/.style={
-                draw,
-                text width=6em,
-                text centered,
-                minimum height=4em,
-                drop shadow,
-                fill=orange!40,
-                rounded corners,
-            },
-    }
-    \begin{tikzpicture}[font=\sffamily, very thick, node distance=4cm]
-        \node[align=center] (qa) {Quantum \\ Algorithm};
-        % \node[frame, right of=qa] (compiler) {Compiler};
-        \node[frame, right of=qa] (ir) {};%Intermediate \\ Representation};
-        \node[align=center, above right=.5cm and 1cm of ir] (ha) {Hardware A};
-        \node[align=center, below=.5cm of ha] (hb) {Hardware B};
-        \node[align=center, below=.1cm of hb] (hdots) {\vdots};
-
-        % \node[align=center, right of=compiler] (ml) {Hardware A};
-
-        \draw[-stealth] (qa) -- (ir);
-        \draw[-stealth] (ir) -- (ha);
-        \draw[-stealth] (ir) -- (hb);
-        % \draw[-stealth] (ir) -- (hdots);
-
-        \node[very thick, draw=orange!20, fit=(ir), inner sep=3mm, label=above:{Quantum Compiler}, rounded corners](qcompiler) {};
-    \end{tikzpicture}
+    \includestandalone[width=0.8\textwidth]{tikz/qcompiler}
     \caption{Action of Quantum Compiler}\label{fig:quantumcompiler}
 \end{figure}
 
-\dots Thus when compiling circuits, we need to minimize the number of \SWAP{} gates we must add since we saw in~\cref{eq:cnotswap} that each \SWAP{} takes 3 \CNOT{} gates.
+This reflects the structure of a classical compiler very closely in part because the phased approach works well, but as we will see later it suits our needs well for hybrid quantum-classical computations that are expected to be the dominant near-term use of quantum computers.
+This approach also allows the design of components to be easily reused just as we saw with classical compiler in~\cref{fig:compends}.
+A similar figure can be drawn for some of the many players in the quantum landscape and can be seen in~\cref{fig:optionsq}.
+\begin{figure}[ht]
+    \centering
+    \includestandalone[width=0.8\textwidth]{tikz/frontbackq}
+    \caption{Modularity of Quantum Compiler}\label{fig:optionsq}
+\end{figure}
+
+One of the benefits of the modular compiler structure seen in~\cref{fig:optionsq} is that once the optimizer is made, backends can be written as new hardware arrive, \emph{and} a backend can be written to take the circuit to a classical \ac{CPU}.
+In effect what this provides is an optimized quantum simulator.
+
+Many proposals for a \ac{QIR} are built on top of the LLVM \ac{IR} because of the success it's had in classical computing.
+In particular the QIR Alliance~\cite{qir} has been formed in order to put formalize a specification for a \ac{QIR} that will describe quantum and classical computation.
+This project has already had some success as a \ac{MLIR} has already been made that lowers into the LLVM \ac{IR} in a way that is adherent to the \ac{QIR} specification put forth~\cite{mlirquantum}.
+As we will see in~\cref{sec:methods} many near-term applications of quantum computers will require the quantum computation as a coprocessor of information.
+Thus having a unified \ac{IR} that is capable of describing quantum and classical computation is compulsory.
+This reinforces the benefits of building a \ac{QIR} on top of an existing \ac{IR}.
+
+
 \paragraph{Fault Tolerance}
 As we saw in~\cref{sec:ft}, fault tolerance is key method for encoding qubits and gates to prevent the spread of errors in a quantum circuit.
 This is done by restricting where entangling gates can be applied.
 Thus when compiling a fault tolerant circuit, the compiler needs to understand not only the restrictions that may be in place due to the quantum chips connectivity, but \emph{also} the entangling gate restriction that fault tolerance places on the circuit.
 Not only this, but it is hoped that we may also be able to use compilers to take circuits and compile them \emph{into} a fault tolerant form if the quantum chip allows for it.
 
-\paragraph{Compiling the Toffoli Gate}
-Since most hardware are not capable of 3-qubit operations we must decompose the Toffoli, or \CCNOT{} gate into something more manageable.
-This is typically done using \CNOT{}'s, Hadamard's ($H$), and $\pi/8$ ($T$) gates~\cite{nielsenchuang}.
-\begin{equation}
-    \begin{quantikz}[column sep=.25cm]
-        & \ctrl{1} & \midstick[3,brackets=none]{$=$} \qw & \qw      & \qw      & \qw              & \ctrl{2} & \qw      & \qw      & \qw              & \ctrl{2} & \qw      & \ctrl{1} & \gate{T}         & \ctrl{1} & \qw \\
-        & \ctrl{1} & \qw                                 & \qw      & \ctrl{1} & \qw              & \qw      & \qw      & \ctrl{1} & \qw              & \qw      & \gate{T} & \targ{}  & \gate{T^\dagger} & \targ{}  & \qw \\
-        & \targ{}  & \qw                                 & \gate{H} & \targ{}  & \gate{T^\dagger} & \targ{}  & \gate{T} & \targ{}  & \gate{T^\dagger} & \targ{}  & \gate{T} & \gate{H} & \qw              & \qw      & \qw
-    \end{quantikz}
-\end{equation}
-This is an important decomposition as the \CCNOT{} gate appears in the modular exponentiation problem which is a core part of Shor's algorithm~\cite{shor-encryption}.
-Hence if there are smaller decompositions than shown above that would be ideal as \emph{one} \CCNOT{} gate becomes 14!
-\citeauthor{universal-cnot-u2} show a more compact decomposition of \CCNOT{} using only 3 \CNOT{} gates if the phase of one of the qubits is allowed to change~\cite{universal-cnot-u2}.
-Let $G = R_Y(\frac{\pi}{4})$ in the following circuit. % following https://arxiv.org/pdf/quant-ph/9705009.pdf rather than original paper
-\begin{equation}
-    \begin{quantikz}%[column sep=.25cm]
-        & \ctrl{1} & \midstick[3,brackets=none]{$\approx$} \qw & \qw                        & \qw      & \qw                        & \ctrl{2} & \qw                       & \qw      & \qw                       & \qw \\
-        & \ctrl{1} & \qw                                       & \qw                        & \ctrl{1} & \qw                        & \qw      & \qw                       & \ctrl{1} & \qw                       & \qw \\
-        & \targ{}  & \qw                                       & \gate{G^\dagger} & \targ{}  & \gate{G^\dagger} & \targ{}  & \gate{G} & \targ{}  & \gate{G} & \qw
-    \end{quantikz}
-\end{equation}
-However the question ended in~\citeyear{toff3cnot} when it was shown that a true equality preserving decomposition of the \CCNOT{} gate requires a minimum of 6 \CNOT{} gates~\cite{toff3cnot}.\footnote{This result shows that a minimum of 6 \CNOT{} gates must be used, \textbf{if} they are being used. Other decompositions not using \CNOT{} gates might still be more compact.}
+\begin{example}[Compiling the Toffoli Gate]
+    Since most hardware are not capable of 3 qubit operations we must decompose the Toffoli gate into something more manageable.
+    This is typically done using \CNOT{}'s, Hadamard's ($H$), and $\pi/8$ ($T$) gates~\cite{nielsenchuang}.
+    \begin{equation}
+        \begin{quantikz}[column sep=.25cm]
+            & \ctrl{1} & \midstick[3,brackets=none]{$=$} \qw & \qw      & \qw      & \qw              & \ctrl{2} & \qw      & \qw      & \qw              & \ctrl{2} & \qw      & \ctrl{1} & \gate{T}         & \ctrl{1} & \qw \\
+            & \ctrl{1} & \qw                                 & \qw      & \ctrl{1} & \qw              & \qw      & \qw      & \ctrl{1} & \qw              & \qw      & \gate{T} & \targ{}  & \gate{T^\dagger} & \targ{}  & \qw \\
+            & \targ{}  & \qw                                 & \gate{H} & \targ{}  & \gate{T^\dagger} & \targ{}  & \gate{T} & \targ{}  & \gate{T^\dagger} & \targ{}  & \gate{T} & \gate{H} & \qw              & \qw      & \qw
+        \end{quantikz}
+    \end{equation}
+    This is an important decomposition as the \CCNOT{} gate appears in the modular exponentiation problem which is a core part of Shor's factoring algorithm~\cite{shor-encryption}.
+    Hence if there are smaller decompositions than shown above that would be ideal as \emph{one} \CCNOT{} gate becomes 14!
+    \citeauthor{universal-cnot-u2} show a more compact decomposition of \CCNOT{} using only 3 \CNOT{} gates if the phase of one of the qubits is allowed to change~\cite{universal-cnot-u2}.
+    Let $G = R_Y(\frac{\pi}{4})$ in the following circuit. % following https://arxiv.org/pdf/quant-ph/9705009.pdf rather than original paper
+    \begin{equation}
+        \begin{quantikz}%[column sep=.25cm]
+            & \ctrl{1} & \midstick[3,brackets=none]{$\approx$} \qw & \qw                        & \qw      & \qw                        & \ctrl{2} & \qw                       & \qw      & \qw                       & \qw \\
+            & \ctrl{1} & \qw                                       & \qw                        & \ctrl{1} & \qw                        & \qw      & \qw                       & \ctrl{1} & \qw                       & \qw \\
+            & \targ{}  & \qw                                       & \gate{G^\dagger} & \targ{}  & \gate{G^\dagger} & \targ{}  & \gate{G} & \targ{}  & \gate{G} & \qw
+        \end{quantikz}
+    \end{equation}
+    However the question of ``how many \CNOT{} gates does it take to decompose a \CCNOT{}?'' was answered in~\citeyear{toff3cnot} when it was shown that a true equality preserving decomposition requires a minimum of 6 \CNOT{} gates~\cite{toff3cnot}.\footnote{This result shows that a minimum of 6 \CNOT{} gates must be used, \textbf{if} they are being used. Other decompositions not using \CNOT{} gates might still be more compact.}
+\end{example}
 
-\section{Strong and Weak Compilation}
 
-
-One of the benefits of the modular compiler structure seen in~\cref{fig:compends} is that once the optimizer is made, we can write a backend to go to real hardware, \textbf{and} write another backend to send the code to classical hardware.
-This in effect provides an optimized quantum simulator.
-
-\section{Compiling on a ring}
+\section{Compiling on a ring}\label{sec:ringcomp}
 
 In this section we will see an example that will take us through some of the many difficulties one might face while attempting to come up with a general purpose algorithm/method for compiling quantum circuits.
 This example is drawn from~\cite{ring-compilation} with modifications.
@@ -178,22 +177,43 @@ With this addition the compiled circuit begins to grow very quickly (\cref{fig:d
     \caption{Compiled Circuit on Directed Ring}\label{fig:dirringcomp}
 \end{figure}
 
-While this was a relatively simple example of some of the tasks a circuit compiler must complete, it did not begin to touch on the problem of gate decomposition.
-In the above example all gates applied were ones our made up ring computer could natively work with.
+While this was a relatively simple example of some of the tasks a circuit compiler must complete, it did not begin to touch on the problem of gate decomposition or unitary synthesis (\cref{qu:optimalsynthesis}). % TODO cref wrong
+In the above example all gates applied were taken to be native to the hardware.
 
 
-\section{Methods}
+\section{Methods}\label{sec:methods}
 
-It's important to note that quantum circuit compilers exist and in many of the references that follow the authors' proposed compilation methods are benchmarked against the most prevalent compiler which happens to be IBM's Qiskit~\cite{qiskit}.
+Current research on compilation methods can be benchmarked in many ways, and compilation techniques often arise to improve on a given benchmark.
+Benchmarks are typically performed with respect to the most prominent compiler, which at the time of writing seems to be that of IBM's Qiskit~\cite{qiskit}.
+Just as we saw in~\cref{sec:comp-phases} many of the subproblems required to be solved in classical compilation are NP-complete, or more difficult.
+Unfortunately the situation seems as bad in quantum compilation as the problem of assigning logical qubits to physical ones is equivalent to the subgraph isomorphism problem which is known to be NP-complete.
+Again finding the optimal number, and position, of \SWAP{} gates is equivalent to another problem known to be at least NP-hard.
+Thus, as before we must look to heuristic solutions.
+
+The procedure we encountered in~\cref{sec:ringcomp} was loosely based on methods proposed in~\cite{ring-compilation} where first a circuit is sliced by timesteps, an initial mapping of qubits is made to the connectivity graph, routing gates from the original circuit onto the new architecture is performed, finally ending with gate synthesis for the gates that the quantum chip may not support.\footnote{Followed by peephole optimizations if they are available.}
+In~\cite{intprog} considers solely the problem of finding optimal solutions to the qubit assignment, and routing problems.
+Despite this being an NP-complete problem the authors make the simplifying assumption that the circuit is already decomposed into one and two qubit gates that are native to the hardware.
+The problem is then encoded via a complex integer programming problem, with similarly encoded cost functions such as minimizing the total error rate, minimizing circuit depth, and minimizing crosstalk
+Once encoded the optimization problem can then be solved by one of the many integer programming libraries.
+The authors report a decrease in \CNOT{} gates and higher fidelity when run on real hardware when compared to Qiskit's compiler.
+
+A slightly different approach is taken through~\cite{nisq-comp,nisq-comp2,nisq-comp3} where compilers are designed specifically for \ac{NISQ}-era devices.
+In particular~\cite{nisq-comp2,nisq-comp3} use calibration data collected from hardware to inform the compilation process.
+This means if a particular qubit has a very high error rate, the compiler attempt to route computation around it, or use it as infrequently as possible.
+This allows the compiler to generate circuits optimized for the hardware at particular times of day as calibration data changes intra-day.
+
+Deep reinforcement learning has also made it's way into quantum circuit compilation in attempt to perform unitary synthesis~\cite{deepcompile}.
+This approach is well-suited for real-time quantum computation where the additional time required to compile a circuit is unavailable and hence a more immediate solution is required.
 
 \paragraph{QAOA}
-Compilers have also been built to attack specific problems such as the \ac{QAOA}~\cite{qaoa} where particular gates can be swapped horizontally in circuit diagrams due to their commutative nature.
-Focusing in this particular problem, the authors in~\cite{qaoa-compiler} have been able to reduce the gate count by 23\% and circuit depth by 53\% on average.
+The \ac{QAOA} is a combinatorial optimization algorithm that is intended to be run on \ac{NISQ}-era devices~\cite{qaoa}.
+With the knowledge of a circuits general structure, compilers have been able to take advantage of this fact.
+Focusing in this particular problem, a 23\% reduction in gate count, and 53\% reduction in circuit depth was acheived~\cite{qaoa-compiler}.
 In the future we might hope to build these problem specific compilers into a more general purpose one that can diagnose and understand when to use problem specific compilers on demand.
 
 \paragraph{VQE}
-Another hybrid quantum-classical algorithm that has seem much attention is that of the \ac{VQE}~\cite{vqe,vqe2}.
-This algorithm is used in quantum chemistry to calculate the ground state of a molecular Hamiltonian using a parametrized quantum circuit as a cost function, and the classical compute nodes as an optimizer.
+Another hybrid quantum-classical algorithm that has seem much attention due to its near-term applications in quantum chemistry is that of the \ac{VQE}~\cite{vqe,vqe2}.
+This algorithm is used to calculate the ground state of a molecular Hamiltonian using a parametrized quantum circuit as a cost function, and the classical compute nodes as an optimizer.
 \Eg{} let $\boldsymbol{\theta} \in \R^n$ be a vector of numbers that our circuit $U$ depends on, \ie{} $U: \R^n \to \U{2^m}$ for some number of qubits $m$.
 \begin{figure}[ht] % TODO label positioning fucked
     \centering
@@ -221,7 +241,7 @@ There have also been circuit optimizers written in formal languages like Coq~\ci
 In this section we will give an overview of the related technologies to quantum circuit compilation and try and explain how they fit together to form a quantum full stack.
 \todo{all these need to be tied together}
 
-\texttt{qcor}~\cite{qcor} is a C++ compiler for hybrid quantum-classical computing built on \texttt{clang} (C++ compiler mentioned in~\cref{sec:compiler-examples}).
+\texttt{qcor}~\cite{qcor} is a \CPP{} compiler for hybrid quantum-classical computing built on \texttt{clang} (\CPP{} compiler mentioned in~\cref{sec:compiler-examples}).
 
 Authors in~\cite{qisa} introduce the \texttt{quil} language~\cite{quil} which is intended to be a Quantum \ac{ISA} suitable for program analysis and compilation.
 
