@@ -39,6 +39,11 @@ Hence quantum compilers are needed for two steps.
 \end{figure}
 
 \dots Thus when compiling circuits, we need to minimize the number of \SWAP{} gates we must add since we saw in~\cref{eq:cnotswap} that each \SWAP{} takes 3 \CNOT{} gates.
+\paragraph{Fault Tolerance}
+As we saw in~\cref{sec:ft}, fault tolerance is key method for encoding qubits and gates to prevent the spread of errors in a quantum circuit.
+This is done by restricting where entangling gates can be applied.
+Thus when compiling a fault tolerant circuit, the compiler needs to understand not only the restrictions that may be in place due to the quantum chips connectivity, but \emph{also} the entangling gate restriction that fault tolerance places on the circuit.
+Not only this, but it is hoped that we may also be able to use compilers to take circuits and compile them \emph{into} a fault tolerant form if the quantum chip allows for it.
 
 \paragraph{Compiling the Toffoli Gate}
 Since most hardware are not capable of 3-qubit operations we must decompose the Toffoli, or \CCNOT{} gate into something more manageable.
