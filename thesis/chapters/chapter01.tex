@@ -3,8 +3,8 @@
 %************************************************
 
 In this chapter we will give a very brief overview of the components of classical computers that will be helpful to further discussions of quantum circuit compilation.
-A key component to quantum circuit compilation is the word ``compilation'' and its origins (in computing) span back to the early 1950's when electronic digital computers were in their early stages.
-Understanding the historical development of compilation and its techniques will provide ideas and tools necessary in solving the new task of quantum circuit compilation.
+A key component to quantum circuit compilation is the word ``compilation'' whose origins (in computing) date to the early 1950's when electronic digital computers were in their early stages.
+Understanding the historical development of compilation and its techniques will provide ideas and tools necessary to solve the new task of quantum circuit compilation.
 
 This chapter is meant to provide the reader with the basics of some computing terminology and ideas.
 It is by no means a complete introduction to compilers, nor computer architecture.
@@ -24,47 +24,37 @@ A simplified model of computer architecture, known as the von Neumann Architectu
     \caption{von Neumann Architecture scheme}\label{fig:comparch}
 \end{figure}
 
-Since the \ac{CPU} is the computational piece of a computer, what can it do?
-Most modern \acp{CPU} are built on the \acp{ISA} which means that the \ac{CPU} has a finite set of operations or instructions that it can perform and everything we might wish to perform on a computer, must be built up from these primitive operations.
-Some examples of what these primitive operations might be are
+Since the \ac{CPU} is the computational component of the computer, what can \emph{it} do?
+Modern \acp{CPU} are built on the \ac{ISA} which means that the \ac{CPU} has a finite set of operations or instructions that it can perform.
+Every operation the computer can perform must be built up from these primitive instructions.
+Some examples of what these primitive operations might be are:
 \begin{itemize}
-    \item put a value into memory,
-    \item add two values in memory together and store in a new location,
-    \item perform the bitwise negation on a value,
+    \item put a value into memory;
+    \item add two values in memory together and store the result in a new location;
+    \item perform the bitwise negation on a value;
     \item compute the square root of a value.
 \end{itemize}
-With a set of performable operations laid out, one can then use these primitives to build up more and more complex functionality that eventually implements the things we know and love (and hate) computers for.
-One thing worth mentioning here that is often glossed over in treatments of \acp{ISA} is that the instruction set must be computationally universal.\footnote{Or Turing-complete if you're computer science oriented.}
-Without going too much into the weeds, we should think of computationally universal (in the classical sense) as wielding the full power of a computer, rather than only being able to do a particular type of computation.\todo{I don't like this explanation.}
-Thankfully, this is relatively easy to do in the classical setting and there are even theoretical machines that use a \emph{single} operation to achieve universal computation.
-\Eg{} one can achieve universal classical computation with the following instruction which implements ``subtract and branch if negative''.
-\begin{lstlisting}
-    Instruction subneg a, b, c
-    Memory[b] = Memory[b] - Memory[a]
-    if (Memory[b] < 0)
-        goto c
-\end{lstlisting}
+One can then use these primitives to build up complex functionality that eventually implement the capabilities we know and love (and hate) computers for.
+By choosing an \ac{ISA}, a \emph{complexity class} is created of all the problems that can be solved using a polynomial number of instructions.\footnote{Polynomial refers to the function which takes the \emph{size} of the problem input, and returns the number of steps (or time) required to solve the problem.}
+In practice most \acp{ISA} implement the same complexity class which we denote by P and refers to decision problems solvable by a deterministic Turing machine in a polynomial amount of time. % TODO complexity
+There are many \acp{ISA} one can come up with that spawn different complexity classes, of which the ones we expect some familiarity with are P and NP on the classical side, and BQP on the quantum side.
+For more details on complexity classes consult~\cite{complexity} and~\cite[Chapter 3]{nielsenchuang}.
 
-While this style of architecture is great, and has worked very well, it requires the programmer to code at a very low level since the operations a \ac{CPU} performs are themselves primitive.
-In order to work at a higher level of abstraction, computer scientists and programmers began to create new languages which were easier to read and write, yet could be translated into a form the brains of the computer could understand.
-This would improve productivity by allowing those writing code to work at a higher level of abstraction, and bury implementation details into the code which performed the translation into the machine's instruction set.
+The \ac{ISA} architecture style has seen major success, but it suffers from the drawback of requiring the programmer to work at the very low level of machine instructions.
+To work at a higher level of abstraction, and hence to have a higher-level of productivity, computer scientists and programmers created new languages which were easier to read, write, and reason about.
+This necessitated new languages to be ``translated'' into the instruction set after the code was written.
 The software responsible for translating these higher level ideas into a machines instruction set are known as \textbf{compilers}.
-
-
-% With the exception of the last item, these operations are generally considered to be simple, and the latter complex.
-% This has given rise to a distinction in \ac{CPU} architecture where we see \acp{CISC} and \acp{RISC}.
-% The goal of the former to implement more and more complex ``primitive'' operations, while the latter leaving more work to be performed by the compiler~\cite{dragonbook}.
 
 \section{Compilers}
 
-While compilers have their origins in the aforementioned translation of higher level code into lower level code, they have grown considerably to perform many more tasks.
-Before we dive into all of the capabilities of a modern compilers, let's take a step back and recall what the word compile means.
+While compilers have their origins in the aforementioned translation of higher-level code into lower-level code, they have grown considerably to perform many more tasks.
+Before we dive into all of the capabilities of modern compilers, let's take a step back and recall what the word compile means.
 
-Merriam-Webster defines the word \textbf{compile} to mean~\cite{compiledef}
+Merriam-Webster~\cite{compiledef} defines the word \emph{compile} to mean
 \begin{quote}
     to compose out of materials from other documents.
 \end{quote}
-In this context ``other documents'' might mean the higher level code itself, as well as configuration and environment variables.
+In the context of programming language compilers,  ``other documents'' might mean the code itself, as well as configuration files and environment variables.
 With these materials the lower level machine code is then composed.
 This definition is reflected in~\citetitle{dragonbook}\footnote{Colloquially known as ``The Dragon Book'' because of the cover, and likely the most famous book on (classical) compilers. This is also where the logo of the LLVM project originates from which we will discuss in~\cref{sec:llvm}.}\graffito{
     \includegraphics[width=\marginparwidth]{img/dragonbook.png}
@@ -99,7 +89,7 @@ Thankfully we will not need to understand \emph{all} of these parts in full, but
 \subsection{Compilation Phases}\label{sec:comp-phases}
 
 As alluded to in the previous section, a compiler has many different responsibilities.
-Each responsibility is broken into a separate component so that it can be understood on it's own.
+Each responsibility is broken into a separate component so that it can be understood on its own.
 A schematic for this can be seen in~\cref{fig:compilerphases} for the main steps that we will be concerned with in this document.
 \begin{wrapfigure}[24]{i}{0.25\textwidth}% TODO tweak lineheight
     \centering
@@ -108,46 +98,48 @@ A schematic for this can be seen in~\cref{fig:compilerphases} for the main steps
 \end{wrapfigure}
 
 \paragraph{Syntax Analyzer}
-This phase is for ensuring the code is syntactically well formed (that is it abides by the specification of the language).
+This phase is for ensuring the code is syntactically well formed (that is, that it abides by the specification of the language).
 If one is writing code in a binary alphabet with characters \texttt{0} and \texttt{1}, then the ``program'' \texttt{00011} is syntactically valid, while \texttt{1102} is not because a \texttt{2} appears in the code.
-To complete this step many compilers turn the code into a syntax tree to complete the verification.
+Many compilers transform the code into a syntax tree to complete the verification.
 
 \paragraph{Semantic Analyzer}
-Now that the code is syntactically valid we can ensure it has meaning.
+Now that the code is syntactically valid, we can ensure it has meaning.
 This phase usually consists of type checking and scope validation (ensuring the code does not access variables outside of scope).
-In some languages the operation \texttt{'hello' * 5} would pass syntax analysis, but fail semantic analysis because a string multiplied by an integer is usually not a valid operation defined.\footnote{It is completely valid in other languages like python, but python is not a compiled language.}
+In many compiled languages the operation \texttt{'hello' * 5} would pass syntax analysis, but fail semantic analysis because a string multiplied by an integer is not a valid operation.\footnote{It is completely valid in other languages like Python, but Python is not a compiled language.}
 
 \paragraph{Intermediate Code Generator}
 The code is now ensured to be well formed and can begin preparation to execute on hardware.
-Passing directly to the code generator is sometimes possible from here, but the end product will be slower as no optimizations will take place.
-From the existing code (or sometimes using the syntax tree created in the previous steps) a mid-level representation is created with the intention of being close enough to machine code that later translations are easy, and expressive enough to encompass to be optimizable.
+Passing directly to the code generator is possible from here, but the end product will be slower as no optimizations will take place.
+Instead, the existing code (or sometimes using the syntax tree created in the previous steps) will be transformed into an \acf{IR}.
+This is a mid-level representation of the code in that it is typically thought of as somewhere between the high level of abstraction of the programming language, and the low level instruction set.
+
 This is best seen with a simple example.
-Suppose we have the following snippet to calculate the final location of a moving object after some 5 seconds.
+Suppose we have the following snippet to calculate the final location of a moving object after 5 seconds.
 \begin{lstlisting}
     x_final = x_initial + velocity * 5
 \end{lstlisting}
-Upon transforming this code via the intermediate code generator we might end up with something like the following.
-\begin{lstlisting}[label=lst:ir]
+Upon transforming this code to an \ac{IR}, it takes on a more basic form.
+\begin{lstlisting}
     t1 = inttofloat(5)
     t2 = velocity * t1
     t3 = x_initial + t2
     x_final = t3
 \end{lstlisting}
 The power here comes from the fact that the \acf{IR} can be language agnostic, and hence many languages can compile into the same \ac{IR}.
-This helps us get the most out of the optimizer in the next step.
+This design allows for the use of an optimizer for many languages.
 
 \paragraph{Code Optimizer}
-Once the code is in the \ac{IR} the optimizer will attempt to improve it using many different methods.
-Improve can mean many different things, but it usually refers to runtime, and memory use.
-Typically optimizations that occur during this step are constant propagation, dead code elimination,
-Returning to the example, upon optimization we may be left with something slightly simpler.
+Once the code is in the \ac{IR}, the optimizer will attempt to ``improve'' it using many different methods.
+Improve can mean many different things, but usually refers to runtime and memory use.
+Optimizations that occur during this step are constant propagation, dead code elimination, removing unnecessary code from loops, and loop unrolling.
+Optimizing the above example our code is still ``bulkier'' than originally written, but compressed in comparison to the original \ac{IR}-form.
 \begin{lstlisting}
     t1 = velocity * 5.0
-    x_final = initial + t1
+    x_final = x_initial + t1
 \end{lstlisting}
 Here we have skipped the call to \texttt{inttofloat} and instead immediately converted the integer \texttt{5} to the float \texttt{5.0}.
 We have also combined two of the steps to reduce the number of temporary variables we have to create and store in memory.
-As you can see the task of the optimizer is not only to try and speed up the code, but reduce it's memory usage as well.
+As you can see the task of the optimizer is not only to try and speed up the code, but reduce its memory usage as well.
 Some of the other problems the code optimizer must tackle are instruction selection, register allocation, and instruction scheduling all of which have analogs we will see in~\cref{chap:circuit-compilers}.
 
 \paragraph{Code Generator}
@@ -157,7 +149,7 @@ This is a very difficult step as many of the sub-problems that are required to b
 Further, generating mathematically optimal machine code has also been shown to be undecidable~\cite{dragonbook}!
 Hence this step uses effective heuristics to solve the problem at hand in tractable amounts of time.
 Typically this step is broken down into first optimizing the \ac{IR} for the hardware that has been chosen, followed by the actual code generation.
-If this occurs the optimizer is typically referred to as hardware-independent optimizer, and a later stage of optimizations is performed in a hardware-dependent optimizer.
+If this occurs the optimizer is typically referred to as a hardware-independent optimizer, and a later stage of optimizations is performed in a hardware-dependent optimizer.
 We will see later that the distinct phases of optimization are of crucial importance when compiling quantum circuits.
 
 Again following the above code example, upon code generation we may end with the following generic hardware instruction code.
@@ -195,7 +187,7 @@ The implications of this design is that an optimizer and backend can be paired w
 
 \subsection{Optimizations}
 
-Before moving on to some examples of compilers, it's important to understand the separation of concerns in the two types of optimizations we've seen.
+Before moving on to some examples of compilers, its important to understand the separation of concerns in the two types of optimizations we've seen.
 The main optimizer we see in~\cref{fig:compilerphases} as ``Code optimizer'' and again the ``Optimizer'' in~\cref{fig:compends} are typically where the majority of optimizations take place in classical compilers and are performed on an \ac{IR}.
 One interesting class of examples are peephole optimizations~\cite{classical-peephole}.
 These are optimizations that take advantage of small patterns found in code that can be simplified in some way.
@@ -216,17 +208,17 @@ The optimizations done here---usually to the ends of faster runtime and smaller 
 The intuitive optimizations often remove duplication, but many other optimizations that are not so clear take advantage of the commonalities among \ac{CPU} design to produce code that will run faster on any \ac{CPU}.
 
 With an optimized \ac{IR}, and a chosen backend, or hardware, the code can be modified to suit the instruction set, as well as other restrictions the hardware may place on computation.
-\Eg{} most \acp{CPU} have a small number of registers, and hence must use them wisely throughout the computation so as to use \emph{all} of them where possible, but not slow down computation by waiting for a register to be available.
-Another example is instruction scheduling where the compiler must figure out an optimal ordering to the computation, again to maximize the \acp{CPU} compute power, while not causing bottlenecks.
-There are many other examples of hardware-dependent optimizations, but as you might imagine many require an intimate knowledge of the hardware's particular design.
-It must do this translation all while maintaining the same semantic meaning of the original program.
+For example, most \acp{CPU} have a small number of registers, and hence must use them wisely throughout the computation so as to use \emph{all} of them where possible, but not slow down computation by waiting for a register to be available.
+Another example is instruction scheduling, where the compiler must figure out an optimal ordering to the computation, again to maximize the \acp{CPU} compute power while not causing bottlenecks.
+There are many other examples of hardware-dependent optimizations, but as you might imagine, many require an intimate knowledge of the hardware's particular design.
+All this transformation occurs while maintaining the same semantic meaning of the original program.
 
 In summary the first hardware-independent optimization should be thought of as optimizing the implementation theoretically, and the hardware-dependent optimization as ensuring the optimized algorithm runs as fast as possible in its final implementation.
 Many more examples of optimizations (both hardware-independent and hardware-dependent) can be found in~\cite[Chapter~8]{compiler-optimizations}.
 
 \subsection{Examples}\label{sec:compiler-examples}
 
-We've now seen what it is a compiler is, and what we typically use it for.
+We've now seen what a compiler is and what we typically use it for.
 A few examples are in order to help understand how compilers work in the real world, and just how varied they can be.
 
 \begin{description}
@@ -237,19 +229,20 @@ A few examples are in order to help understand how compilers work in the real wo
 
 \section{LLVM}\label{sec:llvm}
 
-The LLVM\footnote{The project, while originally an acronym for Low Level Virtual Machine now goes solely by LLVM. The original name reflects the fact that the compiler targets low level \ac{IR} code that runs on some theoretical (hence the term virtual) machine. Since the inception virtual machines have come to mean something different, hence the abandonment of the acronym.} project~\cite{llvm} is one of the largest open source compiler projects in existence and much of the compiler architecture we've discussed here come from it's design.
+The LLVM\footnote{The project, while originally an acronym for Low Level Virtual Machine now goes solely by LLVM. The original name reflects the fact that the compiler targets low level \ac{IR} code that runs on some theoretical (hence the term virtual) machine. Since the inception virtual machines have come to mean something different, hence the abandonment of the acronym.} project~\cite{llvm} is one of the largest open source compiler projects in existence and much of the compiler architecture we've discussed here come from its design.
 The founder of the project Chris Lattner has characterized compilers succinctly in~\cite{lattnerquote} as
 \begin{quote}
     the art of allowing humans to think at a level of abstraction that they want to think about.
 \end{quote}
 
-Indeed as an interesting historical note, once the \ac{ISA} scheme had become commonplace, chip designers began to implement more and more complex instructions on \acp{CPU} so that machine code became higher level.
-At the same time compilers became more popular, especially as their optimizations became more and more robust.
+As an interesting historical note, once the \ac{ISA} scheme had become commonplace, chip designers began to implement more and more complex instructions on \acp{CPU} so that machine code became higher level.
+At the same time, compilers became more popular, especially as their optimizations became more robust, and useful.
 This led to a distinction between chip architectures known as \ac{CISC} and \ac{RISC}.
-While \ac{CISC} \acp{CPU} are still being made and designed, they are no longer the obvious choice.
-While there are many factors at play, including the economic cost of hardware vs software \ac{RISC} \acp{CPU} are becoming more popular.
+At the time of writing, \ac{CISC} processors are dominant in desktop computers, while \ac{RISC} processors emphasize efficiency and can be found in phones and many other portable computing hardware.
+Some examples include Intel's x86 and x64 chips which are built in the \ac{CISC} style, while ARM is major designer of \ac{RISC} chips (including the most recent Apple Bionic A15 chip). % TODO add note about RISC V?
 Today \acp{RISC} are sometimes referred to using the backronym ``Relegate Interesting Stuff to the Compiler''.
 
-With the growth of LLVM, developers have pushed the compiler to extend it's use to ``heterogeneous hardware''~\cite{mlir} which already includes new types of computing hardware like \acp{TPU} and could in the future encompass a \ac{QPU}.
-This is exciting not \emph{just} because classical computing infrastructure is starting to think about quantum, but because this also means that our job as quantum programmers, and architects might be made easier by the monumental effort those who have come before us have built.
-In quantum computing it can often feel like everything must be done from scratch as the new paradigm is so different from classical computing, yet here is a glimmer of hope we can recycle, or at the very least, learn from what has been built.
+With the growth of LLVM, developers have pushed the compiler to extend its use to ``heterogeneous hardware''~\cite{mlir}, which already includes new types of computing hardware like \acp{TPU} and could in the future encompass a \ac{QPU}.
+This is exciting not only because classical computer designers are beginning to consider quantum technologies as coprocessors, but because the monumental classical computing infrastructure can then be leveraged to aid in the solutions to quantum problems.
+With the futurism, hype, and unknowns surrounding quantum technologies, it often seems that fundamentally new and ingenious ideas are needed to forward the field.
+Projects such as the above show there are serious possibilities of recycling, or at the very least, learning from what has come before us.
