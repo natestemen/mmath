@@ -7,7 +7,7 @@ It should now be clear that the level of abstraction we work at when designing q
 Hence, just as we saw in~\cref{chap:compilers}, we are in need of a tool to translate this description down to a lower level of abstraction that embodies the restrictions of the hardware.
 As in~\cref{fig:compilerphases} which detailed the phases of a compiler, there are syntax and semantic analyses that are performed to ensure circuits are well formed, but we will not go any further into this topic here.
 The most interesting, and complicated portions of circuit compilation occur in transforming a circuit to an \ac{IR}, optimizing it, and generating machine level instructions.
-Na\"{i}vely this is three phases, but because current quantum hardware is so restrictive this can often be broken down into the following four step.
+Na\"{\i}vely this is three phases, but because current quantum hardware is so restrictive this can often be broken down into the following four phases.
 
 \begin{enumerate}
     \item Conversion of quantum algorithm to a \ac{QIR}.
@@ -34,15 +34,15 @@ A similar figure can be drawn for some of the many players in the quantum landsc
 One of the benefits of the modular compiler structure seen in~\cref{fig:optionsq} is that once the optimizer is made, backends can be written as new hardware arrive, \emph{and} a backend can be written to take the circuit to a classical \ac{CPU}.
 In effect what this provides is an optimized quantum simulator.
 
-Many proposals for a \ac{QIR} are built on top of the LLVM \ac{IR} because of the success it's had in classical computing.
-In particular the QIR Alliance~\cite{qir} has been formed in order to put formalize a specification for a \ac{QIR} that will describe quantum and classical computation.
+Many proposals for a \ac{QIR} are built on top of the LLVM \ac{IR} because of the success it has had in classical computing.
+In particular the QIR Alliance~\cite{qir} has been formed in order to formalize a specification for a \ac{QIR} that will describe quantum and classical computation.
 This project has already had some success as a \ac{MLIR} has already been made that lowers into the LLVM \ac{IR} in a way that is adherent to the \ac{QIR} specification put forth~\cite{mlirquantum}.
-As we will see in~\cref{sec:methods} many near-term applications of quantum computers will require the quantum computation as a coprocessor of information.
+As we will see in~\cref{sec:methods} many near-term applications of quantum computers will use quantum computers as a coprocessor of information, rather than operating independently.
 Thus having a unified \ac{IR} that is capable of describing quantum and classical computation is compulsory.
 This reinforces the benefits of building a \ac{QIR} on top of an existing \ac{IR}.
 
 
-\paragraph{Fault Tolerance}
+\paragraph{Fault Tolerance} % TODO: expand into compiling into logical qubits/gate, then optimizing those gadgets
 As we saw in~\cref{sec:ft}, fault tolerance is key method for encoding qubits and gates to prevent the spread of errors in a quantum circuit.
 This is done by restricting where entangling gates can be applied.
 Thus when compiling a fault tolerant circuit, the compiler needs to understand not only the restrictions that may be in place due to the quantum chips connectivity, but \emph{also} the entangling gate restriction that fault tolerance places on the circuit.
@@ -78,7 +78,7 @@ Not only this, but it is hoped that we may also be able to use compilers to take
 In this section we will see an example that will take us through some of the many difficulties one might face while attempting to come up with a general purpose algorithm/method for compiling quantum circuits.
 This example is drawn from~\cite{ring-compilation} with modifications.
 
-To begin suppose we'd like to run the quantum circuit shown in~\cref{fig:presquish}.
+To begin, suppose we'd like to run the quantum circuit shown in~\cref{fig:presquish}.
 \begin{figure}[ht]
     \centering
     \begin{quantikz}%[row sep=.2cm]
@@ -90,7 +90,7 @@ To begin suppose we'd like to run the quantum circuit shown in~\cref{fig:presqui
     \caption{Circuit to be compiled}\label{fig:presquish}
 \end{figure}
 The first step we can take is to compress the diagram into a fewer number of layers.
-To do this we group operations on nonoverlapping qubits since they can be performed at the same time.
+To do this we group operations on nonoverlapping qubits since they can be performed at the same time.\footnote{This is not always an option as some implementations of quantum hardware (\eg{} trapped ion), and hence the grouping might not be as compact.}
 This is vital as decoherence times (\cref{sec:Ttimes}) are so short.
 This ``compressed'' version of the circuit is seen in~\cref{fig:precomp}.
 \begin{figure}[ht]
@@ -138,7 +138,7 @@ Executing the gates in slice 3 however will require a \SWAP{} as qubits $q_1$ an
 To make these qubits adjacent we can either swap qubits $q_1$ and $q_3$ or $q_2$ and $q_3$.
 Looking ahead to slice 5 we see we need adjacency of $q_1 \leftrightarrow q_2$ and $q_3 \leftrightarrow q_4$.
 Swapping $q_1$ and $q_3$ would mean two additional \SWAP{} gates before slice 5, but swapping $q_2$ and $q_3$ leaves the qubits in their desired positions for slice 5.
-Hence our compiled circuit in it's final form:
+Hence our compiled circuit in it final form:
 \begin{figure}[ht]
     \centering
     \begin{quantikz}
@@ -193,23 +193,23 @@ Thus, as before we must look to heuristic solutions.
 The procedure we encountered in~\cref{sec:ringcomp} was loosely based on methods proposed in~\cite{ring-compilation} where first a circuit is sliced by timesteps, an initial mapping of qubits is made to the connectivity graph, routing gates from the original circuit onto the new architecture is performed, finally ending with gate synthesis for the gates that the quantum chip may not support.\footnote{Followed by peephole optimizations if they are available.}
 In~\cite{intprog} considers solely the problem of finding optimal solutions to the qubit assignment, and routing problems.
 Despite this being an NP-complete problem the authors make the simplifying assumption that the circuit is already decomposed into one and two qubit gates that are native to the hardware.
-The problem is then encoded via a complex integer programming problem, with similarly encoded cost functions such as minimizing the total error rate, minimizing circuit depth, and minimizing crosstalk
-Once encoded the optimization problem can then be solved by one of the many integer programming libraries.
+The problem is then encoded via a complex integer programming problem, with similarly encoded cost functions such as minimizing the total error rate, minimizing circuit depth, and minimizing crosstalk.
+Once encoded, the optimization problem can then be solved by one of the many integer programming libraries.
 The authors report a decrease in \CNOT{} gates and higher fidelity when run on real hardware when compared to Qiskit's compiler.
 
 A slightly different approach is taken through~\cite{nisq-comp,nisq-comp2,nisq-comp3} where compilers are designed specifically for \ac{NISQ}-era devices.
 In particular~\cite{nisq-comp2,nisq-comp3} use calibration data collected from hardware to inform the compilation process.
-This means if a particular qubit has a very high error rate, the compiler attempt to route computation around it, or use it as infrequently as possible.
+This means if a particular qubit has a very high error rate, the compiler attempts to route computation around it, or use it as infrequently as possible.
 This allows the compiler to generate circuits optimized for the hardware at particular times of day as calibration data changes intra-day.
 
-Deep reinforcement learning has also made it's way into quantum circuit compilation in attempt to perform unitary synthesis~\cite{deepcompile}.
+Deep reinforcement learning has also made its way into quantum circuit compilation in attempt to perform unitary synthesis~\cite{deepcompile}.
 This approach is well-suited for real-time quantum computation where the additional time required to compile a circuit is unavailable and hence a more immediate solution is required.
 
 \paragraph{QAOA}
 The \ac{QAOA} is a combinatorial optimization algorithm that is intended to be run on \ac{NISQ}-era devices~\cite{qaoa}.
 With the knowledge of a circuits general structure, compilers have been able to take advantage of this fact.
 Focusing in this particular problem, a 23\% reduction in gate count, and 53\% reduction in circuit depth was acheived~\cite{qaoa-compiler}.
-In the future we might hope to build these problem specific compilers into a more general purpose one that can diagnose and understand when to use problem specific compilers on demand.
+In the future we might hope to build these problem-specific compilers into a more general purpose one that can diagnose and understand when to use problem-specific compilers on demand.
 
 \paragraph{VQE}
 Another hybrid quantum-classical algorithm that has seem much attention due to its near-term applications in quantum chemistry is that of the \ac{VQE}~\cite{vqe,vqe2}.
@@ -231,7 +231,7 @@ Due to crosstalk's prevalence on nearly all hardware, compilers have been develo
 
 While retaining the semantic meaning of a circuit is one of the highest priorities during circuit compilation, it is possible it has changed.
 Thus, just as chip manufacturers use verification techniques to ensure electronics are built to specification, circuit compilation can also benefit from such techniques.
-With smaller circuits it's possible to ensure the correctness of compilers by simulation, but this is not a scalable approach to due to the inherent complexities in simulating quantum systems.
+With smaller circuits, it's possible to ensure the correctness of compilers by simulation, but this is not a scalable approach to due to the inherent complexities in simulating quantum systems.
 To this end various methods have been developed such as formal proof~\cite{circuit-verification-formal-proof}, diagrammatic methods~\cite{circuit-verification-diagrammatic}, equivalence checking~\cite{circuit-verification-equivalence-check} and functional verification~\cite{circuit-verification-functional}.
 There have also been circuit optimizers written in formal languages like Coq~\cite{coq} using the semantics of matrices to only perform optimizations it has formally verified to be correct~\cite{verified-optimizer}.
 
