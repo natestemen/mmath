@@ -3,29 +3,29 @@
 %************************************************
 
 The goal of this chapter is twofold.
-First we introduce the most common constraints seen in modern quantum hardware, as well as other common tools used to measure the effectiveness and efficacy of a given quantum computer.
+First, we introduce the most common constraints seen in modern quantum hardware, as well as other common tools used to measure the efficacy of a given quantum computer.
 Second we will introduce the mathematical formalism needed in order to formulate the problems related to quantum circuit compilation we will see in~\cref{chap:circuit-compilers}.
-We will not, however, attempt to give an introduction to the physical implementations of quantum hardware and instead refer the reader to~\cite{nielsenchuang} for a more comprehensive introduction.
+We will not, however, attempt to give an introduction to the physical implementations of quantum hardware and instead refer the reader to~\cite[Chapter 7]{nielsenchuang} for a more comprehensive introduction.
 
 \section{Requirements}
-As we saw in~\cref{sec:history} the first realization of a qubit happened in~\citeyear{firstqubit}.
-A year later David DiVincenzo proposed 5 requirements as being necessary to make an effective quantum information processing device~\cite{divincenzo}.
+
+In~\citeyear{divincenzo} David DiVincenzo proposed 5 requirements as being necessary to make an effective quantum information processing device~\cite{divincenzo}.
 His proposed requirement are summarized here.
 \begin{requirements}
-    \item A scalable physical system with well characterized qubits.\label{req:scalable}
+    \item A scalable physical system with well-characterized qubits.\label{req:scalable}
     \item The ability to initialize the state of the qubits to a simple fiducial state, such as $\ket{0}^{\!\otimes n}$.\label{req:initialize}
     \item Long decoherence times, much longer than the gate operation time.\label{req:Ttimes}
     \item A universal set of quantum gates.\label{req:universal}
-    \item A qubit specific measurement capability.\label{req:measure}
+    \item A qubit measurement capability.\label{req:measure}
 \end{requirements}
 While all of these requirements are still under active research,~\cref{req:initialize,req:universal,req:measure} are completed for \ac{NISQ} devices, while~\cref{req:Ttimes,req:scalable} keep us in the \ac{NISQ}-era.
-However, even if all of these problems were solved completely, there is still many things that can go wrong.
-Just because your qubits scale doesn't mean you have an unlimited amount that you can use for memory an algorithm might require.
+However, even if all of these problems were solved completely, there are still many things that can go wrong.
+Just because your qubits scale doesn't mean you have enough for a specific algorithm.
 Just because there is a long decoherence time doesn't mean a qubit can't error in some other way.
 Just because you have a universal gate set doesn't mean you know how to efficiently decompose a gate from the algorithm you are trying to run.
 
 As you can see, these five requirements provide us with the backbone upon which we can build further, but do not guarantee optimal quantum computations.
-It is some of these secondary question we wish to understand more deeply to make quantum computers more useful once the bedrock has been established.
+It is some of these secondary questions we wish to understand more deeply to make quantum computers more useful once the bedrock has been established.
 
 \section{Quantum Chips}
 
@@ -38,8 +38,8 @@ This can be formalized using a graph structure as follows. % TODO better lead in
 \end{definition}
 What we call the connectivity graph is sometimes referred to as a (network) topology in other resources.
 We ensure the connectivity graph has all self loops as edges are the basis for performing quantum gates and all modern hardware has the capability of performing single qubit gates.
-Once the connectivity graph has been established we can consider which gate-sets are allowable by ensuring only qubits which are connected via an edge are acted on in a nontrivial manner.
-\Ie{} if two nodes are not connected via an edge, there should be no entangling gates operating on them. % TODO define entangling gate
+Once the connectivity graph has been established, we can consider which gate-sets are allowable by ensuring only qubits which are connected via an edge are acted on in a nontrivial manner.
+That is, if two nodes are not connected via an edge, there should be no entangling gates operating on them. % TODO define entangling gate
 \begin{definition}
     Let $H = (V, E)$ be a quantum connectivity graph.
     A gate set $G$ is said to be \emph{amenable} to $H$ if
@@ -69,7 +69,7 @@ Vertex ``3'' being connected to ``1'' means that we can apply a 2-qubit unitary 
     \caption{IBMQ Jakarta Architecture}\label{fig:ibm-jakarta}
 \end{figure}
 
-\begin{definition}
+\begin{definition} % TODO def needs to be moved up
     Let $G$ be a quantum gate set acting on $n$ qubits.
     Define a function $\qubits: G \to \mathcal{P}([n])$ which returns a set containing the index of the qubits each gate acts on nontrivially.
 \end{definition}
@@ -82,16 +82,26 @@ As an example if $G = \qty{\1 \otimes \1, \1 \otimes X, X \otimes \1, X \otimes 
 \end{definition}
 
 We can now define the main problem of quantum circuit compilation: that of the qubit mapping problem.\footnote{This sometimes also goes by the name of the qubit routing problem, or qubit scheduling problem although sometimes these mean slightly different things.}
-\begin{question}
-    Let $C \in G^*$ be a circuit over quantum gate set $G$, and $T$ a quantum chip with gate set $G'$ and connectivity graph $H$.
-    Is there a circuit $C' \in G'$ such that $\implement{C'} = \implement{C}$?
+\begin{question}\label{qu:qubitmapping}
+    Let $C \in A^*$ be a circuit over quantum gate set $A$, and $T = (B, H)$ a quantum chip.
+    Is there a $T$-executable circuit $C' \in B^*$ such that $\implement{C'} = \implement{C}$?
 \end{question}
-In the case when the number of qubits required in $C$ is greater than $\abs{Q}$, the answer is no.\footnote{There are however specific cases when this \emph{is} possible. If the algorithm only required $n < \abs{Q}$ qubits to be entangled at once, there are clever scheduling tactics one can employ to implement such an algorithm. There are also ``quantum autoencoders'' which attempt to implement compressed versions of circuits on smaller numbers of qubits~\cite{autoencode}.}
-On the other hand when the number of qubits required for $C$ is fewer than the number we have access to $\abs{Q}$, then the answer is yes, provided
+In the case when the number of qubits required in $C$ is greater than the number of vertices in the connectivity graph, the answer is no.\footnote{There are however specific cases when this \emph{is} possible. If the algorithm only requires $n < \abs{V}$ qubits to be entangled at once, there are clever scheduling tactics one can employ to implement such an algorithm. There are also ``quantum autoencoders'' which attempt to implement compressed versions of circuits on smaller numbers of qubits~\cite{autoencode}.}
+On the other hand when the number of qubits required for $C$ is fewer than the number we have access to $\abs{V}$, then the answer is yes, provided
 \begin{enumerate}
-    \item $H$ is a universal gate set, and
-    \item $(Q, E)$ is connected.\footnote{That is for any two vertices, there is a path between them.}
+    \item $B$ is a universal gate set, and
+    \item $(V, E)$ is connected.\footnote{That is for any two vertices, there is a path between them.}
 \end{enumerate}
+Just as the unitary synthesis problem (\cref{qu:synthesis}) was turned into an optimization problem by the use of cost functions (\cref{qu:optimalsynthesis}), we can ask for the optimal version of~\cref{qu:qubitmapping}.
+\begin{question}
+    Let $T = (B, H)$ be a quantum chip and $C \in B^*$ be a $T$-executable circuit that implements $C' \in A^*$ (\ie{} $\implement{C} = \implement{C'}$).
+    Let $f: B^* \to \R$ be a cost function.
+    Can we find
+    \begin{equation}
+        C_\text{min} = \argmin_{C \in B^*}\qty{f(C) : \implement{C} = \implement{C'} \quad\text{and}\quad C\text{ is $T$-executable}}?
+    \end{equation}
+\end{question}
+
 Despite formulating the key problem we'd like to understand in this document, there are many contributing factors that effect solutions to this problem
 For that reason we need to not just understand a theoretical model of quantum hardware, but some of the implementation details as well.
 
@@ -123,35 +133,40 @@ This time, instead of watching for the the bit flip from $\ket{1}$ to $\ket{0}$ 
     \item Apply another Hadamard $H$
     \item Measure the qubit
 \end{enumerate}
-Again, this experiment models an exponential decay with lifetime which we denote $T_2$.
+Again, this experiment is modeled by an exponential decay with lifetime which we denote $T_2$.
 This decoherence time is a measure of how quickly a superposition ($\ket{+}$) will decay into a classical mixture.
-Since $T_1$ is a measure of how robust the qubit is against bit flips, and $T_2$ is a measure of how robust the qubit is against becoming probabilistic, these two quantities are very important track the progress of quantum computers.
-
-\subsubsection{Gate Duration}
-
-As qubits are finnicky beasts that don't want to retain their quantum-ness, how quickly we can perform gates is a very important measure and one tracked across many quantum computers.
-This measure usually comes under the guise of \ac{CLOPS} first introduced in~\cite{clops}.
+In both the definition of $T_1$ and $T_2$ step 3 requires the experimenter to ``wait'', meaning apply identity gates until time $t$.
+That said while the waiting occurs, if \emph{other} qubits are acted upon, this may change the experimental results due to crosstalk (\cref{sec:errors}).
+Since $T_1$ is a measure of how robust the qubit is against bit flips, and $T_2$ is a measure of how robust the qubit is against becoming probabilistic, these two quantities are important metrics to track the progress of quantum computers.
 
 \subsubsection{Quantum Volume}
 
-Now that we have seen how one might go about calibrating gates for a quantum computer, we must then ask: does individually calibrated gates imply a fully functional quantum computer?
-Researchers have found that despite isolating qubits to the best of their ability, when sending instructions to a qubit (\eg{} a gate), nearby qubits can ``hear'' such a message and be affected by it~\cite{crosstalk,crosstalk2}.\todo{Are there other types of errors that make quantum volume worthwhile?}
-With the introduction of errors that are not solely from a single qubit or gate, it makes sense to have a measure of how effective the quantum computer is as a whole.
-\citeauthor{qvolume} introduce the notion of \textbf{quantum volume} designed to give a single number to measure the effectiveness of \ac{NISQ}-era quantum computers~\cite{qvolume}.
-While understanding the full method to compute a quantum computer's quantum volume, the process consists of applying round of permutations $\pi$ of the qubits, followed by random elements of $\SU{4}$ as seen in~\cref{fig:qvolume}.
+While transistor count has long served as an effective single number metric for the power of classical computers, qubit count does not have the same descriptive power due to quantum computers' difference in connectivity, and error rates.
+% Researchers have found that despite isolating qubits to the best of their ability, when sending instructions to a qubit (\eg{} a gate), nearby qubits can ``hear'' such a message and be affected by it~\cite{crosstalk,crosstalk2}.
+% With the introduction of errors that are not solely from a single qubit or gate, it makes sense to have a measure of how effective the quantum computer is as a whole.
+In attempt to devise a single number metric effective in quantifying a quantum computers capabilities \citeauthor{qvolume} introduced the notion of \textbf{quantum volume} which takes into account the number of qubits, connectivity, gate and measurement errors, and crosstalk.
+While understanding the full method to measure a quantum computer's quantum volume is beyond the scope of this document, the process consists of applying randomized circuits shown in~\cref{fig:qvolume} where $\pi$ is a permutation of the qubits, and $\PU{4}$ denotes a random two-qubit gate.
+After the gates are applied a measurement is performed and the resulting bit-string is stored, and the process is repeated many times.
+A statistical analysis is then run to compare the computers performance with an ideal implementation of random circuits of this form.
+The largest quantum volume achieved to date is 1024 and was done by Honeywell's System Model H1; a 10-qubit trapped-ion computer~\cite{honeywell}.
 
 \begin{figure}[ht]
     \centering
     \begin{quantikz}
-        & \gate[wires=4]{\pi}\gategroup[4,steps=2,style={dashed,rounded corners,fill=blue!20, inner xsep=2pt}, background]{Round 1} & \gate[wires=2]{\SU{4}} & \gate[wires=4]{\pi}\gategroup[4,steps=2,style={dashed,rounded corners,fill=blue!20, inner xsep=2pt}, background]{Round 2} & \gate[wires=2]{\SU{4}} & \ \ldots\ \qw & \gate[wires=4]{\pi}\gategroup[4,steps=2,style={dashed,rounded corners,fill=blue!20, inner xsep=2pt}, background]{Round $d$} & \gate[wires=2]{\SU{4}} & \qw \\
+        & \gate[wires=4]{\pi}\gategroup[4,steps=2,style={dashed,rounded corners,fill=blue!20, inner xsep=2pt}, background]{Round 1} & \gate[wires=2]{\PU{4}} & \gate[wires=4]{\pi}\gategroup[4,steps=2,style={dashed,rounded corners,fill=blue!20, inner xsep=2pt}, background]{Round 2} & \gate[wires=2]{\PU{4}} & \ \ldots\ \qw & \gate[wires=4]{\pi}\gategroup[4,steps=2,style={dashed,rounded corners,fill=blue!20, inner xsep=2pt}, background]{Round $d$} & \gate[wires=2]{\PU{4}} & \qw \\
         &                     &                        &                     &                        & \ \ldots\ \qw &                     &                        & \qw \\
-        &                     & \gate[wires=2]{\SU{4}} &                     & \gate[wires=2]{\SU{4}} & \ \ldots\ \qw &                     & \gate[wires=2]{\SU{4}} & \qw \\
+        &                     & \gate[wires=2]{\PU{4}} &                     & \gate[wires=2]{\PU{4}} & \ \ldots\ \qw &                     & \gate[wires=2]{\PU{4}} & \qw \\
         &                     &                        &                     &                        & \ \ldots\ \qw &                     &                        & \qw
     \end{quantikz}
     \caption{Quantum Volume Protocol}\label{fig:qvolume}
 \end{figure}
 
-\section{Errors}
+\subsubsection{Gate Duration}
+
+As qubits are finnicky beasts that don't want to retain their quantum-ness, how quickly we can perform gates is a very important measure and one tracked across many quantum computers.
+This measure usually comes under the guise of \ac{CLOPS} first introduced in~\cite{clops}. % TODO define circuit layer
+
+\section{Errors}\label{sec:errors}
 
 Errors are ubiquitous in quantum computing and for the near future there is almost certainly no getting around them.
 Not only are errors abundant, but they can vary across the chip, and they can very in type.
