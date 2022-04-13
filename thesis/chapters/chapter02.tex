@@ -3,39 +3,37 @@
 %*****************************************
 
 In this chapter we will lay the groundwork for the necessary ideas from quantum computation.
-We will not attempt to introduce quantum computation from the ground up, but instead introduce and emphasize some ideas we will focus on first.
+We will not attempt to introduce quantum computation from the ground up, but instead introduce and emphasize the ideas needed for compiling quantum circuits.
 The notation used here will mostly follow~\cite{watroustqi} and we recommend~\cite{nielsenchuang} for a more thorough introduction to the material.
 
 \section{Historical Development}\label{sec:history}
-Without a precise definition of quantum computing it's hard to give a precise storyline through the subject.
-However, ideas rarely have clear cut boundaries and we must push forward to understand our messy world regardless.
 
 One of the core tenets of quantum theory is that, at this scale, nature is reversible.
-Hence when physicist Charles H. Bennett began investigating reversible Turing machines in~\cite{reversibleturing} we might say the field of quantum computing was \emph{just} beginning to start.
+Hence, when physicist Charles H. Bennett began investigating reversible Turing machines~\cite{reversibleturing} we might say the field of quantum computing was \emph{just} getting started.
 Since Turing machines are the mathematical and theoretical foundation for modern computers, it makes sense that a reversible Turing machine might lay the groundwork as the foundation for a computer that operators under quantum mechanical law.
 More than 6 years later, Paul Benioff extended this work to describe a fully quantum mechanical version of a Turing machine in his paper \citetitle{quantumturing}~\cite{quantumturing}.
 
 Once the theoretical foundation had been laid by Bennett and Benioff, Richard Feynman brought the idea mainstream when he proposed using these new computers to simulate quantum mechanics itself.
 This idea was very attractive at the time (1981) since our classical computers were not powerful enough to simulate large quantum systems,\footnote{In fact, they still aren't!} and since Feynman was such a popular figure the idea finally took hold.
-Feynman motivated the need for a new paradigm in computing as such:
+Feynman motivated the need for a new paradigm in computing as such.
 \begin{quote}
     Nature isn't classical, dammit, and if you want to make a simulation of nature, you'd better make it quantum mechanical, and by golly it's a wonderful problem, because it doesn't look so easy.
     \attrib{Richard P. Feynman~\cite{feynmansimulator}}
 \end{quote}
 
-Even with one of the most famous physicists popularizing the idea, it took another 10 years to see the next major development which came in~\cite{deutch-jozsa-algo} where David Deutsch and Richard Jozsa gave an example of a problem that is solved exponentially faster on a quantum computer than a classical one.
+Even with one of the most famous physicists popularizing the idea, it took another 10 years to see the next major development which came when David Deutsch and Richard Jozsa gave an example of a problem that is solved exponentially faster on a quantum computer than a classical one~\cite{deutch-jozsa-algo}.
 If there was any hesitancy from the academic community at this point about the theoretical usefulness of a quantum computer, this result showed real potential for the emerging technology.
 More applications start rolling in with quantum teleportation~\cite{quantumteleportation} and famously Peter Shor's polynomial time algorithm to factor integers (and hence break many modern cryptosystems)~\cite{shor-encryption}.
 
-The latter caught the eye of the US Government and within the year of Shor's publication the \ac{NIST} organized the first government funded conference on quantum computation.\footnote{It's likely this is when quantum computation was put on the radar of the US government. In 2014 leaked documents showed the National Security Agency had begun a project dubbed ``Owning The Net'' whose purpose was to use a quantum computer to break internet cryptography and to ``gain access to and securely return high value target communications''. The status of the project---which also goes under the moniker ``Penetrating Hard Targets''---is unknown.}
-There have been many major milestones since this, but perhaps most important to note is the first experimental realization of a qubit happened in~\citeyear{firstqubit} by Yasunobu Nakamura and Jaw-Shen Tsai~\cite{firstqubit}.
-Hence it was less than 20 years from when Feynman demonstrated the potential usefulness of a quantum computer to the first experimental realization of the idea.
+The latter caught the eye of the US Government and within the year of Shor's publication the \ac{NIST} organized the first government funded conference on quantum computation.\footnote{It's likely this is when quantum computation was put on the radar of other US government agencies. In 2014 leaked documents showed the National Security Agency had begun a project dubbed ``Owning The Net'' whose purpose was to use a quantum computer to break internet cryptography and to ``gain access to and securely return high value target communications''. The status of the project---which also goes by the moniker ``Penetrating Hard Targets''---is unknown.}
+With some of the theoretical groundwork and motivation laid through the 80's and 90's, the first experimental realization of a superconducting qubit was performed in~\citeyear{firstqubit} by Yasunobu Nakamura and Jaw-Shen Tsai~\cite{firstqubit}.
+Fewer than 20 years passed
+Hence it was fewer than 20 years after Feynman advocated the possibility of using quantum mechanics in a new type of computer that the idea was brought to fruition.
 
 Since then ambitions have risen and technological progress has allowed for more and more qubits and quantum computers today have even been shown to complete tasks that classical ones cannot in any feasible amount of time.
-In particular a team at China's Hefei National Laboratory used their 66-qubit computer\footnote{Affectionately named Zuchongzhi after Chinese mathematican Zu Chongzhi whose computation of $\pi$ was more accurate than any other for more than 800 years.} to complete a task in 4 hours that would take the most performant classical computers tens of thousands of years~\cite{zuchongzhi}.
+In particular a team at China's Hefei National Laboratory used their 66-qubit computer\footnote{Affectionately named Zuchongzhi after Chinese mathematican Zu Chongzhi whose computation of $\pi$ was more accurate than any other for more than 800 years.} to complete a task in 4 hours that would take state of the art programs tens of thousands of years~\cite{zuchongzhi}.
 
-More recently John Preskill has coined the term \ac{NISQ} as a characterization of the quantum computers that have dominated the past decade, and will likely continue to for the next few years~\cite{nisq}.
-He takes these to be computers with 50--100 qubits for which noise will be a major factor in deciding what quantum circuits we can and cannot run.
+In~\citeyear{nisq} John Preskill coined the term \ac{NISQ} as a characterization of quantum computers with a relatively small number of noisy qubits (50--100) with limited connectivity: \ie{} machines that have dominated the past decade, and will likely continue to for the next few years~\cite{nisq}.
 The problem presented in this document is relevant to quantum computers past the \ac{NISQ}-era, but are especially important as we attempt to squeeze every ounce of computation out of them.
 
 % TODO conclusion
@@ -52,7 +50,7 @@ Often the following canonical basis is chosen and referred to as the computation
 \begin{align}
     \ket{0} \defeq \mqty[1 \\ 0] & & \ket{1} \defeq \mqty[0 \\ 1]
 \end{align}
-In this basis a qubit is a vector
+In this basis a qubit is represented as
 \begin{equation}\label{eq:qubit}
     \ket{\psi} = \alpha\ket{0} + \beta\ket{1} = \mqty[\alpha \\ \beta]
 \end{equation}
@@ -61,11 +59,10 @@ In the case of \cref{eq:qubit} the state $\ket{\psi}$ is said to be in a \textbf
 
 We often need to understand more complicated systems than just simple qubits, and to do so we use the \textbf{tensor product} to build up systems from subsystems.
 \Eg{} if $\ket{\psi}\in\C^2$ and $\ket{\phi}\in\C^2$ represent two distinct physical qubits, we can represent the combined system as a single vector $\ket{\psi}\otimes \ket{\phi}$ in a larger complex Euclidean space $\C^2\otimes \C^2\cong \C^4$.
-In many cases it is customary to drop the $\otimes$ symbol and write $\ket{\psi}\ket{\phi}$ or even $\ket{\psi\,\phi}$ when the underlying complex Euclidean spaces are understood.
+In many cases it is customary to drop the tensor product $\otimes$ symbol and write $\ket{\psi}\ket{\phi}$ or even $\ket{\psi \, \phi}$ when the underlying complex Euclidean spaces are understood.
 In the computational basis we can expand this tensor product as
 \begin{align}
     \ket{\psi}\otimes \ket{\phi} & = \qty(\alpha\ket{0} + \beta\ket{1})\otimes\qty(\gamma\ket{0} + \delta\ket{1})            \\
-    %  & = \alpha\gamma\ket{0}\otimes\ket{0} + \alpha\delta\ket{0}\otimes\ket{1} + \beta\gamma\ket{1}\otimes\ket{0} + \beta\delta\ket{1}\otimes\ket{1} \\
                                  & = \alpha\gamma\ket{00} + \alpha\delta\ket{01} + \beta\gamma\ket{10} + \beta\delta\ket{11}
 \end{align}
 where $\alpha, \beta, \gamma, \delta \in \C$.
@@ -74,16 +71,20 @@ With the objects of the theory defined, we must now understand the dynamics, or 
 As stated in~\cref{sec:history}, we take the theory of quantum mechanics to be reversible, and hence any operation we perform on a qubit $\ket{\psi}$ must be undo-able.
 Thankfully linear algebra has just the tool to transform complex vectors in a reversible, and general way: unitary matrices!
 \begin{definition}
-    An $n\times n$ matrix $A$ is called \emph{unitary} if
+    An $n\times n$ complex matrix $A$ is called \emph{unitary} if
     \begin{equation}\label{eq:unitary}
         AA^\dagger = A^\dagger A = \1
     \end{equation}
-    where $^\dagger$ is the conjugate transpose.
-    The collection of unitary matrices of dimension $n$ is called the \emph{unitary group} and is denoted \gls{un}.
+    where $^\dagger$ denotes the conjugate transpose.
+    The collection of unitary matrices form a group known as the \emph{unitary group} and is denoted \gls{un}.
+    This definition can also be stated simply using set builder notation.
+    \begin{equation}
+        \U{n} \defeq \qty{ A \in \mats{n}{\C} : AA^\dagger = \1 = A^\dagger A} % TODO introduct matrix set notation
+    \end{equation}
 \end{definition}
 Hence when we have a qubit $\ket{\psi}$ and perform some action on it, the new state is modeled by $\ket{\phi} = U\ket{\psi}$ where $U$ represents whatever action we performed.
 The condition shown in~\cref{eq:unitary} is quite restrictive: where a general $n \times n$ matrix has $2n^2$ real degrees of freedom, an element of $\U{n}$ only has $n^2$.\footnote{This is to say $\dim_\R\U{n} = n^2$.}
-In fact for a general element of $\U{2}$ we can decompose it into pieces that look much more familiar.
+In fact for a general element of $\U{2}$ we can decompose it into pieces that look much more familiar. % TODO transition from previous
 \begin{example}
     Let $A$ be an arbitrary element of $\U{2}$.
     Then the following decomposition holds for $\alpha, \beta, \gamma, \delta \in \R$.
@@ -95,7 +96,7 @@ In fact for a general element of $\U{2}$ we can decompose it into pieces that lo
 \end{example}
 
 This is a particularly important example as the idea of decomposing unitary matrices into simpler pieces is something we will need heavily in circuit compilation tasks.
-This decomposition also shows how attached to each unitary there is a phase ($\e^{\iu\alpha}$ in the above case), which in quantum computation is often irrelevant.
+This decomposition also shows that each unitary in $\U{2}$ has a global phase ($\e^{\iu\alpha}$ in the above case), which in quantum computation is often irrelevant as it is not measurable.
 For that reason we also often work in the following group.
 \begin{definition}
     If $A \in \U{n}$ be a unitary matrix that has the further property that
@@ -103,16 +104,19 @@ For that reason we also often work in the following group.
         \det A = 1
     \end{equation}
     then $A$ is called a \emph{special unitary matrix} and we denote the collection of these matrices by $\gls{sun}$.
+    \begin{equation}
+        \SU{n} \defeq \qty{ A \in \U{n} : \det A = 1}
+    \end{equation}
 \end{definition}
 However this does not always solve the problem of removing unnecessary (and nonphysical) phases as $\det(-A) = \det(A)$ despite implementing indistinguishable transformations.
-Hence we define the \textbf{projective unitary group} to remove these pesky complex phases by modding out unit complex numbers: $\gls{pun} \defeq \U{n} / \U{1}$.
+Hence we define the \textbf{projective unitary group} to remove these pesky complex phases by modding out unit complex numbers: $\gls{pun} \defeq \U{n} / \U{1}$. % TODO full definition and lead in
 
 \subsection{Quantum Gates}
 
 A \textbf{quantum gate} is a physically realizable, and unambigious mathematical transformation.
-More formally a quantum gate on $n$ qubits is an element $g \in \PU{2^n}$.
+More formally, a quantum gate on $n$ qubits is an element $g \in \PU{2^n}$.
 In this document we will mainly discuss quantum gates acting on 1 and 2 qubits as that is the capability of most modern hardware we will discuss in~\cref{chap:hardware}.
-The~\cref{tab:commongates} outlines some of the common gates we will encounter throughout this document, and their associated notations both mathematically, and diagrammatically.
+\Cref{tab:commongates} outlines some of the common gates we will encounter throughout this document, and their associated notations both mathematically, and diagrammatically.
 
 \begin{table}[ht] % TODO make skinnier with text flow around?
     \centering
@@ -129,20 +133,32 @@ The~\cref{tab:commongates} outlines some of the common gates we will encounter t
     \caption{Common Quantum Gates}\label{tab:commongates}
 \end{table}
 
-Along with the examples seen in~\cref{tab:commongates} we \textbf{parametric gates} which we view as gates that are dependent on some number of parameters, although we will often just use one.
+Along with the examples in~\cref{tab:commongates} we have \textbf{parametric gates} which we view as gates that are dependent on some number of parameters, although we will often just use one.
 Parametric gates are modeled by functions $g: \R \to \PU{2^n}$ and in all technicality are not gates in and of themselves, but rather a function whose images are gates.
 Two important parametric gates are the $X$ and $Z$ rotations.
-\begin{align}
+\begin{align} % TODO align matrices
     R_X(\theta) = \smqty[\cos(\sfrac{\theta}{2}) & -\iu \sin(\sfrac{\theta}{2}) \\ -\iu \sin(\sfrac{\theta}{2}) & \cos(\sfrac{\theta}{2})] && R_Z(\theta) = \smqty[\e^{-\iu \sfrac{\theta}{2}} & 0 \\0 & \e^{\iu\sfrac{\theta}{2}}]
 \end{align}
-These two can also be represented more compactly as $R_X(\theta) = \e^{-\iu X \sfrac{\theta}{2}}$ and similarly $R_Z(\theta) = \e^{-\iu Z \theta/2}$ where $X$ and $Z$ are the Pauli operators as in~\cref{tab:commongates}.
+These two can also be represented more compactly as $R_X(\theta) = \e^{-\iu X \theta / 2}$ and similarly $R_Z(\theta) = \e^{-\iu Z \theta/2}$ where $X$ and $Z$ are the Pauli operators as in~\cref{tab:commongates}.
 Note that these two functions may seem to have period $4\pi$, but due to the quotient structure on the image space $\PU{2^n}$, all phases are modded out to ensure $R_X(\theta) = R_X(\theta + 2\pi)$.
 
 \begin{example}
-    As we will later see, it is often important to be able to move qubits around on a physical chip.
-    To do this we cannot physically move them, but rather apply some sort of combination of gates enact the swap.
-    Thus we are looking for a unitary operation $\SWAP: \C^2\otimes \C^2 \to \C^2\otimes \C^2$ that acts as $\SWAP\qty[\ket{\psi}\otimes\ket{\phi}] = \ket{\phi}\otimes\ket{\psi}$.
-    This is can be done using \CNOT{} gates and is shown diagrammatically.
+    As we will later see, due to the limited connectivity of qubits on modern hardware, the ability to move qubits around on a chip is paramount.
+    While some hardware can physically move qubits, many cannot.
+    In the latter case a strategy must be devised to perform some sort of swap operation between qubits using quantum gates.
+    That is a gate $\SWAP \in \PU{2^2}$ is desired that acts on two qubit systems as
+    \begin{equation}\label{eq:swap}
+        \SWAP\qty\big(\ket{\psi}\otimes\ket{\phi}) = \ket{\phi}\otimes\ket{\psi}.
+    \end{equation}
+    This operation as defined can be seen to be unitary by taking the conjugate transpose of~\cref{eq:swap} and taking the forming the inner product again with~\cref{eq:swap}.
+    \begin{align}
+        \bra{\psi}\otimes\bra{\phi}\SWAP^\dagger\SWAP\ket{\psi}\otimes\ket{\phi} & = \bra{\phi}\otimes\bra{\psi}\,\ket{\phi}\otimes\ket{\psi} \\
+                                                                                 & = \braket{\phi}\braket{\psi}                               \\
+                                                                                 & = 1
+    \end{align}
+    Since $\ket{\phi}, \ket{\psi}$ were arbitrary, we must have $\SWAP^\dagger\SWAP = \1$ and a similar argument can be used to show $\SWAP\SWAP^\dagger = \1$, and hence \SWAP{} is a valid unitary operation.
+
+    Proceeding with a decomposition of the \SWAP{} gate, we propose the following equivalence using three \CNOT{} gates.
     \begin{equation}\label{eq:cnotswap}
         \begin{quantikz}
             & \ctrl{1} & \targ{}   & \ctrl{1} & \midstick[2,brackets=none]{$\eqdef$} \qw & \swap{1} & \midstick[2,brackets=none]{$\equiv$} \qw & \gate[swap]{} & \qw \\
@@ -161,7 +177,7 @@ Note that these two functions may seem to have period $4\pi$, but due to the quo
                               & \xrightarrow{\CNOT^1_2} \ket{y}\otimes\ket{(x\oplus y)\oplus y} = \ket{y}\otimes \ket{x}.
     \end{align*}
     Exactly as desired.
-    The \SWAP{} gate also has the following matrix representation.
+    The \SWAP{} gate also has the following matrix representation in the computational basis.
     \begin{equation}
         \SWAP = \smqty[1 & & & \\ & 0 & 1 & \\ & 1 & 0 & \\ & & & 1]
     \end{equation}
@@ -185,7 +201,7 @@ From these gates, we can construct a \textbf{quantum circuit} by applying a sequ
 Thus if our gate set $G = \qty{a, b, c}$, then the following are example circuits: $aacba$, $cccbbb$, $cbbbab$, and $ab$.
 
 Something to note here is that in this abstraction, all of our quantum gates are assumed to act on all qubits.
-With a 2 qubit quantum chip and the ability to perform a Pauli $X$ gate on either qubit, our gate set is $\qty{\1\otimes \1, \1\otimes X, X\otimes \1, X\otimes X}$.\footnote{We don't always think of the identity gate $\1$ as a gate that needs to be included, but doing nothing to a qubit is no easy task, so it's important to remember to treat it just like any other gate and understand it's error rates as well.}
+With a 2 qubit quantum chip and the ability to perform a Pauli $X$ gate on either qubit, our gate set is $\qty{\1\otimes \1, \1\otimes X, X\otimes \1, X\otimes X}$.\footnote{We don't always think of the identity gate $\1$ as a gate that needs to be included, but doing nothing to a qubit is no easy task, so it's important to remember to treat it just like any other gate and understand its error rates as well.}
 Sometimes this gate set is denoted $\qty{\1, X_0, X_1, X_0X_1}$, but we will try to use more explicit notation here.
 
 Circuits are often drawn using diagram as in~\cref{fig:excircuit} where each horizontal ``wire'' represents a qubit, and boxes and other gadgets represent quantum gates.
@@ -233,19 +249,19 @@ This formalism also allows us to frame the following important question about un
     Given a quantum gate set $G$ over $n$ qubits, and unitary operator $U \in \PU{2^n}$, does there exist a circuit $C\in G^*$, such that $\implement{C} = U$?
 \end{question}
 If the answer is yes, we say a gate set $G$ \textbf{synthesizes} $U$.
-This question is answered, at least in part through the Solovay-Kitaev theorem first published in~\cite{bigkitaev} with further proofs/elucidations in~\cite{nielsenchuang,solovay-kitaev,kitaev-book}.
-The theorem, stated in our terminology follows.
+This question is answered, at least in part, through the Solovay-Kitaev theorem first published in~\cite{bigkitaev} with further proofs/elucidations in~\cite{nielsenchuang,solovay-kitaev,kitaev-book}.
+The theorem, stated in our terminology is as follows.
 \begin{theorem}[Solovay-Kitaev]\label{thm:solovaykitaev}
     Let $G$ be a quantum gate set on $n$ qubits such that for all $g \in G$
     \begin{itemize}
-        \item $g\in\SU{2^n}$,
+        \item $g \in \PU{2^n}$,
         \item $g^\dagger \in G$, and
-        \item the free group $\free{G}$ is dense in $\SU{2^n}$.
+        \item the free group $\free{G}$ is dense in $\PU{2^n}$.
     \end{itemize}
     Then with $\varepsilon > 0$, there is a constant $c > 3$, such that for any $U \in \SU{2^n}$, there exists a circuit $C \in G^*$ of length $\order{\log^c\qty(\frac{1}{\varepsilon})}$ that approximates $U$ with error less than $\varepsilon$: that is $\norm{\implement{C} - U} < \varepsilon$.
 \end{theorem}
 Not only does this theoretical result provide some insight into~\ref{qu:synthesis}, but it's constructive and hence provides an algorithm\footnote{This result sometimes goes under the name ``The Solovay-Kitaev Algorithm''.} to approximate arbitrary elements of $\SU{2^n}$ using gates from $\SU{2^m}$ for any $m \in \gls{intsn}$.
-This was, and remains to be, a very important result in the field of quantum computing because it was the first to show that with the right gate set, one can theoretically perform any desired unitary.
+This was, a very important result in the field of quantum computing because it was the first to show that with the right gate set, one can theoretically perform any desired unitary.
 
 With at least a partial answer to Question~\ref{qu:synthesis} we can begin to refine further questions.
 If the answer to~\ref{qu:synthesis} is positive, we can then ask the following.
@@ -276,17 +292,17 @@ The question of which gate sets are universal for quantum computation is importa
 Some examples that have been shown to be universal are the following.
 \begin{itemize}
     \item \CNOT{} plus $\U{2}$ as shown in~\cite{universal-cnot-u2}
-    \item \CNOT{}, Hadamard, and the $\frac{\pi}{8}$-gate\footnote{The $\frac{\pi}{8}$-gate is also sometimes called $T$ and has matrix representation $\smqty[1 & 0 \\ 0 & \e^{\iu\pi/4}]$.} as shown in~\cite{universal-cnot-had-p8}
+    \item \CNOT{}, Hadamard, and the $\frac{\pi}{8}$-gate\footnote{The $\frac{\pi}{8}$-gate is also sometimes called $T$ and has matrix representation $\smqty[1 & 0 \\ 0 & \e^{\iu\pi/4}]$.} as shown in~\cite{universal-cnot-had-p8} % TODO put gates in table
     \item Toffoli, Hadamard, and the $\frac{\pi}{4}$-gate\footnote{The $\frac{\pi}{4}$-gate is also sometimes called $S$ and has matrix representation $\smqty[1 & 0 \\ 0 & \e^{\iu\pi/2}]$.} as shown in~\cite{bigkitaev}
     \item \CNOT{} plus any single qubit gate that does not preserve the computational basis and is not the Hadamard gate as shown in~\cite{universal-cnot-basis-change}
 \end{itemize}
 
 \section{Fault Tolerance}\label{sec:ft}
 
-Introduced in context of quantum computation by \citeauthor{fault-tolerance}, the idea of fault tolerance is make quantum computers that can perform meaningful computation despite decoherence and other errors~\cite{fault-tolerance}.
+Introduced in the context of quantum computation by \citeauthor{fault-tolerance}, the idea of fault tolerance is to make quantum computers that can perform meaningful computation despite decoherence and other errors~\cite{fault-tolerance}.
 As it stands, even with basic quantum error correction quantum errors can spread and quickly become unwieldy.
-Suppose we have a general two qubit state that we'd like to perform a \CNOT{} gate on, but a bit-flip error occurs on the first qubit before the \CNOT{} can be applied.
-This single qubit error is then propagated to the second qubit as follows.
+Suppose we have a general two-qubit state that we'd like to perform a \CNOT{} gate on, but a bit-flip error occurs on the first qubit before the \CNOT{} can be applied.
+This single-qubit error is then propagated to the second qubit as follows.
 \begin{align}
     \alpha\ket{00} + \beta\ket{01} & + \gamma\ket{10} + \delta\ket{11} \label{eq:2qbitstate}                                     \\
                                    & \xrightarrow{X \otimes \1} \alpha\ket{10} + \beta\ket{11} + \gamma\ket{00} + \delta\ket{01} \\
@@ -357,4 +373,4 @@ We can then define the \textbf{average gate fidelity} of a unitary $U$ and quant
 \begin{equation}
     \Fid_\text{gate}(U, \mathcal{E}) \defeq \int \Fid(U\rho U^\dagger, \mathcal{E}(\rho))\dd{\rho}
 \end{equation}
-where the integral $\int\dd{\rho}$ is taken over all density operators.\todo{is this even right?}
+where the integral $\int\dd{\rho}$ is taken over all density operators.\todo{is this even right?} % TODO replace all this with process fidelity
