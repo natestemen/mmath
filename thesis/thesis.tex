@@ -74,10 +74,10 @@
 % ******************************************************
 \include{aux/titlepage}
 \include{aux/titleback}
-% \cleardoublepage\include{aux/dedication}
+\cleardoublepage\include{aux/dedication}
 % \cleardoublepage\include{aux/foreword}
-% \cleardoublepage\include{aux/abstract}
-% \cleardoublepage\include{aux/acknowledgments}
+\cleardoublepage\include{aux/abstract}
+\cleardoublepage\include{aux/acknowledgments}
 \cleardoublepage\include{aux/contents}
 % ******************************************************
 % Main matter
@@ -96,8 +96,8 @@
     We will then switch gears to cover the basics of quantum computation needed to understand the quantum part of our story.
 }
 \part{Front End}\label{part:frontend}
-\include{chapters/chapter01}
-\include{chapters/chapter02}
+\include{chapters/1-classical}
+\include{chapters/2-quantum}
 
 \cleardoublepage
 
@@ -108,15 +108,14 @@
     We will show how the problem is both similar and different from classical compilation and how we can benefit from using existing classical infrastructure.
 }
 \part{Back End}\label{part:backend}
-\include{chapters/chapter03}
-\include{chapters/chapter04}
-\include{chapters/conclusion}
+\include{chapters/3-hardware}
+\include{chapters/4-compilers}
+\include{chapters/5-conclusion}
 
 % ******************************************************
 % Back matter
 % ******************************************************
 % \appendix
-% \renewcommand{\thechapter}{\alph{chapter}}
 % \cleardoublepage
 % \part{Appendix}
 % \include{chapters/chapter0A}
