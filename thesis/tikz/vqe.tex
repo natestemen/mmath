@@ -15,7 +15,7 @@
             rounded corners,
         },
 }
-\begin{tikzpicture}[font=\sffamily, thick, node distance=4cm]
+\begin{tikzpicture}[font=\sffamily, thick, node distance=4cm, framed, background rectangle/.style={draw=white}]
     \node[frame] (circ) {Quantum Node};
     \node[frame] (opt) [right of=circ] {Classical Node};
 

@@ -15,7 +15,7 @@
             rounded corners,
         }
 }
-\begin{tikzpicture}[font=\sffamily, thick, node distance=1cm]
+\begin{tikzpicture}[font=\sffamily, thick, node distance=1cm, framed, background rectangle/.style={draw=white}]
     \node[frame]                (C)    {C Frontend};
     \node[frame, below=of C]    (hask) {Haskell Frontend};
     \node[frame, below=of hask] (rust) {Rust Frontend};

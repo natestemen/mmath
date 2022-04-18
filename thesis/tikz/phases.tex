@@ -15,7 +15,7 @@
             rounded corners,
         },
 }
-\begin{tikzpicture}[font=\sffamily, thick, node distance=.7cm]
+\begin{tikzpicture}[font=\sffamily, thick, node distance=.7cm, framed, background rectangle/.style={draw=white}]
     % \node[frame, align=center] (lex) {Lexical Analyzer};
     \node[frame] (syn) {Syntax Analyzer};
     \node[frame, below=of syn] (sem) {Semantic Analyzer};

@@ -18,7 +18,7 @@
             draw, -latex',rounded corners=3mm,
         }
 }
-\begin{tikzpicture}[font=\sffamily, thick, node distance=4cm]
+\begin{tikzpicture}[font=\sffamily, thick, node distance=4cm, framed, background rectangle/.style={draw=white}]
     \node[frame](input){Input Device(s)};
     \node[frame, below=2cm](output){Output Device(s)};
     \node[frame, below right=-.15cm and 1cm of input](cpu){CPU};

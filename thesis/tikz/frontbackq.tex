@@ -15,7 +15,7 @@
             rounded corners,
         }
 }
-\begin{tikzpicture}[font=\sffamily, thick, node distance=1cm]
+\begin{tikzpicture}[font=\sffamily, thick, node distance=1cm, framed, background rectangle/.style={draw=white}]
     \node[frame]                     (qiskit)    {Qiskit Frontend};
     \node[frame, below=of qiskit]    (pennylane) {Pennylane Frontend};
     \node[frame, below=of pennylane] (tket)      {TKET Frontend};

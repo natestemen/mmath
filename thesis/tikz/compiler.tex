@@ -15,7 +15,7 @@
             rounded corners,
         },
 }
-\begin{tikzpicture}[font=\sffamily, thick, node distance=4cm]
+\begin{tikzpicture}[font=\sffamily, thick, node distance=4cm, framed, background rectangle/.style={draw=white}]
     \node[align=center] (pl) {Programming \\ Language};
     \node[frame, right of=pl] (compiler) {Compiler};
     \node[align=center, right of=compiler] (ml) {Machine \\ Language};
