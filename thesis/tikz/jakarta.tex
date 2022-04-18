@@ -4,16 +4,17 @@
 
 \begin{document}
 
+\tikzset{
+    node/.style={
+            very thick,
+            circle,
+            fill=blue!20,
+            draw,
+            minimum size=.8cm,
+        }
+}
+
 \begin{tikzpicture}
-    \tikzset{
-        node/.style={
-                very thick,
-                circle,
-                fill=blue!20,
-                draw,
-                minimum size=.8cm,
-            }
-    }
     \node[node] (0) {$0$};
     \node[node] (1) [right = .8cm of 0] {$1$};
     \node[node] (2) [right = .8cm of 1] {$2$};
