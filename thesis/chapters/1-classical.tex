@@ -13,7 +13,7 @@ It is by no means a complete introduction to compilers, nor computer architectur
 
 If you're reading this, I'm sure you can imagine something your computer is capable of.
 Maybe reading this document online, sending messages/email, browsing the internet, writing documents, etc.
-These are very high level operations our computer can perform, but under the hood much more primitive operations are taking place.
+These are very high-level operations our computer can perform, but under the hood much more primitive operations are taking place.
 It is these primitive operations that we wish to understand, and will have many similarities with modern-day quantum hardware.
 
 A simplified model of computer architecture, known as the von Neumann Architecture (\cref{fig:comparch}) shows what we now call a \ac{CPU} which is the workhorse of the computer.\footnote{At least in this \emph{very simplified} model.}
@@ -40,7 +40,7 @@ In practice most \acp{ISA} implement the same complexity class which we denote b
 There are many \acp{ISA} one can come up with that spawn different complexity classes, of which the ones we expect some familiarity with are P and NP on the classical side, and BQP on the quantum side.
 For more details on complexity classes consult~\cite{complexity} and~\cite[Chapter 3]{nielsenchuang}.
 
-The \ac{ISA} architecture style has seen major success, but it suffers from the drawback of requiring the programmer to work at the very low level of machine instructions.
+The \ac{ISA} architecture style has seen major success, but it suffers from the drawback of requiring the programmer to work at the very low-level of machine instructions.
 To work at a higher level of abstraction, and hence to have a higher-level of productivity, computer scientists and programmers created new languages which were easier to read, write, and reason about.
 This necessitated new languages to be ``translated'' into the instruction set after the code was written.
 The software responsible for translating these higher level ideas into a machines instruction set are known as \textbf{compilers}.
@@ -111,7 +111,7 @@ In many compiled languages the operation \texttt{'hello' * 5} would pass syntax 
 The code is now ensured to be well formed and can begin preparation to execute on hardware.
 Passing directly to the code generator is possible from here, but the end product will be slower as no optimizations will take place.
 Instead, the existing code (or sometimes using the syntax tree created in the previous steps) will be transformed into an \acf{IR}.
-This is a mid-level representation of the code in that it is typically thought of as somewhere between the high level of abstraction of the programming language, and the low level instruction set.
+This is a mid-level representation of the code in that it is typically thought of as somewhere between the high-level of abstraction of the programming language, and the low-level instruction set.
 
 This is best seen with a simple example.
 Suppose we have the following snippet to calculate the final location of a moving object after 5 seconds.
@@ -223,13 +223,13 @@ A few examples are in order to help understand how compilers work in the real wo
 
 \begin{description}
     \item[clang:] Short for C Language, this is a compiler frontend for the C/\CPP{} languages. It takes in C/\CPP{} code and produces an LLVM \ac{IR} which we will learn about in~\cref{sec:llvm}. It then lets LLVM handle the rest of the compilation processing.
-    \item[Latex:] While perhaps not very obvious, \LaTeX{} is indeed a compiler as it takes high level formatting code, and produces a lower level representation of what the user wants to typeset. Usually that comes in the form of postscript which is another programming language that is read by printers (hardware) to produce the requested document. Postscript can also be read by PDF readers and browsers which then display content as the author desired (maybe).
+    \item[Latex:] While perhaps not very obvious, \LaTeX{} is indeed a compiler as it takes high-level formatting code, and produces a lower level representation of what the user wants to typeset. Usually that comes in the form of postscript which is another programming language that is read by printers (hardware) to produce the requested document. Postscript can also be read by PDF readers and browsers which then display content as the author desired (maybe).
     \item[TensorFlow:] TensorFlow is a library for machine learning that has drawn on the design principles of compilers in attempts to speed up and ensure the accuracy of models. Indeed it has a frontend where the user builds their model and compiles it into an \ac{IR} known as HLO \ac{IR} or High Level Operations. Typical optimizations then occur and again using the LLVM compiler infrastructure this code can be brought to many backends such as the browser, mobile, and specialized compute infrastructure (such as Google's \ac{TPU}). This is all before we talk about TensorFlow Quantum which allows for hybrid quantum-classical machine learning models~\cite{tensoflowquantum}.
 \end{description}
 
 \section{LLVM}\label{sec:llvm}
 
-The LLVM\footnote{The project, while originally an acronym for Low Level Virtual Machine now goes solely by LLVM. The original name reflects the fact that the compiler targets low level \ac{IR} code that runs on some theoretical (hence the term virtual) machine. Since the inception virtual machines have come to mean something different, hence the abandonment of the acronym.} project~\cite{llvm} is one of the largest open source compiler projects in existence and much of the compiler architecture we've discussed here come from its design.
+The LLVM\footnote{The project, while originally an acronym for Low Level Virtual Machine now goes solely by LLVM. The original name reflects the fact that the compiler targets low-level \ac{IR} code that runs on some theoretical (hence the term virtual) machine. Since the inception virtual machines have come to mean something different, hence the abandonment of the acronym.} project~\cite{llvm} is one of the largest open source compiler projects in existence and much of the compiler architecture we've discussed here come from its design.
 The founder of the project Chris Lattner has characterized compilers succinctly in~\cite{lattnerquote} as
 \begin{quote}
     the art of allowing humans to think at a level of abstraction that they want to think about.
