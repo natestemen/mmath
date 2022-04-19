@@ -35,10 +35,11 @@ Some examples of what these primitive operations might be are:
     \item compute the square root of a value.
 \end{itemize}
 One can then use these primitives to build up complex functionality that eventually implement the capabilities we know and love (and hate) computers for.
-By choosing an \ac{ISA}, a \emph{complexity class} is created of all the problems that can be solved using a polynomial number of instructions.\footnote{Polynomial refers to the function which takes the \emph{size} of the problem input, and returns the number of steps (or time) required to solve the problem.}
-In practice most \acp{ISA} implement the same complexity class which we denote by P and refers to decision problems solvable by a deterministic Turing machine in a polynomial amount of time. % TODO complexity
-There are many \acp{ISA} one can come up with that spawn different complexity classes, of which the ones we expect some familiarity with are P and NP on the classical side, and BQP on the quantum side.
-For more details on complexity classes consult~\cite{complexity} and~\cite[Chapter 3]{nielsenchuang}.
+
+Choosing an \ac{ISA} results in the creation of a \emph{complexity class} which is a collection of problems that can be solved using a polynomial number of primitive instructions/operations.\footnote{Polynomial refers to a function which takes the \emph{size} of the problem input, and returns the number of steps (or time) required to solve the problem.}
+In practice, most \acp{ISA} implement the same complexity class, and we denote it by P. % TODO complexity
+The formal definition of P is ``decision problems solvable by a deterministic Turing machine in a polynomial amount of time'', but the picture one should have in mind is ``problems for which we have efficient algorithms''.
+For more details on complexity classes, and computational complexity in general consult~\cite[Chapter 3]{nielsenchuang} for the material with an eye towards quantum, and~\cite{complexity} for a more detailed exposition.
 
 The \ac{ISA} architecture style has seen major success, but it suffers from the drawback of requiring the programmer to work at the very low-level of machine instructions.
 To work at a higher level of abstraction, and hence to have a higher-level of productivity, computer scientists and programmers created new languages which were easier to read, write, and reason about.
@@ -82,20 +83,30 @@ Initially Hopper's new idea was met with resistance as it was thought to be unre
     I think with any new idea, because people are allergic to change, you have to get out and sell the idea.
     \attrib{Grace Hopper~\cite{hopperquote}}
 \end{quotation}
-In the end she succeeded in selling the idea and compilers have become a ubiquitous piece of modern computing infrastructure.
-While Hopper's compiler focused solely on code translation, a modern compiler might perform all of line reconstruction, preprocessing, lexical analysis, syntax analysis, semantic analysis, conversion to an \ac{IR}, optimization (and there are many different types!), and finally code generation.
+In the end, Hopper succeeded in selling the idea and compilers have become a ubiquitous piece of modern computing infrastructure.
+While Hopper's compiler focused solely on code translation, a modern compiler might perform all of line reconstruction, preprocessing, lexical analysis, syntax analysis, semantic analysis, conversion to an \acf{IR}, optimization (and there are many different types!), and finally code generation.
 Thankfully we will not need to understand \emph{all} of these parts in full, but rather will focus on \aclp{IR}, optimizations, and code generation.
+
+\paragraph{Resources}
+Before jumping into processes that make up a compiler, we will first detail some of the hardware restrictions that compilers must be aware of while performing their job.
+Modern digital computers are built on the transistor: a small\footnote{They are today, but they were not always small!} device models a bit (0 or 1) as the absence or flow of electricity.
+Since transistors provide the basic building block of the bit, the transistor count is an effective measure of how much memory the computer has.
+Hence when a compiler is performing some sort of optimizations, it must be aware of the amount of memory it can make use of.
+While modern computers have an abundance of memory, not all memory is created equally.
+The \ac{CPU} can talk to the computers long-term storage (hard drive), it's a slow communication that is not ideal to be performing frequently.
+Instead, \acp{CPU} have their own (smaller) internal memory which is often referred to as a collection of registers.
+These registers provide fast access to variables during computation.
+Hence, during the compilation of a program, the compilers knowledge of the target hardware's \ac{CPU} allows the compiler to efficiently use the on-board registers, and make informed decisions as to when to use long-term storage.
+
+The second resource that compilers are often made aware to is the \acp{CPU} ability to run parallelized computations.
+The ability to perform multiple instructions at the same time is often taken advantage of in compilers via techniques like loop unrolling.\footnote{\url{https://en.wikipedia.org/wiki/Loop_unrolling}}
+However, not all architectures support this mode of optimization, and even if it does, the compiler must be careful to ensure parallelization optimizations do not over-burden registers.
 
 \subsection{Compilation Phases}\label{sec:comp-phases}
 
 As alluded to in the previous section, a compiler has many different responsibilities.
-Each responsibility is broken into a separate component so that it can be understood on its own.
-A schematic for this can be seen in~\cref{fig:compilerphases} for the main steps that we will be concerned with in this document.
-\begin{wrapfigure}[24]{i}{0.25\textwidth}% TODO tweak lineheight
-    \centering
-    \includestandalone[width=0.23\textwidth]{tikz/phases}
-    \caption{Compiler Phases}\label{fig:compilerphases} % TODO can we fix this caption?
-\end{wrapfigure}
+Each responsibility is broken into a separate component so that it can be understood on its own, and later be reused in its own context.
+A schematic for this can be seen in~\cref{fig:compilerphases} on page~\pageref{fig:compilerphases} showing the main steps that we will be concerned with in this document.
 
 \paragraph{Syntax Analyzer}
 This phase is for ensuring the code is syntactically well formed (that is, that it abides by the specification of the language).
@@ -106,6 +117,12 @@ Many compilers transform the code into a syntax tree to complete the verificatio
 Now that the code is syntactically valid, we can ensure it has meaning.
 This phase usually consists of type checking and scope validation (ensuring the code does not access variables outside of scope).
 In many compiled languages the operation \texttt{'hello' * 5} would pass syntax analysis, but fail semantic analysis because a string multiplied by an integer is not a valid operation.\footnote{It is completely valid in other languages like Python, but Python is not a compiled language.}
+
+\begin{wrapfigure}[19]{i}{0.25\textwidth} % TODO tweak lineheight
+    \centering
+    \includestandalone[width=0.23\textwidth]{tikz/phases}
+    \caption{Compiler Phases}\label{fig:compilerphases} % TODO can we fix this caption?
+\end{wrapfigure}
 
 \paragraph{Intermediate Code Generator}
 The code is now ensured to be well formed and can begin preparation to execute on hardware.
@@ -165,7 +182,7 @@ Again following the above code example, upon code generation we may end with the
 \end{minipage}
 \begin{minipage}{0.5\textwidth}
     \centering
-    \begin{tabular}{cc}
+    \begin{tabular}{rl}
         Function      & Meaning         \\ \toprule
         \texttt{LDF}  & Load float      \\
         \texttt{MULF} & Multiply floats \\
