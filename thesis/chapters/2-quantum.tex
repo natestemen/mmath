@@ -122,6 +122,7 @@ In this document we will mainly discuss quantum gates acting on 1 and 2 qubits a
         Pauli X        & $X$      & \begin{tikzcd} \qw & \gate{X} & \qw \end{tikzcd}                                                & $\smqty[0 & 1 \\ 1 & 0]$                               \\
         Pauli Z        & $Z$      & \begin{tikzcd} \qw & \gate{Z} & \qw \end{tikzcd}                                                & $\smqty[1 & \phantom{-}0 \\ 0 & -1]$                   \\
         Hadamard       & $H$      & \begin{tikzcd} \qw & \gate{H} & \qw \end{tikzcd}                                                & $\frac{1}{\sqrt{2}}\smqty[1 & \phantom{-}1 \\ 1 & -1]$ \\
+        $\frac{\pi}{8}$-gate\tablefootnote{The name $\frac{\pi}{8}$-gate comes from the way the gate was first introduced in the literature, where it was written $T = \e^{\iu \pi / 8}\smqty[\e^{-\iu \pi / 8} & 0 \\ 0 & \e^{\iu \pi / 8}]$.}      & $T$      & \begin{tikzcd} \qw & \gate{T} & \qw \end{tikzcd}                                                & $\smqty[1 & 0 \\ 0 & \e^{\iu \pi/4}]$ \\
         Controlled Not & \CNOT    & \begin{tikzcd} \qw & \ctrl{1} & \qw \\ \qw & \targ{} & \qw \end{tikzcd}                         & $\smqty[1 & & & \\ & 1 & & \\ & & 0 & 1 \\ & & 1 & 0]$ \\
         Toffoli        & \CCNOT   & \begin{tikzcd} \qw & \ctrl{1} & \qw \\ \qw & \ctrl{1} & \qw \\ \qw & \targ{} & \qw \end{tikzcd} & $\smqty[1 & & & & & & & \\ & 1 & & & & & & \\ & & 1 & & & & & \\ & & & 1 & & & & \\ & & & & 1 & & & \\ & & & & & 1 & & \\ & & & & & & 0 & 1 \\ & & & & & & 1 & 0]$
     \end{tabular}
@@ -288,8 +289,8 @@ The question of which gate sets are universal for quantum computation is importa
 Some examples that have been shown to be universal are the following.
 \begin{itemize}
     \item \CNOT{} plus $\U{2}$ as shown in~\cite{universal-cnot-u2}
-    \item \CNOT{}, Hadamard, and the $\frac{\pi}{8}$-gate\footnote{The $\frac{\pi}{8}$-gate is also sometimes called $T$ and has matrix representation $\smqty[1 & 0 \\ 0 & \e^{\iu\pi/4}]$.} as shown in~\cite{universal-cnot-had-p8} % TODO put gates in table
-    \item Toffoli, Hadamard, and the $\frac{\pi}{4}$-gate\footnote{The $\frac{\pi}{4}$-gate is also sometimes called $S$ and has matrix representation $\smqty[1 & 0 \\ 0 & \e^{\iu\pi/2}]$.} as shown in~\cite{bigkitaev}
+    \item \CNOT{}, Hadamard, and the $\frac{\pi}{8}$-gate as shown in~\cite{universal-cnot-had-p8}
+    \item Toffoli, Hadamard, and the $\frac{\pi}{8}$-gate squared as shown in~\cite{bigkitaev}
     \item \CNOT{} plus any single qubit gate that does not preserve the computational basis and is not the Hadamard gate as shown in~\cite{universal-cnot-basis-change}
 \end{itemize}
 
