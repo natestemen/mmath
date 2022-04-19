@@ -192,7 +192,7 @@ A \textbf{parametric quantum gate set} $G'$ is a finite collection of parametric
 While we only have a finite collection of parametric gates, this usually means an infinite amount of quantum gates.
 From these gates, we can construct a \textbf{quantum circuit} by applying a sequence of elements from the gate set.
 \begin{definition}\label{def:circuit}
-    Let $G$ be a quantum gate set, and let \gls{kleene} denote the set of finite length words over $G$ (and the empty word which we take to mean identity).\footnote{This $^*$ operation is known as the Kleene star.}
+    Let $G$ be a quantum gate set, and let \gls{kleene} denote the set of finite length words over $G$ (and the empty word which we take to mean identity).\footnote{This $^*$ operation is known as the Kleene\footnotemark{} star.}\footnotetext{Technically the author for which this operation is named after is Stephen Cole Kleene in which Kleene is pronounced \emph{KLAY-nee}, yet most people say this operation as \emph{clean} star.}
     A \emph{quantum circuit} is an element of $G^*$.
 \end{definition}
 Thus if our gate set $G = \qty{a, b, c}$, then the following are example circuits: $aacba$, $cccbbb$, $cbbbab$, and $ab$.
