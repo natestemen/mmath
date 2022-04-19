@@ -249,10 +249,9 @@ If the answer is yes, we say a gate set $G$ \textbf{synthesizes} $U$.
 This question is answered, at least in part, through the Solovay-Kitaev theorem first published in~\cite{bigkitaev} with further proofs/elucidations in~\cite{nielsenchuang,solovay-kitaev,kitaev-book}.
 The theorem, stated in our terminology is as follows.
 \begin{theorem}[Solovay-Kitaev]\label{thm:solovaykitaev}
-    Let $G$ be a quantum gate set on $n$ qubits such that for all $g \in G$
+    Let $G$ be a quantum gate set on $n$ qubits such that
     \begin{itemize}
-        \item $g \in \PU{2^n}$,
-        \item $g^\dagger \in G$, and
+        \item $g^\dagger \in G$ for all $g \in G$, and
         \item the free group $\free{G}$ is dense in $\PU{2^n}$.
     \end{itemize}
     Then with $\varepsilon > 0$, there is a constant $c > 3$, such that for any $U \in \PU{2^n}$, there exists a circuit $C \in G^*$ of length $\order{\log^c\qty(\frac{1}{\varepsilon})}$ that approximates $U$ with error less than $\varepsilon$: that is $\norm{\implement{C} - U} < \varepsilon$.
