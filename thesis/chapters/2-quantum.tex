@@ -346,9 +346,9 @@ We will not attempt a rigorous definition of the free group and instead opt for 
 Let $S$ be a finite set, and denote by $S^{-1}$ the formal inverse of elements in $S$.
 Then the free group $\free{S} \defeq (S\cup S^{-1})^*$ where the asterisk indicates the Kleene star.
 
-As an example take $S = \qty{f, g, h}$, and hence $S^{-1} = \qty{f^{-1}, g^{-1}, h^{-1}}$.
+As an example take $S$ to be $\qty{f, g, h}$, and hence the formal inverses are $S^{-1} = \qty{f^{-1}, g^{-1}, h^{-1}}$.
 Then the free group $\free{S}$ contains elements such as $fg^{-1}hhhh^{-1}$, $fghhhf$, and $h^{-1}gh^{-1}f^{-1}ghgg$.
-Note that this may appear very similar to~\cref{def:circuit}, however we did not require our ``words'' to be over the inverses as we have here; only elements of the set itself.\footnote{This is done because in practice, being able to perform a quantum gate $U$, does not always imply we can easily perform it's inverse $U^\dagger$.} % TODO: cref not working properly with named stuff
+Note that this may appear very similar to~\cref{def:circuit}, however we did not require our ``words'' to be over the inverses as we have here; only elements of the set itself.\footnote{This is done because in practice, being able to perform a quantum gate $U$, does not always imply we can easily perform it's inverse $U^\dagger$. In fact~\cref{thm:solovaykitaev} has been generalized to require the necessity of inverses in the approximation algorithm~\cite{inverse-free-sk}.} % TODO: cref not working properly with named stuff
 
 \subsection{Dense-ness}
 
@@ -357,17 +357,35 @@ It means that for every $U \in \PU{2^n}$, and every $\varepsilon > 0$, we have a
 
 \subsection{Fidelity}
 
-Suppose $\rho$ and $\sigma$ are two density operators.
-Their \textbf{fidelity} is a measure of how similar the two states are and is given by
+The \textbf{fidelity} of two density operators $\rho$ and $\sigma$ is a measure of state-similarity and can be calculated as follows.
 \begin{equation}
     \Fid(\rho, \sigma) \defeq \norm{\sqrt{\rho}\sqrt{\sigma}}_\text{tr} = \tr(\sqrt{\sqrt{\sigma}\rho\sqrt{\sigma}}).
 \end{equation}
-We can see if $\rho = \sigma$, then their fidelity is equal to 1, and otherwise this value lies between 0 and 1.
-This notion can be expanded from quantum states to quantum gates to obtain a measure of how well one unitary approximates another~\cite{fidelity}.
-Since $\Fid(\rho, \sigma)$ is a measure of distance between states $\rho$ and $\sigma$, and we are interested in understanding the difference of a quantum circuit and a specified target unitary, then we can calculate $\Fid(U\rho U^\dagger, \mathcal{E}(\rho))$.\footnote{Here we are using $\mathcal{E}$ to denote some quantum circuit, and $\mathcal{E}(\rho)$ it's action on $\rho$.}\todo{maybe change this notation.}
-This is great, however to study a circuit more effectively, we'd like to ditch the associated state $\rho$ since we don't want to perform this analysis for every such $\rho$.
-We can then define the \textbf{average gate fidelity} of a unitary $U$ and quantum circuit $\mathcal{E}$ as
+If $\rho = \sigma$, then their fidelity is equal to 1, while if $\rho$ and $\sigma$ have orthogonal images (\ie{} $\rho\sigma = 0$), then the fidelity is equal to 0.
+In all other cases the value of the fidelity lies in the range $(0, 1)$.
+This notion can be extended from quantum states to quantum gates to obtain a
+similarity measure unitary matrices~\cite{fidelity}.
+Given two unitary operators $U$ and $V$ and a density operator $\rho$, we can compute $\Fid(U\rho U^\dagger, V\rho V^\dagger)$, but the dependence on a particular state $\rho$ is not ideal for understanding how $U$ and $V$ differ across \emph{all} states.
+Hence we define the \textbf{average gate fidelity} between two quantum gates as
 \begin{equation}
-    \Fid_\text{gate}(U, \mathcal{E}) \defeq \int \Fid(U\rho U^\dagger, \mathcal{E}(\rho))\dd{\rho}
+    \Fid_\text{gate}(U, V) \defeq \int \Fid(U\rho U^\dagger, V\rho V^\dagger)\dd{\rho}
 \end{equation}
-where the integral $\int\dd{\rho}$ is taken over all density operators.\todo{is this even right?} % TODO replace all this with process fidelity
+where the integral is taken over all density operators which is made possible by a Haar measure.
+This measure has the downside of being ``dimensionally unstable'' which means $\Fid_\text{gate}(U, V) \neq \Fid_\text{gate}(U\otimes \1, V\otimes \1)$.
+This can be amended by using the \textbf{process fidelity}\footnote{This notion goes by \emph{mapping fidelity} in~\cite{watroustqi}, and \emph{entanglement fidelity} in~\cite{nielsenchuang}.} which requires the introduction of a few other terms.
+Let $\ket{\phi} = \frac{1}{\sqrt{d}}\sum_{x = 0}^{d-1}\ket{x}\ket{x}$ be the maximally mixed state on the tensor square of some complex Euclidean space $\mathcal{H}$.
+The Choi representation of a quantum channel, or \ac{CPTP} map $\Phi: \C^{n\times n} \to \C^{m \times m}$ is defined as follows.
+\begin{equation}
+    J(\Phi) \defeq \qty(\1 \otimes \Phi)(\ketbra{\phi})
+\end{equation}
+The process fidelity is then defined as
+\begin{align}
+    \Fid_\text{proc}(U, V) & \defeq \bra{\phi}(\1 \otimes V^\dagger)J(U)(\1 \otimes V)\ket{\phi} \\
+                           & = \tr(J(U)J(V)).
+\end{align}
+The process fidelity and average gate fidelity are linearly related~\cite{fidelity-relation} where $d$ is the dimension of the system.
+\begin{equation}
+    \Fid_\text{gate} = \frac{d\Fid_\text{proc} + 1}{d + 1}
+\end{equation}
+This definition is made more useful when we replace $V$ by a noisy, error-prone implementation of $U$.
+This gives us a theoretical tool to examine the accuracy of an implementation of a desired unitary gate that is more relevant than a more na\"{\i}ve measure like the distance or trace norm.
