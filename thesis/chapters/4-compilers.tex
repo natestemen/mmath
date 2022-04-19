@@ -104,7 +104,7 @@ This ``compressed'' version of the circuit is seen in~\cref{fig:precomp}.
     \caption{Circuit after compression}\label{fig:precomp}
 \end{figure}
 
-We can now apply a ``device independent optimization'' or ``peephole optimization'' using the fact that $\CNOT^2_1\cdot (H \otimes H)\cdot\CNOT^1_2 = H \otimes H$. %TODO add something in chapter 1 about the diff between pre and post device optimizations so this can relate
+We can now apply a type of ``device independent optimization'' known as ``peephole optimization'' just as we saw in~\cref{sec:optimizations}, using the fact that $\CNOT^2_1\cdot (H \otimes H)\cdot\CNOT^1_2 = H \otimes H$.
 This minor optimization, and many others can be found in~\cite{peephole}.
 Hence we can drop the two \CNOT{} gates in the blue box to obtain the figure seen in~\cref{fig:predevice}.
 \begin{figure}[ht]
