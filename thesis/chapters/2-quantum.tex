@@ -85,7 +85,7 @@ Thankfully linear algebra has just the tool to transform complex vectors in a re
 Hence when we have a qubit $\ket{\psi}$ and perform some action on it, the new state is modeled by $\ket{\phi} = U\ket{\psi}$ where $U$ represents whatever action we performed.
 The condition shown in~\cref{eq:unitary} is quite restrictive: where a general $n \times n$ matrix has $2n^2$ real degrees of freedom, an element of $\U{n}$ only has $n^2$.\footnote{This is to say $\dim_\R\U{n} = n^2$.}
 In fact for a general element of $\U{2}$ we can decompose it into pieces that look much more familiar. % TODO transition from previous
-\begin{example}
+\begin{example}\label{ex:u2decomp}
     Let $A$ be an arbitrary element of $\U{2}$.
     Then the following decomposition holds for $\alpha, \beta, \gamma, \delta \in \R$.
     \begin{equation}
@@ -96,20 +96,16 @@ In fact for a general element of $\U{2}$ we can decompose it into pieces that lo
 \end{example}
 
 This is a particularly important example as the idea of decomposing unitary matrices into simpler pieces is something we will need heavily in circuit compilation tasks.
-This decomposition also shows that each unitary in $\U{2}$ has a global phase ($\e^{\iu\alpha}$ in the above case), which in quantum computation is often irrelevant as it is not measurable.
-For that reason we also often work in the following group.
+This decomposition also shows that each unitary in $\U{2}$ has a global phase ($\e^{\iu\alpha}$ in~\cref{ex:u2decomp}), which in quantum computation is often irrelevant as it is not experimentally measurable. % TODO cref wrong
+For that reason we also often work in the following group where phases are removed.
 \begin{definition}
-    If $A \in \U{n}$ be a unitary matrix that has the further property that
+    Define the \emph{projective unitary group} by taking the quotient of the unitary group $\U{n}$ by matrices of the form $\alpha \cdot \1$ where $\alpha$ is a unit length complex number.
+    This is often written as follows, using a slight abuse of notation.
     \begin{equation}
-        \det A = 1
-    \end{equation}
-    then $A$ is called a \emph{special unitary matrix} and we denote the collection of these matrices by $\gls{sun}$.
-    \begin{equation}
-        \SU{n} \defeq \qty{ A \in \U{n} : \det A = 1}
+        \gls{pun} \defeq \U{n} / \U{1}
     \end{equation}
 \end{definition}
-However this does not always solve the problem of removing unnecessary (and nonphysical) phases as $\det(-A) = \det(A)$ despite implementing indistinguishable transformations.
-Hence we define the \textbf{projective unitary group} to remove these pesky complex phases by modding out unit complex numbers: $\gls{pun} \defeq \U{n} / \U{1}$. % TODO full definition and lead in
+Elements of the projective unitary group are the smallest physically realizable set of operations in quantum computation, and hence they make sense as our starting point in the formalization process.
 
 \subsection{Quantum Gates}
 
@@ -258,9 +254,9 @@ The theorem, stated in our terminology is as follows.
         \item $g^\dagger \in G$, and
         \item the free group $\free{G}$ is dense in $\PU{2^n}$.
     \end{itemize}
-    Then with $\varepsilon > 0$, there is a constant $c > 3$, such that for any $U \in \SU{2^n}$, there exists a circuit $C \in G^*$ of length $\order{\log^c\qty(\frac{1}{\varepsilon})}$ that approximates $U$ with error less than $\varepsilon$: that is $\norm{\implement{C} - U} < \varepsilon$.
+    Then with $\varepsilon > 0$, there is a constant $c > 3$, such that for any $U \in \PU{2^n}$, there exists a circuit $C \in G^*$ of length $\order{\log^c\qty(\frac{1}{\varepsilon})}$ that approximates $U$ with error less than $\varepsilon$: that is $\norm{\implement{C} - U} < \varepsilon$.
 \end{theorem}
-Not only does this theoretical result provide some insight into~\ref{qu:synthesis}, but it's constructive and hence provides an algorithm\footnote{This result sometimes goes under the name ``The Solovay-Kitaev Algorithm''.} to approximate arbitrary elements of $\SU{2^n}$ using gates from $\SU{2^m}$ for any $m \in \gls{intsn}$.
+Not only does this theoretical result provide some insight into~\ref{qu:synthesis}, but it's constructive and hence provides an algorithm\footnote{This result sometimes goes under the name ``The Solovay-Kitaev Algorithm''.} to approximate arbitrary elements of $\PU{2^n}$ using gates from $\PU{2^m}$ for any $m \in \gls{intsn}$.
 This was, a very important result in the field of quantum computing because it was the first to show that with the right gate set, one can theoretically perform any desired unitary.
 
 With at least a partial answer to Question~\ref{qu:synthesis} we can begin to refine further questions.
@@ -355,8 +351,8 @@ Note that this may appear very similar to~\cref{def:circuit}, however we did not
 
 \subsection{Dense-ness}
 
-What does it mean for a gate set $G$ to be dense in $\SU{2^n}$?
-It means that for every $U \in \SU{2^n}$, and every $\varepsilon > 0$, we have a sequence of gates $C = g_1g_2\cdots g_m$ such that $\norm{\implement{C} - U} < \varepsilon$.
+What does it mean for a gate set $G$ to be dense in $\PU{2^n}$?
+It means that for every $U \in \PU{2^n}$, and every $\varepsilon > 0$, we have a sequence of gates $C = g_1g_2\cdots g_m$ such that $\norm{\implement{C} - U} < \varepsilon$.
 
 \subsection{Fidelity}
 
