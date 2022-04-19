@@ -77,10 +77,11 @@ Thankfully linear algebra has just the tool to transform complex vectors in a re
     \end{equation}
     where $^\dagger$ denotes the conjugate transpose.
     The collection of unitary matrices form a group known as the \emph{unitary group} and is denoted \gls{un}.
-    This definition can also be stated simply using set builder notation.
+    This definition can also be stated simply using set builder notation;
     \begin{equation}
-        \U{n} \defeq \qty{ A \in \mats{n}{\C} : AA^\dagger = \1 = A^\dagger A} % TODO introduct matrix set notation
+        \U{n} \defeq \qty{ A \in \mats{n}{\C} : AA^\dagger = \1 = A^\dagger A }
     \end{equation}
+    where \gls{mats} is the set of all $n \times n$ complex matrices.
 \end{definition}
 Hence when we have a qubit $\ket{\psi}$ and perform some action on it, the new state is modeled by $\ket{\phi} = U\ket{\psi}$ where $U$ represents whatever action we performed.
 The condition shown in~\cref{eq:unitary} is quite restrictive: where a general $n \times n$ matrix has $2n^2$ real degrees of freedom, an element of $\U{n}$ only has $n^2$.\footnote{This is to say $\dim_\R\U{n} = n^2$.}
