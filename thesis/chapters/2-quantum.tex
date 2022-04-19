@@ -97,7 +97,7 @@ In fact for a general element of $\U{2}$ we can decompose it into pieces that lo
 \end{example}
 
 This is a particularly important example as the idea of decomposing unitary matrices into simpler pieces is something we will need heavily in circuit compilation tasks.
-This decomposition also shows that each unitary in $\U{2}$ has a global phase ($\e^{\iu\alpha}$ in~\cref{ex:u2decomp}), which in quantum computation is often irrelevant as it is not experimentally measurable. % TODO cref wrong
+This decomposition also shows that each unitary in $\U{2}$ has a global phase ($\e^{\iu\alpha}$ in~\cref{ex:u2decomp}), which in quantum computation is often irrelevant as it is not experimentally measurable.
 For that reason we also often work in the following group where phases are removed.
 \begin{definition}
     Define the \emph{projective unitary group} by taking the quotient of the unitary group $\U{n}$ by matrices of the form $\alpha \cdot \1$ where $\alpha$ is a unit length complex number.
@@ -348,7 +348,7 @@ Then the free group $\free{S} \defeq (S\cup S^{-1})^*$ where the asterisk indica
 
 As an example take $S$ to be $\qty{f, g, h}$, and hence the formal inverses are $S^{-1} = \qty{f^{-1}, g^{-1}, h^{-1}}$.
 Then the free group $\free{S}$ contains elements such as $fg^{-1}hhhh^{-1}$, $fghhhf$, and $h^{-1}gh^{-1}f^{-1}ghgg$.
-Note that this may appear very similar to~\cref{def:circuit}, however we did not require our ``words'' to be over the inverses as we have here; only elements of the set itself.\footnote{This is done because in practice, being able to perform a quantum gate $U$, does not always imply we can easily perform it's inverse $U^\dagger$. In fact~\cref{thm:solovaykitaev} has been generalized to require the necessity of inverses in the approximation algorithm~\cite{inverse-free-sk}.} % TODO: cref not working properly with named stuff
+Note that this may appear very similar to~\cref{def:circuit}, however we did not require our ``words'' to be over the inverses as we have here; only elements of the set itself.\footnote{This is done because in practice, being able to perform a quantum gate $U$, does not always imply we can easily perform it's inverse $U^\dagger$. In fact~\cref{thm:solovaykitaev} has been generalized to require the necessity of inverses in the approximation algorithm~\cite{inverse-free-sk}.}
 
 \subsection{Dense-ness}
 
