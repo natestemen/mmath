@@ -33,8 +33,7 @@ Intuitively a quantum chip is a collection of qubits along with the capability t
 This can be formalized using a graph structure as follows. % TODO better lead in
 
 \begin{definition}\label{def:topology}
-    A \emph{quantum connectivity graph} is an undirected\footnote{TODO} graph $H = (V, E)$\footnote{$V$ is a finite set which we refer to as vertices, and $E$ is a collection of pairs of vertices, \ie{} $E \subseteq V \times V$.} such that $(v, v) \in E$ for all $v \in V$.
-    That is $H$ contains all self loops.
+    A \emph{quantum connectivity graph} is an undirected\footnote{There are some hardware which are better modeled by a directed graph, and we will see an example in~\cref{sec:ringcomp}, but for most cases undirected is simpler and provides the intuition.} graph $H = (V, E)$\footnote{$V$ is a finite set which we refer to as vertices, and $E$ is a collection of pairs of vertices, \ie{} $E \subseteq V \times V$.} such that $(v, v) \in E$ for all $v \in V$.
 \end{definition}
 What we call the connectivity graph is sometimes referred to as a (network) topology in other resources.
 We ensure the connectivity graph has all self loops as edges are the basis for performing quantum gates and all modern hardware has the capability of performing single qubit gates.
