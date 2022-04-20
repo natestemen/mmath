@@ -247,6 +247,10 @@ This formalism also allows us to frame the following important question about un
     Given a quantum gate set $G$ over $n$ qubits, and unitary operator $U \in \PU{2^n}$, does there exist a circuit $C\in G^*$, such that $\implement{C} = U$?
 \end{question}
 If the answer is yes, we say a gate set $G$ \textbf{synthesizes} $U$.
+We also say that $G$ synthesizes $U$ if there is a collection \SWAP{} operations that can be composed before and after $G$ that implement $U$.
+More formally, if there is a circuit $C \in G^*$ and unitaries $S_0$ and $S_1$ that are made solely of \SWAP{} operations such that $S_0 \cdot \implement{C} \cdot S_1 = U$, then we also say $G$ synthesizes $U$.
+This additional level of equivalence is particularly useful in quantum circuit compilation as it comes from simply relabeling qubits.
+
 This question is answered, at least in part, through the Solovay-Kitaev theorem first published in~\cite{bigkitaev} with further proofs/elucidations in~\cite{nielsenchuang,solovay-kitaev,kitaev-book}.
 The theorem, stated in our terminology is as follows.
 \begin{theorem}[Solovay-Kitaev]\label{thm:solovaykitaev}
