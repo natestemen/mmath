@@ -108,6 +108,12 @@ For that reason we need to not just understand a theoretical model of quantum ha
 
 Here we will briefly cover the most important topics discussed in quantum circuit compilation when it comes to optimizations on \ac{NISQ}-era hardware.
 
+\paragraph{Parallelizability}
+Just as many classical algorithms can be sped up with parallelization, so too can many quantum algorithms.
+That said some architectures, such as ion traps and cold atoms, do not easily support parallelization while superconducting quantum computers do.
+Since this is typically a fact compilers can exploit to speed up computation, the non-parallelizability can sometimes means different compilation techniques must be employed, or just skipped entirely.
+This is especially important since gates are often grouped based on non-overlapping sets of qubits.
+
 \subsubsection{Relaxation and Dephasing Times}\label{sec:Ttimes}
 
 As qubits are two-state systems, they are often implemented experimentally using some physical system (\eg{} an atom) that has a ground state, and an excited state.
