@@ -215,9 +215,9 @@ In the future we might hope to build these problem-specific compilers into a mor
 Another hybrid quantum-classical algorithm that has seem much attention due to its near-term applications in quantum chemistry is that of the \ac{VQE}~\cite{vqe,vqe2}.
 This algorithm is used to calculate the ground state of a molecular Hamiltonian using a parametrized quantum circuit as a cost function, and the classical compute nodes as an optimizer.
 \Eg{} let $\boldsymbol{\theta} \in \R^n$ be a vector of numbers that our circuit $U$ depends on, \ie{} $U: \R^n \to \U{2^m}$ for some number of qubits $m$.
-\begin{figure}[ht] % TODO label positioning fucked
+\begin{figure}[ht]
     \centering
-    \includestandalone[width=0.8\textwidth]{tikz/vqe}
+    \includestandalone[width=0.7\textwidth]{tikz/vqe}
     \caption{\acs{VQE} Schematic}\label{fig:vqe}
 \end{figure}
 A compiler specific to this problem has been created, and generalized to other quantum-classical algorithms~\cite{vqe-compiler} leveraging much of the existing infrastructure brought forth by the LLVM project discussed in~\cref{sec:llvm}.

@@ -16,11 +16,11 @@
         },
 }
 \begin{tikzpicture}[font=\sffamily, thick, node distance=4cm, framed, background rectangle/.style={draw=white}]
-    \node[frame] (circ) {Quantum Node};
-    \node[frame] (opt) [right of=circ] {Classical Node};
+    \node[frame] (qua)                {Quantum Node};
+    \node[frame] (cla) [right of=qua] {Classical Node};
 
-    \draw[-stealth] (circ) to [bend left=40] (opt) node[above, left=1cm] {Compute $\expval{U(\boldsymbol{\theta})}{\psi}$};
-    \draw[-stealth] (opt)  to [bend left=40] (circ) node [below, right=1cm] {Modify parameters $\boldsymbol{\theta}\to \boldsymbol{\theta}'$};
+    \draw[-stealth] (qua) to [bend left=40] (cla) node [above left = .5cm and -1.3cm of cla] {Compute $\expval{U(\boldsymbol{\theta})}{\psi}$};
+    \draw[-stealth] (cla) to [bend left=40] (qua) node [below left = .5cm and -1.5cm of cla] {Modify parameters $\boldsymbol{\theta}\to \boldsymbol{\theta}'$};
 \end{tikzpicture}
 
 \end{document}
