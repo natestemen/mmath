@@ -1,0 +1,33 @@
+\documentclass[tikz]{standalone}
+
+\usetikzlibrary{arrows,shadows,positioning,fit}
+
+\begin{document}
+
+\tikzset{
+    frame/.style={
+            draw,
+            % text width=6em,
+            text centered,
+            % minimum height=4em,
+            drop shadow,
+            fill=orange!40,
+            rounded corners,
+        },
+}
+\begin{tikzpicture}[font=\sffamily, thick, node distance=.5cm, framed, background rectangle/.style={draw=white}]
+    \node[frame] (syn) {Quantum Algorithm};
+    \node[frame, below=of syn] (sem) {Quantum Programming Language};
+    \node[frame, below=of sem] (ir)  {Quantum Compiler};
+    \node[frame, below=of ir]  (opt) {Quantum Instruction Set};
+    \node[frame, below=of opt] (gen) {Control \& Readout Electronics};
+    \node[frame, below=of gen] (qub) {Quantum Hardware};
+
+    \draw[stealth-stealth] (syn) -- (sem);
+    \draw[stealth-stealth] (sem) -- (ir);
+    \draw[stealth-stealth] (ir)  -- (opt);
+    \draw[stealth-stealth] (opt) -- (gen);
+    \draw[stealth-stealth] (gen) -- (qub);
+\end{tikzpicture}
+
+\end{document}

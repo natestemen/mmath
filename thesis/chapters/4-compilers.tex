@@ -238,15 +238,38 @@ There have also been circuit optimizers written in formal languages like Coq~\ci
 
 \section{Quantum Stack}
 
-In this section we will give an overview of the related technologies to quantum circuit compilation and try and explain how they fit together to form a quantum full stack.
-\todo{all these need to be tied together}
+A ``full quantum stack'' is a collection of tools and components required to make a fully functioning quantum computer.
+As we've seen in this thesis, a compiler is an important, but single piece of this stack.
+In this section we will give an overview of \emph{some} of the many existing tools and technologies that exist.
+For a more exhaustive of productionized list of software projects, visit the following webpages.
+\begin{center}
+    \url{https://wikipedia.org/wiki/quantum_programming}
+    \url{https://github.com/desireevl/awesome-quantum-computing}
+\end{center}
 
-\texttt{qcor}~\cite{qcor} is a \CPP{} compiler for hybrid quantum-classical computing built on \texttt{clang} (\CPP{} compiler mentioned in~\cref{sec:compiler-examples}).
+Before diving into examples of existing infrastructure, it is useful to have a picture of what a quantum full stack may look like.
+There are many possibilities (each with different amounts of complexity), but a basic example is shown in~\cref{fig:quantumstack}.
 
-Authors in~\cite{qisa} introduce the \texttt{quil} language~\cite{quil} which is intended to be a Quantum \ac{ISA} suitable for program analysis and compilation.
+\begin{figure}[h]
+    \centering
+    \includestandalone[width=0.6\textwidth]{tikz/qstack}
+    \caption{Quantum Stack}\label{fig:quantumstack}
+\end{figure}
 
-OpenQASM~\cite{openqasm2,openqasm3} aims to be a lower-level programming language that can handle hybrid quantum-classical computations.
+Starting at the top, we've seen the common language for specifying quantum algorithms is typically that of a circuit diagram.
+This is slightly complicated when there is quantum \emph{and} classical coprocessing required in which case quantum circuits are often used as subroutines within classical pseudocode.
 
-\texttt{staq}~\cite{staq} is a full stack toolkit that can be used for compilation of OpenQASM.
+With a specification of an algorithm, one can then code this into a computer programming language using Qiskit (IBM)~\cite{qiskit}, Pennylane (Xanadu)~\cite{pennylane}, Q\# (Microsoft)~\cite{qsharp}, Cirq (Google)~\cite{cirq} and many others.
+A more detailed overview of the capabilities of each language along with the trade-offs can be found in~\cite{qlangcomparision}.
+However, one example not discussed there is OpenQASM~\cite{openqasm2,openqasm3} which doesn't fit as neatly into~\cref{fig:quantumstack}.
+OpenQASM was first introduced to be a language used for specifying, and then drawing quantum circuits.
+It has since grown to be a low-level language that can handle hybrid quantum-classical computation and can serve as both a quantum programming language and quantum instruction set.
 
-ScaffCC is a a scalable compilation and analysis framework based on LLVM~\cite{scaffcc,scaffcc2}.
+Moving on to compilers, there are many examples of research compilers (like those we saw in~\cref{sec:methods}), but there is also the compiler built into Qiskit along with \texttt{qcor}~\cite{qcor} which is a \CPP{} compiler for hybrid quantum-classical computing built on \texttt{clang} (\CPP{} compiler mentioned in~\cref{sec:compiler-examples}).
+There is also ScaffCC is a a scalable compilation and analysis framework based on LLVM~\cite{scaffcc,scaffcc2}.
+\texttt{staq}~\cite{staq} is a compiler specifically designed to compile programs written in OpenQASM.
+
+Post-compilation the quantum algorithm exists in the form of a \ac{QIR}, or quantum instruction set.
+In 2020 Microsoft introduced a \ac{QIR}~\cite{qir} which has started to see some adoption among compilers, and in~\cite{qisa} the authors introduced the \texttt{quil} language~\cite{quil} which is intended to serve the single purpose of being a quantum instruction set.
+
+Finally the electronics and hardware play the foundational aspect in~\cref{fig:quantumstack}, but are not the focus of this thesis and instead recommend~\cite{qlangcomparision} which details some hardware currently available to internet users.
