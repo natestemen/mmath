@@ -118,30 +118,3 @@
     pdfcreator={pdfLaTeX},
     pdfproducer={LaTeX with hyperref and classicthesis},
 }
-
-
-% ********************************************************************
-% Setup autoreferences (hyperref and babel)
-% ********************************************************************
-% There are some issues regarding autorefnames
-% http://www.tex.ac.uk/cgi-bin/texfaq2html?label=latexwords
-% you have to redefine the macros for the
-% language you use, e.g., american, ngerman
-% (as chosen when loading babel/AtBeginDocument)
-% ********************************************************************
-\makeatletter % TODO not sure if any of this is needed
-\@ifpackageloaded{babel}%
-{%
-    \addto\extrasamerican{%
-        \renewcommand*{\figureautorefname}{Figure}%
-        \renewcommand*{\tableautorefname}{Table}%
-        \renewcommand*{\partautorefname}{Part}%
-        \renewcommand*{\chapterautorefname}{Chapter}%
-        \renewcommand*{\sectionautorefname}{Section}%
-        \renewcommand*{\subsectionautorefname}{Section}%
-        \renewcommand*{\subsubsectionautorefname}{Section}%
-    }%
-    % Fix to getting autorefs for subfigures right (thanks to Belinda Vogt for changing the definition)
-    \providecommand{\subfigureautorefname}{\figureautorefname}%
-}{\relax}
-\makeatother
