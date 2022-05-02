@@ -25,16 +25,15 @@ Even with one of the most famous physicists popularizing the idea, it took anoth
 If there was any hesitancy from the academic community at this point about the theoretical usefulness of a quantum computer, this result showed real potential for the emerging technology.
 More applications start rolling in with quantum teleportation~\cite{quantumteleportation} and famously Peter Shor's polynomial time algorithm to factor integers (and hence break many modern cryptosystems)~\cite{shor-encryption}.
 
-The latter caught the eye of the US Government and within the year of Shor's publication the \ac{NIST} organized the first government funded conference on quantum computation.\footnote{It's likely this is when quantum computation was put on the radar of other US government agencies. In 2014 leaked documents showed the National Security Agency had begun a project dubbed ``Owning The Net'' whose purpose was to use a quantum computer to break internet cryptography and to ``gain access to and securely return high value target communications''. The status of the project---which also goes by the moniker ``Penetrating Hard Targets''---is unknown.}
+The latter caught the eye of the US Government and within the year of Shor's publication the \ac{NIST} organized the first government-funded conference on quantum computation.\footnote{It's likely this is when quantum computation was put on the radar of other US government agencies. In 2014 leaked documents showed the National Security Agency had begun a project dubbed ``Owning The Net'' whose purpose was to use a quantum computer to break internet cryptography and to ``gain access to and securely return high value target communications''. The status of the project---which also goes by the moniker ``Penetrating Hard Targets''---is unknown.}
 With some of the theoretical groundwork and motivation laid through the 80's and 90's, the first experimental realization of a superconducting qubit was performed in~\citeyear{firstqubit} by Yasunobu Nakamura and Jaw-Shen Tsai~\cite{firstqubit}.
-Fewer than 20 years passed
-Hence it was fewer than 20 years after Feynman advocated the possibility of using quantum mechanics in a new type of computer that the idea was brought to fruition.
+Hence it was fewer than 20 years after Feynman advocated the possibility of using quantum mechanics in a new type of computer that the idea was brought to fruition. % TODO
 
 Since then ambitions have risen and technological progress has allowed for more and more qubits and quantum computers today have even been shown to complete tasks that classical ones cannot in any feasible amount of time.
 In particular a team at China's Hefei National Laboratory used their 66-qubit computer\footnote{Affectionately named Zuchongzhi after Chinese mathematican Zu Chongzhi whose computation of $\pi$ was more accurate than any other for more than 800 years.} to complete a task in 4 hours that would take state of the art programs tens of thousands of years~\cite{zuchongzhi}.
 
 In~\citeyear{nisq} John Preskill coined the term \ac{NISQ} as a characterization of quantum computers with a relatively small number of noisy qubits (50--100) with limited connectivity: \ie{} machines that have dominated the past decade, and will likely continue to for the next few years~\cite{nisq}.
-The problem presented in this document is relevant to quantum computers past the \ac{NISQ}-era, but are especially important as we attempt to squeeze every ounce of computation out of them.
+The problem presented in this document is relevant to quantum computers past the \ac{NISQ}-era, but are especially important as we attempt to squeeze every ounce of computation out of them in the \ac{NISQ}-era.
 
 % TODO conclusion
 
@@ -50,7 +49,7 @@ Often the following canonical basis is chosen and referred to as the computation
 \begin{align}
     \ket{0} \defeq \mqty[1 \\ 0] & & \ket{1} \defeq \mqty[0 \\ 1]
 \end{align}
-In this basis a qubit is represented as
+In this basis, a qubit is represented as
 \begin{equation}\label{eq:qubit}
     \ket{\psi} = \alpha\ket{0} + \beta\ket{1} = \mqty[\alpha \\ \beta]
 \end{equation}
@@ -106,7 +105,7 @@ For that reason we also often work in the following group where phases are remov
         \gls{pun} \defeq \U{n} / \U{1}
     \end{equation}
 \end{definition}
-Elements of the projective unitary group are the smallest physically realizable set of operations in quantum computation, and hence they make sense as our starting point in the formalization process.
+Representative elements of the projective unitary group are the smallest physically realizable set of operations in quantum computation, and hence they make sense as our starting point in the formalization process.
 
 \subsection{Quantum Gates}
 
@@ -156,7 +155,7 @@ Note that these two functions may seem to have period $4\pi$, but due to the quo
     \end{align}
     Since $\ket{\phi}, \ket{\psi}$ were arbitrary, we must have $\SWAP^\dagger\SWAP = \1$ and a similar argument can be used to show $\SWAP\SWAP^\dagger = \1$, and hence \SWAP{} is a valid unitary operation.
 
-    Proceeding with a decomposition of the \SWAP{} gate, we propose the following equivalence using three \CNOT{} gates.
+    As for the decomposition of the \SWAP{} gate, we have the following equivalence.
     \begin{equation}\label{eq:cnotswap}
         \begin{quantikz}
             & \ctrl{1} & \targ{}   & \ctrl{1} & \midstick[2,brackets=none]{$\eqdef$} \qw & \swap{1} & \midstick[2,brackets=none]{$\equiv$} \qw & \gate[swap]{} & \qw \\
@@ -202,7 +201,7 @@ Something to note here is that in this abstraction, all of our quantum gates are
 With a 2 qubit quantum chip and the ability to perform a Pauli $X$ gate on either qubit, our gate set is $\qty{\1\otimes \1, \1\otimes X, X\otimes \1, X\otimes X}$.\footnote{We don't always think of the identity gate $\1$ as a gate that needs to be included, but doing nothing to a qubit is no easy task, so it's important to remember to treat it just like any other gate and understand its error rates as well.}
 Sometimes this gate set is denoted $\qty{\1, X_0, X_1, X_0X_1}$, but we will try to use more explicit notation here.
 
-Circuits are often drawn using diagram as in~\cref{fig:excircuit} where each horizontal ``wire'' represents a qubit, and boxes and other gadgets represent quantum gates.
+Circuits are often drawn as in~\cref{fig:excircuit} where each horizontal ``wire'' represents a qubit, and boxes and other gadgets represent quantum gates.
 \begin{figure}[ht]
     \centering
     \begin{quantikz}
@@ -237,7 +236,7 @@ In~\cref{tab:gates2circuit} we see what each one of these circuits are under the
 \end{table}
 
 We now have the machinery for circuits, and one of the important questions we need to ask is \emph{when are two circuits the same?}
-Surely we can compare the circuits as strings in $G^*$, but if $G = \qty{\1, X}$, it will not tell us that $C = \1$ and $C' = XX$ are the same despite the same physical process happening.
+Surely we can compare the circuits as strings in $G^*$, but if $G = \qty{\1, X}$, it will not tell us that $C = \1$ and $C' = XX$ are logically the same despite corresponding to different physical processes.
 To this end we wish to understand how the combinations of gates come together to form the entire process.
 Following~\cite{formalcircuit} we define a map $\implement{-}: G^* \to \PU{2^n}$ which takes a quantum circuit, or sequence of gates, and multiplies them together to obtain a single unitary operator: $\implement{g_1g_2\cdots g_m} = g_m\cdot g_{m-1} \cdots g_1$.\footnote{Notice here on the left we have string concatenation, and on the right matrix multiplication. Also note the fact that when doing the multiplication we reverse the order. This is an artifact of the way we draw quantum circuits from left to write, but apply gates mathematically right to left.}
 With this notation we can say two circuits $C$ and $C'$ implement the same operation if $\implement{C} = \implement{C'}$.
@@ -282,7 +281,7 @@ Some examples of common cost functions are given below, and multiple can be used
 \subsection{Universal Gate Sets}\label{sec:universal}
 
 We slightly danced around the idea of universality in~\cref{thm:solovaykitaev}, but we will make it clear now.
-In order to harness the full power of a quantum computer, we hope it to be able to perform arbitrary unitary operations.
+In order to harness the full power of a quantum computer, it must be able to perform arbitrary unitary operations.
 \begin{definition}
     A gate set $G$ on $n$ qubits is called \emph{universal} if for all $U \in \PU{2^n}$ there exists a circuit $C\in G^*$ such that $\implement{C} = U$.
 \end{definition}
@@ -348,11 +347,11 @@ This induces a norm on the space of operators \gls{endV} as
 \subsection{Free Group}
 We will not attempt a rigorous definition of the free group and instead opt for something more informal since we will not need to work with the details.
 Let $S$ be a finite set, and denote by $S^{-1}$ the formal inverse of elements in $S$.
-Then the free group $\free{S} \defeq (S\cup S^{-1})^*$ where the asterisk indicates the Kleene star.
+Then the free group of $S$ is $\free{S} \defeq (S\cup S^{-1})^*$ where the asterisk indicates the Kleene star.
 
 As an example take $S$ to be $\qty{f, g, h}$, and hence the formal inverses are $S^{-1} = \qty{f^{-1}, g^{-1}, h^{-1}}$.
 Then the free group $\free{S}$ contains elements such as $fg^{-1}hhhh^{-1}$, $fghhhf$, and $h^{-1}gh^{-1}f^{-1}ghgg$.
-Note that this may appear very similar to~\cref{def:circuit}, however we did not require our ``words'' to be over the inverses as we have here; only elements of the set itself.\footnote{This is done because in practice, being able to perform a quantum gate $U$, does not always imply we can easily perform it's inverse $U^\dagger$. In fact~\cref{thm:solovaykitaev} has been generalized to require the necessity of inverses in the approximation algorithm~\cite{inverse-free-sk}.}
+Note that this may appear very similar to~\cref{def:circuit}, however we did not require our ``words'' to be over the inverses as we have here; only elements of the set itself.\footnote{This is done because in practice, being able to perform a quantum gate $U$, does not always imply one can perform its inverse $U^\dagger$. In fact, \cref{thm:solovaykitaev} has been generalized without the need of unitary inverses in the approximation algorithm~\cite{inverse-free-sk}.}
 
 \subsection{Dense-ness}
 
@@ -368,7 +367,7 @@ The \textbf{fidelity} of two density operators $\rho$ and $\sigma$ is a measure 
 If $\rho = \sigma$, then their fidelity is equal to 1, while if $\rho$ and $\sigma$ have orthogonal images (\ie{} $\rho\sigma = 0$), then the fidelity is equal to 0.
 In all other cases the value of the fidelity lies in the range $(0, 1)$.
 This notion can be extended from quantum states to quantum gates to obtain a
-similarity measure unitary matrices~\cite{fidelity}.
+similarity measure for unitary matrices~\cite{fidelity}.
 Given two unitary operators $U$ and $V$ and a density operator $\rho$, we can compute $\Fid(U\rho U^\dagger, V\rho V^\dagger)$, but the dependence on a particular state $\rho$ is not ideal for understanding how $U$ and $V$ differ across \emph{all} states.
 Hence we define the \textbf{average gate fidelity} between two quantum gates as
 \begin{equation}
@@ -387,9 +386,9 @@ The process fidelity is then defined as
     \Fid_\text{proc}(U, V) & \defeq \bra{\phi}(\1 \otimes V^\dagger)J(U)(\1 \otimes V)\ket{\phi} \\
                            & = \tr(J(U)J(V)).
 \end{align}
-The process fidelity and average gate fidelity are linearly related~\cite{fidelity-relation} where $d$ is the dimension of the system.
+The process fidelity and average gate fidelity are linearly related~\cite{fidelity-relation} where $d$ is the dimension of the system by the relation
 \begin{equation}
-    \Fid_\text{gate} = \frac{d\Fid_\text{proc} + 1}{d + 1}
+    \Fid_\text{gate} = \frac{d\Fid_\text{proc} + 1}{d + 1}.
 \end{equation}
 This definition is made more useful when we replace $V$ by a noisy, error-prone implementation of $U$.
 This gives us a theoretical tool to examine the accuracy of an implementation of a desired unitary gate that is more relevant than a more na\"{\i}ve measure like the distance or trace norm.

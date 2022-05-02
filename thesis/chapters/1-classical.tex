@@ -3,7 +3,7 @@
 %************************************************
 
 In this chapter we will give a very brief overview of the components of classical computers that will be helpful to further discussions of quantum circuit compilation.
-A key component to quantum circuit compilation is the word ``compilation'' whose origins (in computing) date to the early 1950's when electronic digital computers were in their early stages.
+A key component to quantum circuit compilation is the word ``compilation'', whose origins (in computing) date to the early 1950's when electronic digital computers were in their early stages.
 Understanding the historical development of compilation and its techniques will provide ideas and tools necessary to solve the new task of quantum circuit compilation.
 
 This chapter is meant to provide the reader with the basics of some computing terminology and ideas.
@@ -25,9 +25,9 @@ A simplified model of computer architecture, known as the von Neumann Architectu
 \end{figure}
 
 Since the \ac{CPU} is the computational component of the computer, what can \emph{it} do?
-Modern \acp{CPU} are built on the \ac{ISA} which means that the \ac{CPU} has a finite set of operations or instructions that it can perform.
+Modern \acp{CPU} are built on the \ac{ISA}, which means that the \ac{CPU} has a finite set of operations (also known as instructions) that it can perform.
 Every operation the computer can perform must be built up from these primitive instructions.
-Some examples of what these primitive operations might be are:
+Some examples of these primitive operations are:
 \begin{itemize}
     \item put a value into memory;
     \item add two values in memory together and store the result in a new location;
@@ -36,15 +36,15 @@ Some examples of what these primitive operations might be are:
 \end{itemize}
 One can then use these primitives to build up complex functionality that eventually implement the capabilities we know and love (and hate) computers for.
 
-Choosing an \ac{ISA} results in the creation of a \emph{complexity class} which is a collection of problems that can be solved using a polynomial number of primitive instructions/operations.\footnote{Polynomial refers to a function which takes the \emph{size} of the problem input, and returns the number of steps (or time) required to solve the problem.}
+Choosing an \ac{ISA} results in the creation of a \emph{complexity class} which is a collection of problems that can be solved using a polynomial number of primitive instructions/operations.
 In practice, most \acp{ISA} implement the same complexity class, and we denote it by P. % TODO complexity
 The formal definition of P is ``decision problems solvable by a deterministic Turing machine in a polynomial amount of time'', but the picture one should have in mind is ``problems for which we have efficient algorithms''.
 For more details on complexity classes, and computational complexity in general consult~\cite[Chapter 3]{nielsenchuang} for the material with an eye towards quantum, and~\cite{complexity} for a more detailed exposition.
 
 The \ac{ISA} architecture style has seen major success, but it suffers from the drawback of requiring the programmer to work at the very low-level of machine instructions.
-To work at a higher level of abstraction, and hence to have a higher-level of productivity, computer scientists and programmers created new languages which were easier to read, write, and reason about.
+To work at a higher level of abstraction, and hence to have a higher level of productivity, computer scientists and programmers created new languages which were easier to read, write, and reason about.
 This necessitated new languages to be ``translated'' into the instruction set after the code was written.
-The software responsible for translating these higher level ideas into a machines instruction set are known as \textbf{compilers}.
+The software responsible for translating these higher level ideas into a machine's instruction set are known as \textbf{compilers}.
 
 \section{Compilers}
 
@@ -56,7 +56,6 @@ Merriam-Webster~\cite{compiledef} defines the word \emph{compile} to mean
     to compose out of materials from other documents.
 \end{quote}
 In the context of programming language compilers,  ``other documents'' might mean the code itself, as well as configuration files and environment variables.
-With these materials the lower level machine code is then composed.
 This definition is reflected in~\citetitle{dragonbook}\footnote{Colloquially known as ``The Dragon Book'' because of the cover, and likely the most famous book on (classical) compilers. This is also where the logo of the LLVM project originates from which we will discuss in~\cref{sec:llvm}.}\graffito{
     \includegraphics[width=\marginparwidth]{img/dragonbook.png}
     \emph{The Dragon Book}
@@ -93,18 +92,18 @@ Modern digital computers are built on the transistor: a small\footnote{They are 
 Since transistors provide the basic building block of the bit, the transistor count is an effective measure of how much memory the computer has.
 Hence when a compiler is performing some sort of optimizations, it must be aware of the amount of memory it can make use of.
 While modern computers have an abundance of memory, not all memory is created equally.
-The \ac{CPU} can talk to the computers long-term storage (hard drive), it's a slow communication that is not ideal to be performing frequently.
+The \ac{CPU} can talk to the computer's long-term storage (hard drive), however it is a slow communication that is not ideal to perform frequently and cause bottlenecks in many computations.
 Instead, \acp{CPU} have their own (smaller) internal memory which is often referred to as a collection of registers.
 These registers provide fast access to variables during computation.
-Hence, during the compilation of a program, the compilers knowledge of the target hardware's \ac{CPU} allows the compiler to efficiently use the on-board registers, and make informed decisions as to when to use long-term storage.
+Hence during the compilation of a program, the compiler's knowledge of the target hardware's \ac{CPU} allows the compiler to efficiently use the on-board registers, and make informed decisions as to when to use long-term storage.
 
-The second resource that compilers are often made aware to is the \acp{CPU} ability to run parallelized computations.
+The second resource that compilers are often made aware of is the \acp{CPU} ability to run parallelized computations.
 The ability to perform multiple instructions at the same time is often taken advantage of in compilers via techniques like loop unrolling.\footnote{\url{https://en.wikipedia.org/wiki/Loop_unrolling}}
 However, not all architectures support this mode of optimization, and even if it does, the compiler must be careful to ensure parallelization optimizations do not over-burden registers.
 
 \subsection{Compilation Phases}\label{sec:comp-phases}
 
-As alluded to in the previous section, a compiler has many different responsibilities.
+As in the previous section, a compiler has many different responsibilities.
 Each responsibility is broken into a separate component so that it can be understood on its own, and later be reused in its own context.
 A schematic for this can be seen in~\cref{fig:compilerphases} on page~\pageref{fig:compilerphases} showing the main steps that we will be concerned with in this document.
 
@@ -125,9 +124,9 @@ In many compiled languages the operation \texttt{'hello' * 5} would pass syntax 
 \end{wrapfigure}
 
 \paragraph{Intermediate Code Generator}
-The code is now ensured to be well formed and can begin preparation to execute on hardware.
+The code is now ensured to be well formed and can begin to be transformed into something the hardware is capable of running.
 Passing directly to the code generator is possible from here, but the end product will be slower as no optimizations will take place.
-Instead, the existing code (or sometimes using the syntax tree created in the previous steps) will be transformed into an \acf{IR}.
+Instead, the existing code (sometimes the syntax tree created in the previous steps is used) will be transformed into an \acf{IR}.
 This is a mid-level representation of the code in that it is typically thought of as somewhere between the high-level of abstraction of the programming language, and the low-level instruction set.
 
 This is best seen with a simple example.
@@ -246,7 +245,7 @@ A few examples are in order to help understand how compilers work in the real wo
 
 \section{LLVM}\label{sec:llvm}
 
-The LLVM\footnote{The project, while originally an acronym for Low Level Virtual Machine now goes solely by LLVM. The original name reflects the fact that the compiler targets low-level \ac{IR} code that runs on some theoretical (hence the term virtual) machine. Since the inception virtual machines have come to mean something different, hence the abandonment of the acronym.} project~\cite{llvm} is one of the largest open source compiler projects in existence and much of the compiler architecture we've discussed here come from its design.
+The LLVM\footnote{The project, while originally an acronym for Low Level Virtual Machine, now goes solely by LLVM. The original name reflects the fact that the compiler targets low-level \ac{IR} code that runs on some theoretical (hence the term virtual) machine. Since the inception virtual machines have come to mean something different, hence the abandonment of the acronym.} project~\cite{llvm} is one of the largest open source compiler projects in existence and much of the compiler architecture we've discussed here come from its design.
 The founder of the project Chris Lattner has characterized compilers succinctly in~\cite{lattnerquote} as
 \begin{quote}
     the art of allowing humans to think at a level of abstraction that they want to think about.

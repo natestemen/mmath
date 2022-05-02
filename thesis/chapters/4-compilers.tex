@@ -43,7 +43,7 @@ This reinforces the benefits of building a \ac{QIR} on top of an existing \ac{IR
 
 
 \paragraph{Fault Tolerance} % TODO: expand into compiling into logical qubits/gate, then optimizing those gadgets
-As we saw in~\cref{sec:ft}, fault tolerance is key method for encoding qubits and gates to prevent the spread of errors in a quantum circuit.
+As we saw in~\cref{sec:ft}, fault tolerance is a key method for encoding qubits and gates to prevent the spread of errors in a quantum circuit.
 This is done by restricting where entangling gates can be applied.
 Thus when compiling a fault tolerant circuit, the compiler needs to understand not only the restrictions that may be in place due to the quantum chips connectivity, but \emph{also} the entangling gate restriction that fault tolerance places on the circuit.
 Not only this, but it is hoped that we may also be able to use compilers to take circuits and compile them \emph{into} a fault tolerant form if the quantum chip allows for it.
@@ -138,7 +138,7 @@ Executing the gates in slice 3 however will require a \SWAP{} as qubits $q_1$ an
 To make these qubits adjacent we can either swap qubits $q_1$ and $q_3$ or $q_2$ and $q_3$.
 Looking ahead to slice 5 we see we need adjacency of $q_1 \leftrightarrow q_2$ and $q_3 \leftrightarrow q_4$.
 Swapping $q_1$ and $q_3$ would mean two additional \SWAP{} gates before slice 5, but swapping $q_2$ and $q_3$ leaves the qubits in their desired positions for slice 5.
-Hence our compiled circuit in it final form:
+Hence our compiled circuit in its final form:
 \begin{figure}[ht]
     \centering
     \begin{quantikz}
@@ -150,7 +150,7 @@ Hence our compiled circuit in it final form:
     \caption{Compiled Circuit}\label{fig:compcirc}
 \end{figure}
 
-If the quantum chip has the further restriction that it's network topology is a directed graph and all the edges point clockwise, we can no longer use the typical \SWAP{} decomposition we are used to as in~\cref{eq:cnotswap}.
+If the quantum chip has the further restriction that its network topology is a directed graph and all the edges point clockwise, we can no longer use the typical \SWAP{} decomposition we are used to as in~\cref{eq:cnotswap}.
 Instead we must use
 \begin{equation}
     \begin{quantikz}
@@ -205,14 +205,15 @@ This allows the compiler to generate circuits optimized for the hardware at part
 Deep reinforcement learning has also made its way into quantum circuit compilation in attempt to perform unitary synthesis~\cite{deepcompile}.
 This approach is well-suited for real-time quantum computation where the additional time required to compile a circuit is unavailable and hence a more immediate solution is required.
 
+In the following two paragraphs we will see examples of how compilers can use knowledge about a general problems circuit/solution to improve compilation methods.
+
 \paragraph{QAOA}
 The \ac{QAOA} is a combinatorial optimization algorithm that is intended to be run on \ac{NISQ}-era devices~\cite{qaoa}.
-With the knowledge of a circuits general structure, compilers have been able to take advantage of this fact.
 Focusing in this particular problem, a 23\% reduction in gate count, and 53\% reduction in circuit depth was acheived~\cite{qaoa-compiler}.
 In the future we might hope to build these problem-specific compilers into a more general purpose one that can diagnose and understand when to use problem-specific compilers on demand.
 
 \paragraph{VQE}
-Another hybrid quantum-classical algorithm that has seem much attention due to its near-term applications in quantum chemistry is that of the \ac{VQE}~\cite{vqe,vqe2}.
+Another hybrid quantum-classical algorithm that has seen much attention due to its near-term applications in quantum chemistry is that of the \ac{VQE}~\cite{vqe,vqe2}.
 This algorithm is used to calculate the ground state of a molecular Hamiltonian using a parametrized quantum circuit as a cost function, and the classical compute nodes as an optimizer.
 \Eg{} let $\boldsymbol{\theta} \in \R^n$ be a vector of numbers that our circuit $U$ depends on, \ie{} $U: \R^n \to \U{2^m}$ for some number of qubits $m$.
 \begin{figure}[ht]

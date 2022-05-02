@@ -4,13 +4,13 @@
 
 The goal of this chapter is twofold.
 First, we introduce the most common constraints seen in modern quantum hardware, as well as other common tools used to measure the efficacy of a given quantum computer.
-Second we will introduce the mathematical formalism needed in order to formulate the problems related to quantum circuit compilation we will see in~\cref{chap:circuit-compilers}.
+Second, we will introduce the mathematical formalism needed in order to formulate the problems related to quantum circuit compilation we will see in~\cref{chap:circuit-compilers}.
 We will not, however, attempt to give an introduction to the physical implementations of quantum hardware and instead refer the reader to~\cite[Chapter 7]{nielsenchuang} for a more comprehensive introduction.
 
 \section{Requirements}
 
 In~\citeyear{divincenzo} David DiVincenzo proposed 5 requirements as being necessary to make an effective quantum information processing device~\cite{divincenzo}.
-His proposed requirement are summarized here.
+His proposed requirements are summarized here.
 \begin{requirements}
     \item A scalable physical system with well-characterized qubits.\label{req:scalable}
     \item The ability to initialize the state of the qubits to a simple fiducial state, such as $\ket{0}^{\!\otimes n}$.\label{req:initialize}
@@ -39,6 +39,14 @@ What we call the connectivity graph is sometimes referred to as a (network) topo
 We ensure the connectivity graph has all self loops as edges are the basis for performing quantum gates and all modern hardware has the capability of performing single qubit gates.
 Once the connectivity graph has been established, we can consider which gate-sets are allowable by ensuring only qubits which are connected via an edge are acted on in a nontrivial manner.
 That is, if two nodes are not connected via an edge, there should be no entangling gates operating on them. % TODO define entangling gate
+
+In order for an effective definition for a quantum connectivity graph we must first define the following qubit indexing function.
+\begin{definition}
+    Let $G$ be a quantum gate set acting on $n$ qubits.
+    Define a function $\qubits: G \to \mathcal{P}([n])$ which returns a set containing the index of the qubits each gate acts on nontrivially.
+\end{definition}
+As an example, if $G = \qty{\1 \otimes \1, \1 \otimes X, X \otimes \1, X \otimes X}$, then $\qubits(\1 \otimes \1) = \emptyset$, $\qubits(\1 \otimes X) = \qty{1}$, and $\qubits(X \otimes X) = \qty{0, 1}$.
+
 \begin{definition}
     Let $H = (V, E)$ be a quantum connectivity graph.
     A gate set $G$ is said to be \emph{amenable} to $H$ if
@@ -57,7 +65,7 @@ While this formalism does have the drawback of restricting our gate sets to sing
 Multi-qubit gates can be allowed using the notion of a hypergraph in~\cref{def:topology}, but doing so introduces complexity without a clear advantage.
 This slightly simplified notion still encompasses universal quantum computation as three (and higher) qubit gates are not needed as we saw in~\cref{sec:universal}.
 
-As an example the connectivity graph of IBM's 7-qubit quantum computer \texttt{ibmq\_jakarta} shown in~\cref{fig:ibm-jakarta} and the gate set is as follows~\cite{ibmq}.
+As an example, the connectivity graph of IBM's 7-qubit quantum computer \texttt{ibmq\_jakarta} shown in~\cref{fig:ibm-jakarta} and the gate set is as follows~\cite{ibmq}.
 \begin{equation} % TODO this doesn't align with how we've defined gate sets in chap 2
     \qty{\CNOT, \1, R_Z, S_X, X}
 \end{equation}
@@ -67,12 +75,6 @@ Vertex ``3'' being connected to ``1'' means that we can apply a 2-qubit unitary 
     \includestandalone[width=0.4\textwidth]{tikz/jakarta}
     \caption{IBMQ Jakarta Architecture}\label{fig:ibm-jakarta}
 \end{figure}
-
-\begin{definition} % TODO def needs to be moved up
-    Let $G$ be a quantum gate set acting on $n$ qubits.
-    Define a function $\qubits: G \to \mathcal{P}([n])$ which returns a set containing the index of the qubits each gate acts on nontrivially.
-\end{definition}
-As an example if $G = \qty{\1 \otimes \1, \1 \otimes X, X \otimes \1, X \otimes X}$, then $\qubits(\1 \otimes \1) = \emptyset$, $\qubits(\1 \otimes X) = \qty{1}$, and $\qubits(X \otimes X) = \qty{0, 1}$.
 
 \begin{definition}
     Let $T = (G, H)$ be a quantum chip with graph $H = (V, E)$, and $C \in G^*$ be a circuit.
@@ -118,7 +120,7 @@ This is especially important since gates are often grouped based on non-overlapp
 
 As qubits are two-state systems, they are often implemented experimentally using some physical system (\eg{} an atom) that has a ground state, and an excited state.
 Excited states often have a tendency to ``decay'' into ground states, especially so when interacting with the environment.
-Hence we define the \textbf{relaxation time}\footnote{This value also goes by the following names: coherence time, amplitude damping, longitudinal coherence time, spin lattice time, and spontaneous emission time.} $T_1$ as the lifetime for the state $\ket{1}$ decaying into $\ket{0}$.
+Hence we define the \textbf{relaxation time}.\footnote{This value also goes by the following names: coherence time, amplitude damping, longitudinal coherence time, spin lattice time, and spontaneous emission time.} $T_1$ as the lifetime for the state $\ket{1}$ decaying into $\ket{0}$.
 This value can be experimentally found using the following methodology.
 \begin{enumerate}
     \item Prepare the state $\ket{0}$
@@ -174,7 +176,7 @@ This measure usually comes under the guise of \ac{CLOPS} first introduced in~\ci
 \section{Errors}\label{sec:errors}
 
 Errors are ubiquitous in quantum computing and for the near future there is almost certainly no getting around them.
-Not only are errors abundant, but they can vary across the chip, and they can very in type.
+Not only are errors abundant, but they can vary across the chip, and they can vary in type.
 The first error that is often encountered is that of \textbf{gate errors}.
 Some examples of gate errors might be
 \begin{itemize}
@@ -192,5 +194,5 @@ Despite these being one of the largest sources of errors on modern quantum hardw
 
 Finally, the last major source of noise that is seen in quantum computers is that of \textbf{crosstalk}.
 Crosstalk corrupts information in our system when multiple gates are performed simultaneously.
-This is unfortunate as parallelizing computation drastically improves the running time and keeps the total computation time below decoherence times discussed in~\cref{sec:Ttimes}.
+This is unfortunate as parallelizing computation drastically decreases the runtime and keeps the total computation time below decoherence times discussed in~\cref{sec:Ttimes}.
 These errors arise as qubits are not perfectly isolated from each other and hence can interact especially when control pulses (\ie{} the gate implementations) bleed into nearby qubits.
