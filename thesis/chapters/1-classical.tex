@@ -117,10 +117,10 @@ Now that the code is syntactically valid, we can ensure it has meaning.
 This phase usually consists of type checking and scope validation (ensuring the code does not access variables outside of scope).
 In many compiled languages the operation \texttt{'hello' * 5} would pass syntax analysis, but fail semantic analysis because a string multiplied by an integer is not a valid operation.\footnote{It is completely valid in other languages like Python, but Python is not a compiled language.}
 
-\begin{wrapfigure}[19]{i}{0.25\textwidth} % TODO tweak lineheight
+\begin{wrapfigure}[20]{i}{0.25\textwidth}
     \centering
     \includestandalone[width=0.23\textwidth]{tikz/phases}
-    \caption{Compiler Phases}\label{fig:compilerphases} % TODO can we fix this caption?
+    \caption{Compilation Phases}\label{fig:compilerphases} % TODO can we fix this caption?
 \end{wrapfigure}
 
 \paragraph{Intermediate Code Generator}
