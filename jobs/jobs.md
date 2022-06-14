@@ -24,7 +24,7 @@
 | Email coldquanta@jobs.workablemail.com    | Coldquanta        | X        |
 | Quantum Algorithms Intern                 | QC Ware           | X        |
 | Researcher - Intern                       | 1QBit             | X        |
-| Computing Sciences Student                | LBL               | X        |
+| Computing Sciences Student                | LBL               | rejected |
 
 X = applied
 
