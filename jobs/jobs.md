@@ -8,7 +8,7 @@
 
 | title                                     | company           | status   |
 | ----------------------------------------- | ----------------- | -------- |
-| Research Intern - Quantum Computing       | Microsoft         | X        |
+| Research Intern - Quantum Computing       | Microsoft         | rejected |
 | Research Intern - Quantum Programming     | Microsoft         | X        |
 | Quantum Research Summer Intern            | IBM               | rejected |
 | Quantum & Qiskit Developer Summer Intern  | IBM               | rejected |
